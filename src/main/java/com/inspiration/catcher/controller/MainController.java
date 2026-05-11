@@ -849,6 +849,31 @@ public class MainController implements Initializable {
             }
         });
     }
+    // ============================================================
+    // Navigation Rail — view switching
+    // ============================================================
+    @FXML private void switchToIdeaList() {
+        mainTabPane.getSelectionModel().select(0);
+        shortcutManager.setActiveArea("table");
+    }
+
+    @FXML private void switchToMindMap() {
+        mainTabPane.getSelectionModel().select(1);
+        shortcutManager.setActiveArea("mindmap");
+    }
+
+    @FXML private void switchToEditor() {
+        mainTabPane.getSelectionModel().select(2);
+        shortcutManager.setActiveArea("editor");
+    }
+
+    @FXML private void focusSearch() {
+        if (searchField != null) {
+            searchField.requestFocus();
+            searchField.selectAll();
+        }
+    }
+
     @FXML private void handleExit() {
         if (statusManager.showConfirmDialog("确认退出", "退出灵感捕手", "确定要退出应用程序吗？")) {
             // 清理快捷键

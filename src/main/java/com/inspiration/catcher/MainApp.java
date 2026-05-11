@@ -103,9 +103,8 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/MainView.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root, 1200, 800);
-        // 加载CSS
-        // 加载CSS层叠（theme < components < main，后加载优先级更高）
-        String[] cssFiles = {"/css/theme.css", "/css/components.css", "/css/main.css"};
+        // 加载CSS层叠：app.css (设计基础) → theme.css → components.css → main.css (最高优先级)
+        String[] cssFiles = {"/css/app.css", "/css/theme.css", "/css/components.css", "/css/main.css"};
         for (String cssFile : cssFiles) {
             URL cssUrl = getClass().getResource(cssFile);
             if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
