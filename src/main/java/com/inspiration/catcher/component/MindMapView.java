@@ -180,12 +180,13 @@ public class MindMapView extends Pane {
         Rectangle rect = new Rectangle();
         rect.setWidth(node.getWidth() > 0 ? node.getWidth() : DEFAULT_NODE_WIDTH);
         rect.setHeight(node.getHeight() > 0 ? node.getHeight() : DEFAULT_NODE_HEIGHT);
-        // 设置样式
+        // 设置样式（12px圆角 + 弥散阴影）
         rect.setFill(Color.web(node.getColor() != null ? node.getColor() : "#36B37E"));
         rect.setStroke(Color.web("#2E7D32"));
         rect.setStrokeWidth(1);
-        rect.setArcWidth(10);
-        rect.setArcHeight(10);
+        rect.setArcWidth(24);
+        rect.setArcHeight(24);
+        rect.setEffect(new javafx.scene.effect.DropShadow(6, Color.rgb(0, 0, 0, 0.15)));
         // 创建文本
         Text text = new Text(node.getText());
         text.setFill(Color.WHITE);
@@ -213,12 +214,13 @@ public class MindMapView extends Pane {
         rect.setWidth(node.getWidth() > 0 ? node.getWidth() : DEFAULT_NODE_WIDTH + 20);
         rect.setHeight(node.getHeight() > 0 ? node.getHeight() : DEFAULT_NODE_HEIGHT + 10);
 
-        // 设置样式
+        // 设置样式（12px圆角 + 弥散阴影）
         rect.setFill(Color.web(node.getColor() != null ? node.getColor() : "#FF6B6B"));
         rect.setStroke(Color.web("#C62828"));
         rect.setStrokeWidth(2);
-        rect.setArcWidth(15);
-        rect.setArcHeight(15);
+        rect.setArcWidth(24);
+        rect.setArcHeight(24);
+        rect.setEffect(new javafx.scene.effect.DropShadow(6, Color.rgb(0, 0, 0, 0.15)));
         // 创建标题文本
         Text titleText = new Text(node.getText());
         titleText.setFill(Color.WHITE);
@@ -244,12 +246,13 @@ public class MindMapView extends Pane {
         Rectangle rect = new Rectangle();
         rect.setWidth(node.getWidth() > 0 ? node.getWidth() : 100);
         rect.setHeight(node.getHeight() > 0 ? node.getHeight() : 40);
-        // 设置样式
+        // 设置样式（12px圆角 + 弥散阴影）
         rect.setFill(Color.web(node.getColor() != null ? node.getColor() : "#FFD166"));
         rect.setStroke(Color.web("#FF9800"));
         rect.setStrokeWidth(1);
-        rect.setArcWidth(20);
-        rect.setArcHeight(20);
+        rect.setArcWidth(24);
+        rect.setArcHeight(24);
+        rect.setEffect(new javafx.scene.effect.DropShadow(6, Color.rgb(0, 0, 0, 0.12)));
         // 创建文本
         Text text = new Text(node.getText());
         text.setFill(Color.BLACK);

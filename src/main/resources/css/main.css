@@ -36,6 +36,6 @@
 
 /* 中间内容区域 */
 .content-area {
-    -fx-padding: 12;
+    -fx-padding: 20;
     -fx-background-color: -fx-bg-subtle;
 }

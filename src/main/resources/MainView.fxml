@@ -132,19 +132,33 @@
 
                 <!-- 思维导图 -->
                 <Tab text="思维导图">
-                    <BorderPane>
-                        <top>
-                            <HBox spacing="8" styleClass="tool-bar" stylesheets="@css/main.css">
+                    <SplitPane dividerPositions="0.22">
+                        <VBox fx:id="mindMapLeftPanel" spacing="8" style="-fx-padding: 10; -fx-background-color: -fx-bg-subtle;">
+                            <ToolBar style="-fx-background-color: transparent; -fx-padding: 4 0;">
                                 <Button text="添加概念" onAction="#handleAddConceptNodeToMindMap" styleClass="button-ghost"/>
-                                <Button text="自动布局" onAction="#handleAddIdeaNodeToMindMap" styleClass="button-ghost"/>
-                                <Region HBox.hgrow="ALWAYS"/>
-                                <Button text="导出图片" styleClass="button-ghost" />
+                            </ToolBar>
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <Label text="灵感列表" styleClass="section-title"/>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button text="刷新" onAction="#refreshMindMapIdeaList" styleClass="button-ghost"/>
                             </HBox>
-                        </top>
-                        <center>
-                            <Pane fx:id="mindMapPane" />
-                        </center>
-                    </BorderPane>
+                            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;">
+                                <VBox fx:id="mindMapIdeaListContainer" spacing="5" style="-fx-padding: 4;"/>
+                            </ScrollPane>
+                        </VBox>
+                        <BorderPane>
+                            <top>
+                                <HBox spacing="8" styleClass="tool-bar" stylesheets="@css/main.css">
+                                    <Button text="自动布局" onAction="#handleAddIdeaNodeToMindMap" styleClass="button-ghost"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Button text="导出图片" styleClass="button-ghost" />
+                                </HBox>
+                            </top>
+                            <center>
+                                <Pane fx:id="mindMapPane" />
+                            </center>
+                        </BorderPane>
+                    </SplitPane>
                 </Tab>
 
                 <!-- 编辑器 -->

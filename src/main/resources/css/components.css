@@ -6,12 +6,13 @@
 .button {
     -fx-background-color: -fx-bg;
     -fx-border-color: -fx-border-light;
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
-    -fx-padding: 6 14;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 7 16;
     -fx-cursor: hand;
     -fx-text-fill: -fx-text-primary;
     -fx-font-size: 12.5px;
+
 }
 
 .button:hover {
@@ -205,8 +206,9 @@
 .tab {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
-    -fx-padding: 6 16;
-    -fx-background-radius: 4px 4px 0 0;
+    -fx-padding: 8 20;
+    -fx-background-radius: 6px 6px 0 0;
+
 }
 
 .tab:hover {
@@ -300,6 +302,35 @@
     -fx-background-color: transparent;
     -fx-background-radius: 0;
     -fx-padding: 0;
+}
+
+/* ---------- AI Card (premium card style) ---------- */
+.ai-card {
+    -fx-background-color: -fx-bg;
+    -fx-border-color: -fx-border-light;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 6, 0, 0, 2);
+
+}
+
+.ai-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 12, 0, 0, 6);
+    -fx-translate-y: -2;
+}
+
+.ai-card-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-primary;
+    -fx-padding: 0 0 8 0;
+}
+
+.ai-card-content {
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-text-secondary;
+    -fx-line-spacing: 4;
 }
 
 /* ---------- Section Title ---------- */

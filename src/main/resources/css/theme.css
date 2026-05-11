@@ -42,9 +42,9 @@
     -fx-shadow-lg: dropshadow(gaussian, rgba(0,0,0,0.15), 16, 0, 0, 8);
 
     /* Border radius */
-    -fx-radius-sm: 4px;
-    -fx-radius-md: 6px;
-    -fx-radius-lg: 10px;
+    -fx-radius-sm: 6px;
+    -fx-radius-md: 10px;
+    -fx-radius-lg: 14px;
 
     /* Spacing */
     -fx-spacing-xs: 4px;
