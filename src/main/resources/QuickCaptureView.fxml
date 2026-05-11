@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.inspiration.catcher.controller.QuickCaptureController"
+      spacing="10"
+      style="-fx-padding: 15;"
+      alignment="TOP_CENTER">
+
+    <Label text="📝 快速捕捉灵感" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="类型："/>
+        <ComboBox fx:id="typeCombo" prefWidth="100"/>
+        <Label text="重要性："/>
+        <ComboBox fx:id="importanceCombo" prefWidth="60"/>
+        <Label text="心情:" />
+        <ComboBox fx:id="moodCombo" prefWidth="100" />
+    </HBox>
+
+    <TextField fx:id="titleField"
+               promptText="灵感标题（可选）"
+               HBox.hgrow="ALWAYS"
+               minWidth="300"
+               style="-fx-font-size: 14px;"/>
+
+    <TextArea fx:id="contentArea"
+              promptText="在此输入你的灵感..."
+              wrapText="true"
+              HBox.hgrow="ALWAYS"
+              VBox.vgrow="ALWAYS"
+              minWidth="300"
+              prefHeight="150"
+              style="-fx-font-size: 14px; -fx-min-height: 150px;"/>
+
+    <HBox spacing="5" alignment="CENTER_LEFT">
+        <Label text="标签："/>
+        <TextField fx:id="tagInput"
+                   promptText="添加标签，用空格分隔"
+                   HBox.hgrow="ALWAYS"
+                   minWidth="300"/>
+        <Button text="添加" onAction="#handleAddTag"/>
+    </HBox>
+
+    <FlowPane fx:id="tagContainer"
+              hgap="5"
+              vgap="5"
+              HBox.hgrow="ALWAYS"
+              style="-fx-min-width: 300px;"/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="取消" onAction="#handleCancel"/>
+        <Button text="保存" onAction="#handleSave"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>

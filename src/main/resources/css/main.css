@@ -1,0 +1,43 @@
+/* 全局字体设置 */
+.root {
+    -fx-font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+/* 字体大小调节的CSS类 */
+.font-small { -fx-font-size: 12px;}
+.font-medium { -fx-font-size: 14px;}
+.font-large { -fx-font-size: 16px;}
+.font-xlarge { -fx-font-size: 18px;}
+/* 文本区域和输入框保持原有样式，只通过CSS类调节字体 */
+.text-area, .text-field, .combo-box {
+    -fx-font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+/* 表格保持原有样式 */
+.table-view {}
+/* 按钮保持原有样式 */
+.button {}
+/* 标签保持原有样式 */
+.label {
+    -fx-font-size: 13px;
+}
+
+/* 特定控件保持原有颜色 */
+.quick-capture-btn {
+    -fx-background-color: #4A90E2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.save-btn {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+.ai-btn {
+    -fx-background-color: #FF9800;
+    -fx-text-fill: white;
+}
+
+/* 菜单栏 */
+.menu-bar {
+    -fx-background-color: #f0f0f0;
+}

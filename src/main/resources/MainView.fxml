@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.inspiration.catcher.controller.MainController"
+            prefWidth="1200" prefHeight="800">
+    <style>
+        @import "css/layout.css";
+    </style>
+
+    <!-- 顶部菜单栏 -->
+    <top>
+        <VBox>
+            <!-- 第一行：菜单栏（保持原样） -->
+            <MenuBar>
+                <!-- 完全复制你原来的菜单栏内容 -->
+                <Menu text="文件">
+                    <RadioMenuItem text="文件功能部分未实现"/>
+                    <RadioMenuItem text="下面仅是示例"/>
+                    <MenuItem text="新建灵感" onAction="#handleNewIdea"/>
+                    <MenuItem text="新建项目" onAction="#handleNewProject"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="打开项目（未实现）"/>
+                    <MenuItem text="导出（未实现）"/>
+                    <MenuItem text="备份数据（未实现）"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="退出" onAction="#handleExit"/>
+                </Menu>
+                <Menu text="编辑">
+                    <RadioMenuItem text="编辑功能未实现"/>
+                    <RadioMenuItem text="下面仅是示例"/>
+                    <MenuItem text="撤销（未实现）"/>
+                    <MenuItem text="重做（未实现）"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="查找（未实现）"/>
+                    <MenuItem text="替换（未实现）"/>
+                </Menu>
+                <Menu text="视图">
+                    <RadioMenuItem text="视图功能未实现"/>
+                    <RadioMenuItem text="下面仅是示例"/>
+                    <RadioMenuItem text="列表视图（未实现）" selected="true"/>
+                    <RadioMenuItem text="时间线视图（未实现）"/>
+                    <RadioMenuItem text="思维导图视图（未实现）"/>
+                    <SeparatorMenuItem/>
+                    <CheckMenuItem text="显示标签栏（未实现）"/>
+                    <CheckMenuItem text="显示状态栏（未实现）"/>
+                </Menu>
+                <Menu text="工具">
+                    <RadioMenuItem text="工具功能部分未实现"/>
+                    <RadioMenuItem text="下面仅是示例"/>
+                    <MenuItem text="设置（未实现）"/>
+                    <MenuItem text="AI设置（可填入自己的deepseek api key）" onAction="#handleAISettings"/>
+                    <MenuItem text="统计报告（未实现）"/>
+                    <MenuItem text="清理数据（未实现）"/>
+                </Menu>
+                <Menu text="帮助">
+                    <RadioMenuItem text="工具功能未实现"/>
+                    <RadioMenuItem text="下面仅是示例"/>
+                    <MenuItem text="帮助文档（未实现）"/>
+                    <MenuItem text="关于（未实现）"/>
+                </Menu>
+            </MenuBar>
+
+            <!-- 第二行：工具栏 -->
+            <HBox spacing="10" style="-fx-padding: 5; -fx-background-color: #f0f0f0;">
+                <Label text="项目:"/>
+                <ComboBox fx:id="projectSelector" prefWidth="200"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="测试AI" onAction="#testAIConnection"
+                        style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
+                <Button text="A-" onAction="#handleDecreaseFont"
+                        style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+                <Button text="字体大小" onAction="#showFontDialog"/>
+                <Button text="A+" onAction="#handleIncreaseFont"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                <Button text="重置" onAction="#handleResetFont"/>
+                <Separator orientation="VERTICAL"/>
+                <Button text="保存 (Ctrl+S)" onAction="#handleSave"
+                        style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
+                <Button text="清理标签" onAction="#handleCleanUnusedTags"
+                        style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
+                <Button text="标签统计" onAction="#showTagStats"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.10, 0.90">
+            <!-- 左侧面板 -->
+            <VBox spacing="10" style="-fx-padding: 10;">
+                <Label text="灵感捕手" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <!-- 项目列表 -->
+                <Separator/>
+                <!-- 快速捕捉按钮 -->
+                <Button text="📝 快速捕捉" onAction="#handleQuickCapture"
+                        style="-fx-background-color: #4A90E2; -fx-text-fill: white; -fx-font-weight: bold;"
+                        maxWidth="Infinity" />
+                <!-- 搜索框 -->
+                <TextField fx:id="searchField" promptText="搜索灵感..." HBox.hgrow="ALWAYS"/>
+                <!-- 过滤器 -->
+                <Accordion>
+                    <panes>
+                        <TitledPane text="过滤器">
+                            <VBox spacing="5">
+                                <HBox spacing="5" alignment="CENTER_LEFT">
+                                    <Label text="类型：" minWidth="50"/>
+                                    <ComboBox fx:id="typeFilter" promptText="所有类型" HBox.hgrow="ALWAYS"/>
+                                </HBox>
+                                <HBox spacing="5" alignment="CENTER_LEFT">
+                                    <Label text="重要性：" minWidth="50"/>
+                                    <ComboBox fx:id="importanceFilter" promptText="所有级别" HBox.hgrow="ALWAYS"/>
+                                </HBox>
+                                <HBox spacing="5" alignment="CENTER_LEFT">
+                                    <Label text="心情：" minWidth="50"/>
+                                    <ComboBox fx:id="moodFilter" promptText="所有心情" HBox.hgrow="ALWAYS"/>
+                                </HBox>
+
+                                <HBox spacing="5" alignment="CENTER_LEFT">
+                                    <Label text="开始日期：" minWidth="60"/>
+                                    <DatePicker fx:id="startDateFilter" promptText="开始日期" HBox.hgrow="ALWAYS"/>
+                                </HBox>
+                                <HBox spacing="5" alignment="CENTER_LEFT"><Label text="至" /></HBox>
+                                <HBox spacing="5" alignment="CENTER_LEFT">
+                                    <Label text="结束日期：" minWidth="60"/>
+                                    <DatePicker fx:id="endDateFilter" promptText="结束日期" HBox.hgrow="ALWAYS"/>
+                                </HBox>
+
+                                <HBox spacing="5" alignment="CENTER_LEFT">
+                                    <Label text="标签：" minWidth="50"/>
+                                    <ComboBox fx:id="tagFilter" promptText="选择标签" prefWidth="150" HBox.hgrow="ALWAYS">
+                                        <tooltip>
+                                            <Tooltip text="按标签筛选" />
+                                        </tooltip>
+                                    </ComboBox>
+                                </HBox>
+                                <HBox spacing="5" alignment="CENTER_RIGHT">
+                                    <Button text="应用过滤" onAction="#updateFilterPredicate"/>
+                                    <Button text="重置所有过滤" onAction="#resetAllFilters"/>
+                                </HBox>
+                            </VBox>
+                        </TitledPane>
+                    </panes>
+                </Accordion>
+                <!-- 标签云 -->
+                <VBox spacing="5">
+                    <Label text="热门标签" style="-fx-font-weight: bold;"/>
+                    <FlowPane fx:id="tagCloud" hgap="5" vgap="5"/>
+                </VBox>
+            </VBox>
+
+            <!-- 中间表格区域 -->
+            <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE">
+                <!-- 灵感列表标签页 -->
+                <Tab text="灵感列表">
+                    <VBox spacing="10">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="灵感列表" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="刷新" onAction="#resetAllFilters">
+                                <tooltip><Tooltip text="清除过滤并刷新列表 (Ctrl+R)" /></tooltip>
+                            </Button>
+                            <Button text="新建" onAction="#handleNewIdea">
+                                <tooltip><Tooltip text="新建灵感 (Ctrl+N)" /></tooltip>
+                            </Button>
+                            <Button text="编辑" onAction="#handleEditIdea">
+                                <tooltip><Tooltip text="编辑选中灵感 (Ctrl+E)" /></tooltip>
+                            </Button>
+                            <Button text="删除" onAction="#handleDeleteIdea">
+                                <tooltip><Tooltip text="删除选中灵感 (DELETE)" /></tooltip>
+                            </Button>
+                        </HBox>
+
+                        <TableView fx:id="ideaTableView" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn text="标题" fx:id="titleColumn"/>
+                                <TableColumn text="类型" fx:id="typeColumn"/>
+                                <TableColumn text="重要性" fx:id="importanceColumn" minWidth="80"/>
+                                <TableColumn text="心情" fx:id="moodColumn"/>
+                                <TableColumn text="标签" fx:id="tagsColumn" prefWidth="200"/>
+                                <TableColumn text="创建时间" fx:id="createdAtColumn" prefWidth="200"/>
+                                <TableColumn text="更新时间" fx:id="updatedAtColumn" prefWidth="200"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </Tab>
+
+                <!-- 思维导图标签页 -->
+                <Tab text="思维导图">
+                    <SplitPane dividerPositions="0.25">
+                        <!-- 左侧：灵感列表 -->
+                        <VBox fx:id="mindMapLeftPanel" spacing="10" style="-fx-padding: 10; -fx-background-color: #f8f9fa;">
+                            <!-- 工具栏 -->
+                            <ToolBar style="-fx-background-color: #f5f5f5; -fx-padding: 5;">
+                                <Button text="➕ 灵感节点" onAction="#handleAddIdeaNodeToMindMap" />
+                                <Button text="💡 概念节点" onAction="#handleAddConceptNodeToMindMap" />
+                                <Button text="🔗 外部链接" onAction="#handleAddExternalNodeToMindMap" />
+                            </ToolBar>
+                            <!-- 标题和刷新按钮 -->
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label text="📋 灵感列表" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button text="🔄刷新列表" onAction="#refreshMindMapIdeaList"
+                                        style="-fx-background-color: transparent; -fx-font-size: 14px;"/>
+                            </HBox>
+                            <!-- 滚动列表 -->
+                            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                                <VBox fx:id="mindMapIdeaListContainer" spacing="5" style="-fx-padding: 5;"/>
+                            </ScrollPane>
+                        </VBox>
+
+                        <!-- 右侧：思维导图画布 -->
+                        <Pane fx:id="mindMapPane" />
+                    </SplitPane>
+                </Tab>
+
+                <!-- 编辑器标签页 -->
+                <Tab text="编辑器">
+                    <SplitPane dividerPositions="0.5">
+                        <!-- 左侧编辑器 -->
+                        <VBox spacing="5">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label text="标题：" minWidth="50"/>
+                                <TextField fx:id="editorTitleField" HBox.hgrow="ALWAYS" promptText="灵感标题（可选）"/>
+                            </HBox>
+
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label text="类型：" minWidth="50"/>
+                                <ComboBox fx:id="editorTypeCombo" promptText="选择类型" HBox.hgrow="ALWAYS"/>
+                            </HBox>
+
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label text="重要性：" minWidth="50"/>
+                                <Spinner fx:id="editorImportanceSpinner" min="1" max="5" initialValue="3" HBox.hgrow="NEVER"/>
+                            </HBox>
+
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label text="心情：" minWidth="50"/>
+                                <ComboBox fx:id="editorMoodCombo" prefWidth="150" HBox.hgrow="ALWAYS"/>
+                            </HBox>
+
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label text="标签：" minWidth="50"/>
+                                <TextField fx:id="editorTagsField" promptText="输入标签，用空格分隔"
+                                           HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                            <!-- Markdown 工具栏部分 -->
+                            <HBox spacing="5" style="-fx-background-color: #f5f5f5; -fx-padding: 5;" alignment="CENTER_LEFT">
+                                <Button text="B" onAction="#handleBold" style="-fx-background-color: transparent; -fx-border-color: #ccc;">
+                                    <tooltip><Tooltip text="加粗 (Ctrl+B)" /></tooltip>
+                                </Button>
+                                <Button text="I" onAction="#handleItalic" style="-fx-background-color: transparent; -fx-border-color: #ccc;">
+                                    <tooltip><Tooltip text="斜体 (Ctrl+I)" /></tooltip>
+                                </Button>
+                                <Separator orientation="VERTICAL"/>
+                                <Button text="H1" onAction="#handleHeader1" style="-fx-background-color: transparent; -fx-border-color: #ccc;">
+                                    <tooltip><Tooltip text="一级标题 (Ctrl+1)" /></tooltip>
+                                </Button>
+                                <Button text="H2" onAction="#handleHeader2" style="-fx-background-color: transparent; -fx-border-color: #ccc;">
+                                    <tooltip><Tooltip text="二级标题 (Ctrl+2)" /></tooltip>
+                                </Button>
+                                <Separator orientation="VERTICAL"/>
+                                <Button onAction="#handleCode"
+                                        style="-fx-background-color: transparent; -fx-border-color: #ccc;">
+                                    <tooltip><Tooltip text="代码块 (Ctrl+`)"/></tooltip>&lt;/&gt;
+                                </Button>
+                                <Button text="•" onAction="#handleList" style="-fx-background-color: transparent; -fx-border-color: #ccc;">
+                                    <tooltip><Tooltip text="无序列表" /></tooltip>
+                                </Button>
+                                <Button text=">" onAction="#handleQuote" style="-fx-background-color: transparent; -fx-border-color: #ccc;">
+                                    <tooltip><Tooltip text="引用" /></tooltip>
+                                </Button>
+                                <Separator orientation="VERTICAL"/>
+                                <Button text="🔗" onAction="#handleLink" style="-fx-background-color: transparent; -fx-border-color: #ccc;">
+                                    <tooltip><Tooltip text="插入链接" /></tooltip>
+                                </Button>
+                                <Button text="图" onAction="#handleImage" style="-fx-background-color: transparent; -fx-border-color: #ccc;">
+                                    <tooltip><Tooltip text="插入图片" /></tooltip>
+                                </Button>
+                            </HBox>
+                            <TextArea fx:id="markdownEditor" promptText="在此输入内容（支持Markdown）..."
+                                      VBox.vgrow="ALWAYS" wrapText="true"
+                                      style="-fx-font-family: 'Consolas', 'Monaco', monospace; -fx-font-size: 14px;"/>
+                        </VBox>
+
+                        <!-- 右侧预览 -->
+                        <VBox spacing="5">
+                            <HBox spacing="10">
+                                <Button text="保存 (Ctrl+S)" onAction="#handleSave"
+                                        style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                                <Button text="刷新预览" onAction="#refreshPreview"/>
+                                <Button text="AI 扩展" onAction="#generateAIExpansion"/>
+                                <Button text="生成大纲" onAction="#generateOutline"/>
+                            </HBox>
+                            <WebView fx:id="markdownPreview" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+                    </SplitPane>
+                </Tab>
+            </TabPane>
+            <!-- 右侧详细信息区域 -->
+            <SplitPane orientation="VERTICAL" dividerPositions="0.4, 0.7">
+                <!-- 上面部分：灵感详情 -->
+                <VBox spacing="5" minHeight="100">
+                    <Label text="灵感详情" style="-fx-font-weight: bold;"/>
+                    <TextArea fx:id="ideaDetail" wrapText="true" VBox.vgrow="ALWAYS"/>
+                </VBox>
+                <!-- 中间部分：AI建议 -->
+                <VBox spacing="5" minHeight="100">
+                    <HBox spacing="5">
+                        <Label text="🤖 AI建议" style="-fx-font-weight: bold;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="生成" onAction="#generateAISuggestions"/>
+                    </HBox>
+                    <TextArea fx:id="aiSuggestions" wrapText="true" VBox.vgrow="ALWAYS"/>
+                </VBox>
+                <!-- 相关灵感 -->
+                <VBox spacing="5" minHeight="100">
+                    <Label text="相关灵感" style="-fx-font-weight: bold;"/>
+                    <ListView fx:id="relatedIdeasList"/>
+                </VBox>
+
+                <!-- 下面部分：统计信息 -->
+                <VBox spacing="5" minHeight="80">
+                    <Label text="📊 统计" style="-fx-font-weight: bold;"/>
+                    <Label text="灵感总数：0" fx:id="totalIdeasLabel"/>
+                    <Label text="本周新增：0" fx:id="weeklyIdeasLabel"/>
+                    <Label text="最活跃标签：无" fx:id="topTagLabel"/>
+                </VBox>
+            </SplitPane>
+        </SplitPane>
+    </center>
+
+    <!-- 底部状态栏 -->
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 5; -fx-background-color: #f0f0f0;">
+            <Label text="就绪" fx:id="statusLabel"/>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </bottom>
+</BorderPane>

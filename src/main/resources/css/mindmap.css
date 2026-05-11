@@ -1,0 +1,96 @@
+.mind-map-node {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 2, 2);
+    -fx-cursor: hand;
+}
+
+.mind-map-node:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 3, 3);
+}
+
+.mind-map-node-selected {
+    -fx-stroke: #2196F3;
+    -fx-stroke-width: 2;
+}
+
+.mind-map-connection {
+    -fx-stroke: #666666;
+    -fx-stroke-width: 2;
+}
+
+.mind-map-connection-strong {
+    -fx-stroke: #FF5722;
+    -fx-stroke-width: 3;
+}
+
+.mind-map-connection-weak {
+    -fx-stroke: #9E9E9E;
+    -fx-stroke-width: 1;
+}
+
+.mind-map-toolbar {
+    -fx-background-color: linear-gradient(to bottom, #f5f5f5, #e0e0e0);
+    -fx-border-color: #cccccc;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8px;
+}
+
+.mindmap-left-panel {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 1 0 0;
+}
+.mindmap-right-canvas {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+}
+/* 灵感卡片样式 */
+.idea-card {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 10;
+}
+
+.idea-card:hover {
+    -fx-background-color: #e3f2fd;
+    -fx-border-color: #bbdefb;
+    -fx-cursor: hand;
+}
+
+.idea-card-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.idea-card-content {
+    -fx-text-fill: #666666;
+    -fx-font-size: 12px;
+}
+/* 工具栏样式 */
+.mindmap-toolbar {
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 5;
+}
+
+.toolbar-button {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-padding: 5 10;
+}
+
+.toolbar-button:hover {
+    -fx-background-color: #e3f2fd;
+    -fx-border-color: #4A90E2;
+}
+.idea-card-tag {
+    -fx-background-radius: 10;
+    -fx-padding: 2 5;
+    -fx-font-size: 10px;
+}
