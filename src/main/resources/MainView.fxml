@@ -29,8 +29,8 @@
                     <MenuItem text="测试 AI 连接" onAction="#testAIConnection"/>
                 </Menu>
                 <Menu text="视图">
-                    <MenuItem text="增大字体" onAction="#handleIncreaseFont" accelerator="Ctrl++"/>
-                    <MenuItem text="减小字体" onAction="#handleDecreaseFont" accelerator="Ctrl+-"/>
+                    <MenuItem text="增大字体" onAction="#handleIncreaseFont" accelerator="Ctrl+EQUALS"/>
+                    <MenuItem text="减小字体" onAction="#handleDecreaseFont" accelerator="Ctrl+MINUS"/>
                     <MenuItem text="重置字体" onAction="#handleResetFont"/>
                     <SeparatorMenuItem/>
                     <CheckMenuItem text="状态栏" selected="true" disabled="true"/>
