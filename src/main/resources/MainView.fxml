@@ -50,37 +50,37 @@
             <!-- ============================================================
                  COL 1: Navigation Rail — 60px dark sidebar
                  ============================================================ -->
-            <VBox styleClass="nav-rail" minWidth="60" prefWidth="60" maxWidth="60">
+            <VBox styleClass="nav-rail">
                 <!-- App brand icon -->
-                <StackPane styleClass="nav-brand" prefWidth="36" prefHeight="36">
-                    <FontIcon iconLiteral="fth-zap" iconSize="18"/>
+                <StackPane styleClass="nav-brand" prefWidth="32" prefHeight="32">
+                    <FontIcon iconLiteral="fth-zap" iconSize="16"/>
                 </StackPane>
 
-                <Region minHeight="4"/>
+                <Region minHeight="8"/>
 
                 <!-- Top group: primary views -->
                 <VBox styleClass="nav-rail-center" VBox.vgrow="ALWAYS">
                     <!-- Home / Idea List -->
                     <Button styleClass="nav-item" onAction="#switchToIdeaList">
-                        <graphic><FontIcon iconLiteral="fth-home" iconSize="22"/></graphic>
+                        <graphic><FontIcon iconLiteral="fth-home" iconSize="20"/></graphic>
                         <tooltip><Tooltip text="灵感列表"/></tooltip>
                     </Button>
 
                     <!-- Mind Map -->
                     <Button styleClass="nav-item" onAction="#switchToMindMap">
-                        <graphic><FontIcon iconLiteral="fth-share-2" iconSize="22"/></graphic>
+                        <graphic><FontIcon iconLiteral="fth-share-2" iconSize="20"/></graphic>
                         <tooltip><Tooltip text="思维导图"/></tooltip>
                     </Button>
 
                     <!-- Editor -->
                     <Button styleClass="nav-item" onAction="#switchToEditor">
-                        <graphic><FontIcon iconLiteral="fth-edit-3" iconSize="22"/></graphic>
+                        <graphic><FontIcon iconLiteral="fth-edit-3" iconSize="20"/></graphic>
                         <tooltip><Tooltip text="编辑器"/></tooltip>
                     </Button>
 
                     <!-- AI Chat -->
                     <Button styleClass="nav-item" onAction="#generateAISuggestions">
-                        <graphic><FontIcon iconLiteral="fth-message-square" iconSize="22"/></graphic>
+                        <graphic><FontIcon iconLiteral="fth-message-square" iconSize="20"/></graphic>
                         <tooltip><Tooltip text="AI 建议"/></tooltip>
                     </Button>
                 </VBox>
@@ -89,13 +89,13 @@
                 <VBox styleClass="nav-rail-bottom">
                     <!-- Search toggle -->
                     <Button styleClass="nav-item" onAction="#focusSearch">
-                        <graphic><FontIcon iconLiteral="fth-search" iconSize="22"/></graphic>
+                        <graphic><FontIcon iconLiteral="fth-search" iconSize="20"/></graphic>
                         <tooltip><Tooltip text="搜索"/></tooltip>
                     </Button>
 
                     <!-- Settings -->
                     <Button styleClass="nav-item" onAction="#handleAISettings">
-                        <graphic><FontIcon iconLiteral="fth-settings" iconSize="22"/></graphic>
+                        <graphic><FontIcon iconLiteral="fth-settings" iconSize="20"/></graphic>
                         <tooltip><Tooltip text="AI 设置"/></tooltip>
                     </Button>
                 </VBox>
