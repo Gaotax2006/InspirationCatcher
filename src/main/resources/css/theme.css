@@ -1,0 +1,125 @@
+/* ============================================================
+   Theme: 灵感捕手 - Color System & Base Styles
+   ============================================================ */
+
+/* Looked-up Colors - 主题色板 */
+.root {
+    /* Primary palette */
+    -fx-primary: #4A90E2;
+    -fx-primary-dark: #357ABD;
+    -fx-primary-light: #6BA3E8;
+    -fx-primary-bg: #EBF2FC;
+
+    /* Accent colors */
+    -fx-accent-green: #36B37E;
+    -fx-accent-green-dark: #2D9D6B;
+    -fx-accent-orange: #FF9800;
+    -fx-accent-orange-dark: #E67F00;
+    -fx-accent-red: #FF6B6B;
+    -fx-accent-red-dark: #E05555;
+    -fx-accent-purple: #9B59B6;
+
+    /* Neutral palette */
+    -fx-bg: #FFFFFF;
+    -fx-bg-subtle: #F8F9FA;
+    -fx-bg-hover: #F0F2F5;
+    -fx-bg-active: #E8ECF0;
+
+    /* Text colors */
+    -fx-text-primary: #1A1A2E;
+    -fx-text-secondary: #5A6A7E;
+    -fx-text-muted: #9EACB8;
+    -fx-text-inverse: #FFFFFF;
+
+    /* Border colors */
+    -fx-border-light: #E0E4E8;
+    -fx-border: #C8CED6;
+    -fx-border-focus: -fx-primary;
+
+    /* Shadows */
+    -fx-shadow-sm: dropshadow(gaussian, rgba(0,0,0,0.06), 4, 0, 0, 2);
+    -fx-shadow-md: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 4);
+    -fx-shadow-lg: dropshadow(gaussian, rgba(0,0,0,0.15), 16, 0, 0, 8);
+
+    /* Border radius */
+    -fx-radius-sm: 4px;
+    -fx-radius-md: 6px;
+    -fx-radius-lg: 10px;
+
+    /* Spacing */
+    -fx-spacing-xs: 4px;
+    -fx-spacing-sm: 8px;
+    -fx-spacing-md: 12px;
+    -fx-spacing-lg: 16px;
+    -fx-spacing-xl: 24px;
+
+    /* Font */
+    -fx-font-family: "Microsoft YaHei", "Segoe UI", "PingFang SC", sans-serif;
+    -fx-font-size: 13px;
+}
+
+/* ============================================================
+   Base Styles
+   ============================================================ */
+.label {
+    -fx-text-fill: -fx-text-primary;
+}
+
+.text-field, .text-area {
+    -fx-background-color: -fx-bg;
+    -fx-border-color: -fx-border-light;
+    -fx-border-radius: -fx-radius-sm;
+    -fx-background-radius: -fx-radius-sm;
+    -fx-padding: 6 10;
+    -fx-font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+.text-field:focused, .text-area:focused {
+    -fx-border-color: -fx-border-focus;
+    -fx-effect: dropshadow(gaussian, rgba(74,144,226,0.2), 4, 0, 0, 0);
+}
+
+.text-area {
+    -fx-background-insets: 0;
+}
+
+.text-area .content {
+    -fx-background-color: -fx-bg;
+    -fx-background-radius: -fx-radius-sm;
+}
+
+.combo-box {
+    -fx-background-color: -fx-bg;
+    -fx-border-color: -fx-border-light;
+    -fx-border-radius: -fx-radius-sm;
+    -fx-background-radius: -fx-radius-sm;
+}
+
+.combo-box:focused {
+    -fx-border-color: -fx-border-focus;
+}
+
+/* ============================================================
+   ScrollPane
+   ============================================================ */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: -fx-border;
+    -fx-background-radius: -fx-radius-sm;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: -fx-text-muted;
+}

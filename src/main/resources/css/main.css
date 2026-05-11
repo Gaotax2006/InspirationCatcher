@@ -1,43 +1,41 @@
-/* 全局字体设置 */
-.root {
-    -fx-font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
-}
-/* 字体大小调节的CSS类 */
-.font-small { -fx-font-size: 12px;}
-.font-medium { -fx-font-size: 14px;}
-.font-large { -fx-font-size: 16px;}
-.font-xlarge { -fx-font-size: 18px;}
-/* 文本区域和输入框保持原有样式，只通过CSS类调节字体 */
-.text-area, .text-field, .combo-box {
-    -fx-font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
-}
-/* 表格保持原有样式 */
-.table-view {}
-/* 按钮保持原有样式 */
-.button {}
-/* 标签保持原有样式 */
-.label {
-    -fx-font-size: 13px;
-}
+/* ============================================================
+   Main Stylesheet - imports theme and components
+   ============================================================ */
 
-/* 特定控件保持原有颜色 */
+/* 字体大小调节的CSS类 */
+.font-small { -fx-font-size: 12px; }
+.font-medium { -fx-font-size: 14px; }
+.font-large { -fx-font-size: 16px; }
+.font-xlarge { -fx-font-size: 18px; }
+
+/* 快速捕捉按钮全宽 */
 .quick-capture-btn {
-    -fx-background-color: #4A90E2;
+    -fx-background-color: -fx-primary;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-max-width: Infinity;
 }
 
-.save-btn {
-    -fx-background-color: #4CAF50;
-    -fx-text-fill: white;
+/* 左侧面板 */
+.left-panel {
+    -fx-padding: 12;
+    -fx-spacing: 10;
+    -fx-background-color: -fx-bg;
+    -fx-border-color: transparent -fx-border-light transparent transparent;
+    -fx-border-width: 0 1 0 0;
 }
 
-.ai-btn {
-    -fx-background-color: #FF9800;
-    -fx-text-fill: white;
+/* 右侧面板 */
+.right-panel {
+    -fx-padding: 12;
+    -fx-spacing: 8;
+    -fx-background-color: -fx-bg;
+    -fx-border-color: transparent transparent transparent -fx-border-light;
+    -fx-border-width: 0 0 0 1;
 }
 
-/* 菜单栏 */
-.menu-bar {
-    -fx-background-color: #f0f0f0;
+/* 中间内容区域 */
+.content-area {
+    -fx-padding: 12;
+    -fx-background-color: -fx-bg-subtle;
 }

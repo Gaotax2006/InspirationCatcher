@@ -7,53 +7,44 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.inspiration.catcher.controller.QuickCaptureController"
       spacing="10"
-      style="-fx-padding: 15;"
-      alignment="TOP_CENTER">
+      style="-fx-padding: 16; -fx-background-color: -fx-bg;"
+      alignment="TOP_CENTER"
+      stylesheets="@css/theme.css,@css/components.css">
 
-    <Label text="📝 快速捕捉灵感" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    <Label text="快速捕捉灵感" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: -fx-primary;"/>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="类型："/>
-        <ComboBox fx:id="typeCombo" prefWidth="100"/>
-        <Label text="重要性："/>
-        <ComboBox fx:id="importanceCombo" prefWidth="60"/>
-        <Label text="心情:" />
-        <ComboBox fx:id="moodCombo" prefWidth="100" />
+        <Label text="类型"/>
+        <ComboBox fx:id="typeCombo" prefWidth="110"/>
+        <Label text="重要性"/>
+        <ComboBox fx:id="importanceCombo" prefWidth="70"/>
+        <Label text="心情"/>
+        <ComboBox fx:id="moodCombo" prefWidth="110"/>
     </HBox>
 
     <TextField fx:id="titleField"
                promptText="灵感标题（可选）"
-               HBox.hgrow="ALWAYS"
-               minWidth="300"
                style="-fx-font-size: 14px;"/>
 
     <TextArea fx:id="contentArea"
               promptText="在此输入你的灵感..."
               wrapText="true"
-              HBox.hgrow="ALWAYS"
               VBox.vgrow="ALWAYS"
-              minWidth="300"
-              prefHeight="150"
-              style="-fx-font-size: 14px; -fx-min-height: 150px;"/>
+              prefHeight="160"
+              style="-fx-font-size: 14px;"/>
 
     <HBox spacing="5" alignment="CENTER_LEFT">
-        <Label text="标签："/>
+        <Label text="标签"/>
         <TextField fx:id="tagInput"
-                   promptText="添加标签，用空格分隔"
-                   HBox.hgrow="ALWAYS"
-                   minWidth="300"/>
-        <Button text="添加" onAction="#handleAddTag"/>
+                   promptText="输入标签，多个用逗号分隔"
+                   HBox.hgrow="ALWAYS"/>
+        <Button text="添加" onAction="#handleAddTag" styleClass="button-primary"/>
     </HBox>
 
-    <FlowPane fx:id="tagContainer"
-              hgap="5"
-              vgap="5"
-              HBox.hgrow="ALWAYS"
-              style="-fx-min-width: 300px;"/>
+    <FlowPane fx:id="tagContainer" hgap="5" vgap="5"/>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="取消" onAction="#handleCancel"/>
-        <Button text="保存" onAction="#handleSave"
-                style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button text="取消" onAction="#handleCancel" styleClass="button-ghost"/>
+        <Button text="保存" onAction="#handleSave" styleClass="button-success"/>
     </HBox>
 </VBox>

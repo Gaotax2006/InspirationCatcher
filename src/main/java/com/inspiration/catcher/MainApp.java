@@ -1,5 +1,6 @@
 package com.inspiration.catcher;
 
+import atlantafx.base.theme.PrimerLight;
 import com.inspiration.catcher.dao.DatabaseManager;
 import com.inspiration.catcher.dao.ProjectDao;
 import javafx.application.Application;
@@ -60,6 +61,8 @@ public class MainApp extends Application {
                     alert.showAndWait();
                 });
             });
+            // 应用 AtlantaFX 主题
+            Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
             // 加载主界面
             primaryStage = stage;
             loadMainView();
@@ -101,11 +104,12 @@ public class MainApp extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root, 1200, 800);
         // 加载CSS
-        URL cssUrl = getClass().getResource("/css/main.css");
-        if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
-        // 加载思维导图CSS
-        URL mindMapCssUrl = getClass().getResource("/css/mindmap.css");
-        if (mindMapCssUrl != null) scene.getStylesheets().add(mindMapCssUrl.toExternalForm());
+        // 加载CSS层叠（theme < components < main，后加载优先级更高）
+        String[] cssFiles = {"/css/theme.css", "/css/components.css", "/css/main.css"};
+        for (String cssFile : cssFiles) {
+            URL cssUrl = getClass().getResource(cssFile);
+            if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
+        }
         primaryStage.setTitle("灵感捕手 - AI Powered Writing Assistant");
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(800);
