@@ -12,9 +12,12 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,6 +99,17 @@ public class TableManager {
         logger.info("设置表格");
 
         try {
+            // 设置空状态占位
+            VBox emptyState = new VBox(8);
+            emptyState.setAlignment(Pos.CENTER);
+            Label emptyTitle = new Label("还没有灵感");
+            emptyTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: -fx-text-secondary;");
+            Label emptyHint = new Label("点击「新建」或按 Ctrl+N 开始记录\n也可以使用 Ctrl+Q 快速捕捉");
+            emptyHint.setStyle("-fx-font-size: 13px; -fx-text-fill: -fx-text-muted;");
+            emptyHint.setTextAlignment(TextAlignment.CENTER);
+            emptyState.getChildren().addAll(emptyTitle, emptyHint);
+            ideaTableView.setPlaceholder(emptyState);
+
             // 清空现有数据
             originalDataList.clear();
             // 设置表格列
