@@ -6,8 +6,8 @@
 .button {
     -fx-background-color: -fx-bg;
     -fx-border-color: -fx-border-light;
-    -fx-border-radius: -fx-radius-sm;
-    -fx-background-radius: -fx-radius-sm;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
     -fx-padding: 6 14;
     -fx-cursor: hand;
     -fx-text-fill: -fx-text-primary;
@@ -83,7 +83,7 @@
 .button-toolbar {
     -fx-background-color: transparent;
     -fx-border-color: -fx-border-light;
-    -fx-border-radius: -fx-radius-sm;
+    -fx-border-radius: 4px;
     -fx-padding: 4 8;
 }
 
@@ -96,8 +96,8 @@
 .card {
     -fx-background-color: -fx-bg;
     -fx-border-color: -fx-border-light;
-    -fx-border-radius: -fx-radius-md;
-    -fx-background-radius: -fx-radius-md;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
     -fx-padding: -fx-spacing-lg;
     -fx-effect: -fx-shadow-sm;
 }
@@ -124,8 +124,8 @@
 .table-view {
     -fx-background-color: transparent;
     -fx-border-color: -fx-border-light;
-    -fx-border-radius: -fx-radius-md;
-    -fx-background-radius: -fx-radius-md;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
 }
 
 .table-view .column-header {
@@ -206,7 +206,7 @@
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-padding: 6 16;
-    -fx-background-radius: -fx-radius-sm -fx-radius-sm 0 0;
+    -fx-background-radius: 4px 4px 0 0;
 }
 
 .tab:hover {
@@ -263,28 +263,28 @@
 /* ---------- WebView ---------- */
 .web-view {
     -fx-border-color: -fx-border-light;
-    -fx-border-radius: -fx-radius-sm;
+    -fx-border-radius: 4px;
 }
 
 /* ---------- TextArea Detail ---------- */
 .text-area-detail {
     -fx-background-color: -fx-bg-subtle;
     -fx-border-color: -fx-border-light;
-    -fx-border-radius: -fx-radius-md;
-    -fx-background-radius: -fx-radius-md;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
 }
 
 .text-area-detail .content {
     -fx-background-color: -fx-bg-subtle;
-    -fx-background-radius: -fx-radius-md;
+    -fx-background-radius: 6px;
 }
 
 /* ---------- TextArea for AI suggestions ---------- */
 .text-area-ai {
     -fx-background-color: -fx-bg;
     -fx-border-color: -fx-border-light;
-    -fx-border-radius: -fx-radius-md;
-    -fx-background-radius: -fx-radius-md;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
     -fx-padding: 10;
     -fx-font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
     -fx-font-size: 13px;
@@ -335,8 +335,8 @@
 .accordion .titled-pane > .title {
     -fx-background-color: -fx-bg-subtle;
     -fx-border-color: -fx-border-light;
-    -fx-border-radius: -fx-radius-sm;
-    -fx-background-radius: -fx-radius-sm;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
 }
 
 .accordion .titled-pane > .title:hover {
@@ -390,8 +390,8 @@
 .notification-bar > .pane {
     -fx-background-color: -fx-bg;
     -fx-border-color: -fx-border-light;
-    -fx-border-radius: -fx-radius-md;
-    -fx-background-radius: -fx-radius-md;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
     -fx-effect: -fx-shadow-lg;
 }
 
@@ -399,7 +399,7 @@
 .tooltip {
     -fx-background-color: -fx-text-primary;
     -fx-text-fill: -fx-text-inverse;
-    -fx-background-radius: -fx-radius-sm;
+    -fx-background-radius: 4px;
     -fx-padding: 4 8;
     -fx-font-size: 12px;
 }

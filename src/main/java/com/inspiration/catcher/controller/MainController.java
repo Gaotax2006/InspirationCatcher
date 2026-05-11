@@ -9,6 +9,8 @@ import com.inspiration.catcher.manager.*;
 import com.inspiration.catcher.model.*;
 import com.inspiration.catcher.service.AIService;
 import com.inspiration.catcher.util.MarkdownUtil;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.application.Platform;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
@@ -1123,8 +1125,7 @@ public class MainController implements Initializable {
         HBox titleRow = new HBox(5);
         titleRow.setAlignment(Pos.CENTER_LEFT);
         // 类型图标
-        Label typeIcon = new Label(getMindMapTypeIcon(idea.getType()));
-        typeIcon.setStyle("-fx-text-fill: #fff000; -fx-font-size: 16px;");
+        Node typeIcon = createMindMapTypeIcon(idea.getType());
         // 标题
         Label titleLabel = new Label(idea.getTitle());
         titleLabel.setStyle("-fx-text-fill: #009fff; -fx-font-weight: bold; -fx-font-size: 14px;");
@@ -1161,42 +1162,48 @@ public class MainController implements Initializable {
             starsBox.getChildren().add(star);
         }
         // 心情图标
-        String moodIcon = getMindMapMoodIcon(idea.getMood());
-        Label moodLabel = new Label(moodIcon);
-        moodLabel.setStyle("-fx-text-fill: #FFD700; -fx-font-size: 16px;");
-        metaRow.getChildren().addAll(tagsBox, starsBox, moodLabel);
+        Node moodIcon = createMindMapMoodIcon(idea.getMood());
+        metaRow.getChildren().addAll(tagsBox, starsBox, moodIcon);
         card.getChildren().addAll(titleRow, contentLabel, metaRow);
         // 设置拖拽功能
         setupMindMapCardDrag(card, idea);
         return card;
     }
-    // 获取类型图标
-    private String getMindMapTypeIcon(Idea.IdeaType type) {
-        return switch (type) {
-            case IDEA -> "💡";
-            case QUOTE -> "📝";
-            case QUESTION -> "❓";
-            case TODO -> "✅";
-            case DISCOVERY -> "🔍";
-            case CONFUSION -> "😕";
-            case HYPOTHESIS -> "🧪";
+    // 创建类型图标（FontAwesome）
+    private Node createMindMapTypeIcon(Idea.IdeaType type) {
+        FontAwesomeSolid icon = switch (type) {
+            case IDEA -> FontAwesomeSolid.LIGHTBULB;
+            case QUOTE -> FontAwesomeSolid.QUOTE_LEFT;
+            case QUESTION -> FontAwesomeSolid.QUESTION_CIRCLE;
+            case TODO -> FontAwesomeSolid.CHECK_CIRCLE;
+            case DISCOVERY -> FontAwesomeSolid.SEARCH;
+            case CONFUSION -> FontAwesomeSolid.QUESTION;
+            case HYPOTHESIS -> FontAwesomeSolid.FLASK;
         };
+        FontIcon fi = new FontIcon(icon);
+        fi.setIconSize(14);
+        fi.setIconColor(javafx.scene.paint.Color.web("#FFB300"));
+        return fi;
     }
 
-    // 获取心情图标
-    private String getMindMapMoodIcon(Idea.Mood mood) {
-        return switch (mood) {
-            case HAPPY -> "😊";
-            case EXCITED -> "🎉";
-            case CALM -> "😌";
-            case NEUTRAL -> "😐";
-            case THOUGHTFUL -> "🤔";
-            case CREATIVE -> "🎨";
-            case INSPIRED -> "✨";
-            case CURIOUS -> "🔍";
-            case CONFUSED -> "😕";
-            case FRUSTRATED -> "😤";
+    // 创建心情图标（FontAwesome）
+    private Node createMindMapMoodIcon(Idea.Mood mood) {
+        FontAwesomeSolid icon = switch (mood) {
+            case HAPPY -> FontAwesomeSolid.SMILE;
+            case EXCITED -> FontAwesomeSolid.GRIN_STARS;
+            case CALM -> FontAwesomeSolid.SMILE_BEAM;
+            case NEUTRAL -> FontAwesomeSolid.MEH;
+            case THOUGHTFUL -> FontAwesomeSolid.COMMENT;
+            case CREATIVE -> FontAwesomeSolid.PALETTE;
+            case INSPIRED -> FontAwesomeSolid.STAR;
+            case CURIOUS -> FontAwesomeSolid.SEARCH;
+            case CONFUSED -> FontAwesomeSolid.QUESTION;
+            case FRUSTRATED -> FontAwesomeSolid.FROWN;
         };
+        FontIcon fi = new FontIcon(icon);
+        fi.setIconSize(14);
+        fi.setIconColor(javafx.scene.paint.Color.web("#FFB300"));
+        return fi;
     }
 
     // 设置卡片拖拽到思维导图

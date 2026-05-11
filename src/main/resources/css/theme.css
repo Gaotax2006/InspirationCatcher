@@ -68,8 +68,8 @@
 .text-field, .text-area {
     -fx-background-color: -fx-bg;
     -fx-border-color: -fx-border-light;
-    -fx-border-radius: -fx-radius-sm;
-    -fx-background-radius: -fx-radius-sm;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
     -fx-padding: 6 10;
     -fx-font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
 }
@@ -85,14 +85,14 @@
 
 .text-area .content {
     -fx-background-color: -fx-bg;
-    -fx-background-radius: -fx-radius-sm;
+    -fx-background-radius: 4px;
 }
 
 .combo-box {
     -fx-background-color: -fx-bg;
     -fx-border-color: -fx-border-light;
-    -fx-border-radius: -fx-radius-sm;
-    -fx-background-radius: -fx-radius-sm;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
 }
 
 .combo-box:focused {
@@ -117,7 +117,7 @@
 
 .scroll-bar .thumb {
     -fx-background-color: -fx-border;
-    -fx-background-radius: -fx-radius-sm;
+    -fx-background-radius: 4px;
 }
 
 .scroll-bar .thumb:hover {
