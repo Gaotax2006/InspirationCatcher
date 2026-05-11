@@ -515,6 +515,22 @@ public class MindMapView extends Pane {
         }
         gc.restore();
     }
+    // 获取连接类型的颜色
+    private Color getConnectionColor(MindMapConnection conn) {
+        if (conn.getColor() != null && !conn.getColor().equals("#666666")) {
+            return Color.web(conn.getColor());
+        }
+        return switch (conn.getConnectionType()) {
+            case RELATED -> Color.web("#6C8EBF");       // 蓝色
+            case DEPENDS_ON -> Color.web("#E67E22");    // 橙色
+            case EXTENDS -> Color.web("#27AE60");       // 绿色
+            case CONTRADICTS -> Color.web("#E74C3C");   // 红色
+            case ANALOGY -> Color.web("#8E44AD");       // 紫色
+            case CAUSAL -> Color.web("#2C3E50");        // 深灰
+            case USES -> Color.web("#16A085");          // 青绿
+        };
+    }
+
     // 绘制单个连接
     private void drawConnection(GraphicsContext gc, MindMapConnection conn,
                                 MindMapNode source, MindMapNode target) {
@@ -523,8 +539,9 @@ public class MindMapView extends Pane {
         double startY = source.getY() + source.getHeight() / 2;
         double endX = target.getX() + target.getWidth() / 2;
         double endY = target.getY() + target.getHeight() / 2;
-        // 设置线条样式
-        gc.setStroke(Color.web(conn.getColor() != null ? conn.getColor() : "#666666"));
+        // 设置线条颜色（根据连接类型）
+        Color lineColor = getConnectionColor(conn);
+        gc.setStroke(lineColor);
         gc.setLineWidth(conn.getWidth());
         // 设置线条样式
         switch (conn.getStyle()) {
@@ -539,10 +556,10 @@ public class MindMapView extends Pane {
         gc.bezierCurveTo(controlX, startY, controlX, endY, endX, endY);
         gc.stroke();
         // 绘制箭头
-        drawArrow(gc, startX, startY, endX, endY);
+        drawArrow(gc, startX, startY, endX, endY, lineColor);
     }
     // 绘制箭头
-    private void drawArrow(GraphicsContext gc, double startX, double startY, double endX, double endY) {
+    private void drawArrow(GraphicsContext gc, double startX, double startY, double endX, double endY, Color color) {
         double angle = Math.atan2(endY - startY, endX - startX);
         double arrowLength = 10;
         // 计算箭头点
@@ -551,7 +568,7 @@ public class MindMapView extends Pane {
         double arrowX2 = endX - arrowLength * Math.cos(angle + Math.PI / 6);
         double arrowY2 = endY - arrowLength * Math.sin(angle + Math.PI / 6);
         // 绘制箭头
-        gc.setFill(Color.web("#666666"));
+        gc.setFill(color);
         gc.beginPath();
         gc.moveTo(endX, endY);
         gc.lineTo(arrowX1, arrowY1);
@@ -650,13 +667,17 @@ public class MindMapView extends Pane {
             }
         }
 
-        // 高亮当前选中节点
+        // 高亮当前选中节点（放大+发光边框）
         Node selectedUINode = nodeUIMap.get(selectedNode);
         if (selectedUINode instanceof Group group) {
             group.setScaleX(1.1);
             group.setScaleY(1.1);
-            // 添加高亮边框
-            if (group.getChildren().getFirst() instanceof Rectangle rect) rect.setStrokeWidth(3);
+            // 添加高亮边框和阴影
+            if (group.getChildren().getFirst() instanceof Rectangle rect) {
+                rect.setStrokeWidth(3);
+                rect.setStroke(Color.web("#4A90E2"));
+                rect.setEffect(new javafx.scene.effect.DropShadow(12, Color.rgb(74, 144, 226, 0.4)));
+            }
         }
     }
     // 设置双击处理器

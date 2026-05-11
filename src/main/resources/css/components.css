@@ -239,6 +239,10 @@
     -fx-padding: 0 1;
 }
 
+.split-pane:horizontal > .split-pane-divider:hover {
+    -fx-background-color: -fx-primary-light;
+}
+
 .split-pane:vertical > .split-pane-divider {
     -fx-background-color: -fx-border-light;
     -fx-padding: 1 0;
@@ -275,12 +279,35 @@
     -fx-background-radius: -fx-radius-md;
 }
 
+/* ---------- TextArea for AI suggestions ---------- */
+.text-area-ai {
+    -fx-background-color: -fx-bg;
+    -fx-border-color: -fx-border-light;
+    -fx-border-radius: -fx-radius-md;
+    -fx-background-radius: -fx-radius-md;
+    -fx-padding: 10;
+    -fx-font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-text-primary;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 4, 0, 0, 2);
+}
+
+.text-area-ai:focused {
+    -fx-border-color: -fx-primary-light;
+}
+
+.text-area-ai .content {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+}
+
 /* ---------- Section Title ---------- */
 .section-title {
     -fx-font-weight: bold;
-    -fx-font-size: 14px;
+    -fx-font-size: 13px;
     -fx-text-fill: -fx-text-primary;
-    -fx-padding: 8 0 4 0;
+    -fx-padding: 6 0 2 0;
 }
 
 /* ---------- Empty State ---------- */

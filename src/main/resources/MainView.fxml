@@ -33,7 +33,7 @@
                     <MenuItem text="减小字体" onAction="#handleDecreaseFont" accelerator="Ctrl+MINUS"/>
                     <MenuItem text="重置字体" onAction="#handleResetFont"/>
                     <SeparatorMenuItem/>
-                    <CheckMenuItem text="状态栏" selected="true" disabled="true"/>
+                    <CheckMenuItem text="状态栏" selected="true" disable="true"/>
                 </Menu>
                 <Menu text="帮助">
                     <MenuItem text="关于灵感捕手" disable="true"/>
@@ -43,7 +43,7 @@
             <!-- 工具栏 -->
             <HBox spacing="8" styleClass="tool-bar" stylesheets="@css/main.css">
                 <Label text="项目:"/>
-                <ComboBox fx:id="projectSelector" prefWidth="180"/>
+                <ComboBox fx:id="projectSelector" prefWidth="180" styleClass="combo-box-project"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="测试 AI" onAction="#testAIConnection" styleClass="button-warning"/>
                 <Separator orientation="VERTICAL"/>
@@ -210,7 +210,7 @@
                                 <Region HBox.hgrow="ALWAYS"/>
                                 <Button text="生成" onAction="#generateAISuggestions" styleClass="button-warning"/>
                             </HBox>
-                            <TextArea fx:id="aiSuggestions" wrapText="true" VBox.vgrow="ALWAYS" editable="false"/>
+                            <TextArea fx:id="aiSuggestions" wrapText="true" VBox.vgrow="ALWAYS" editable="false" styleClass="text-area-ai"/>
                         </VBox>
                     </Tab>
                     <Tab text="相关">
