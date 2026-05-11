@@ -126,16 +126,14 @@ public class IdeaManager {
             } else logger.error("数据库删除灵感失败: ID={}", idea.getId());
         } catch (Exception e) {logger.error("删除灵感失败: {}", idea.getId(), e);}
     }
-    // 更新内存中标签的使用计数
+    // 更新标签在内存中的使用计数
     private void updateTagUsageCountsInMemory(List<Tag> tags, int delta) {
         if (tags == null || tags.isEmpty()) return;
-        // 在内存列表中查找对应的标签并更新
-        for (Tag tag : tags) for (Idea idea : ideaList) for (Tag ideaTag : idea.getTags())
-            if (ideaTag.getId() != null && ideaTag.getId().equals(tag.getId())) {// 更新计数
-                int currentCount = ideaTag.getUsageCount();
-                ideaTag.setUsageCount(Math.max(0, currentCount + delta));
-                break;
-            }
+        for (Tag tag : tags) {
+            if (tag.getId() == null) continue;
+            int currentCount = tag.getUsageCount();
+            tag.setUsageCount(Math.max(0, currentCount + delta));
+        }
     }
     public int cleanUnusedTags() {return cleanUnusedTags(false);}
     public int cleanUnusedTags(boolean dryRun) {

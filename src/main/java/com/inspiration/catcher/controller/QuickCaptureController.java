@@ -1,9 +1,9 @@
 package com.inspiration.catcher.controller;
 
+import com.inspiration.catcher.manager.IdeaManager;
 import com.inspiration.catcher.model.Idea;
 import com.inspiration.catcher.model.Project;
 import com.inspiration.catcher.model.Tag;
-import com.inspiration.catcher.service.IdeaService;
 import com.inspiration.catcher.manager.TagManager;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 
 public class QuickCaptureController implements Initializable {
     private static final Logger logger = LoggerFactory.getLogger(QuickCaptureController.class);
-    private final IdeaService ideaService = new IdeaService();
+    private IdeaManager ideaManager;
     private final TagManager tagManager = new TagManager();
     private final Set<String> tags = new HashSet<>();
     // 回调函数
@@ -152,7 +152,7 @@ public class QuickCaptureController implements Initializable {
                 if (tag != null) idea.addTag(tag);
             }
             // 保存到数据库
-            Idea savedIdea = ideaService.saveIdea(idea);
+            Idea savedIdea = ideaManager != null ? ideaManager.saveIdea(idea) : null;
             if (savedIdea == null || savedIdea.getId() == null) {
                 showAlert("保存失败", "无法保存灵感到数据库");return;}
             logger.info("灵感已保存: ID={}, 标题={}", savedIdea.getId(), savedIdea.getTitle());
@@ -204,6 +204,9 @@ public class QuickCaptureController implements Initializable {
     public void setOnWindowClosedCallback(Runnable callback) {
         this.onWindowClosedCallback = callback;
     }
+    public void setIdeaManager(IdeaManager ideaManager) {
+        this.ideaManager = ideaManager;
+    }
     // 添加静态方法：显示快速捕捉窗口
     public static void showQuickCaptureWindow(MainController mainController) {
         logger.info("显示快速捕捉窗口");
@@ -228,14 +231,10 @@ public class QuickCaptureController implements Initializable {
             QuickCaptureController controller = loader.getController();
             // 设置回调
             if (mainController != null) {
+                controller.setIdeaManager(mainController.getIdeaManager());
                 controller.setOnSaveSuccessCallback(savedIdea -> {
-                    // 确保设置项目ID
-                    Project currentProject = mainController.getProjectManager().getCurrentProject();
-                    if (currentProject != null && savedIdea.getProjectId() == null)
-                        savedIdea.setProjectId(currentProject.getId());
-                    // 刷新表格数据
+                    // IdeaManager.saveIdea 已处理列表刷新，只需刷新 UI
                     Platform.runLater(() -> {
-                        mainController.getIdeaManager().loadAllIdeas();
                         mainController.getIdeaTableView().refresh();
                         mainController.refreshTableData();
                         // 更新状态栏

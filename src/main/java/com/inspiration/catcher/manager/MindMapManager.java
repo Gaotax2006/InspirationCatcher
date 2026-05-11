@@ -416,15 +416,31 @@ public class MindMapManager {
     public MindMapNode findNodeById(int nodeId) {return nodeMap.get(nodeId);}
     // 更新连接标签
     public boolean updateConnectionLabel(int connectionId, String label) {
-        // 需要先在 MindMapConnectionDao 中实现 updateConnection 方法
-        logger.info("更新连接标签: {} -> {}", connectionId, label);
-        return true; // 占位实现
+        for (MindMapConnection conn : connections) {
+            if (conn.getId() == connectionId) {
+                conn.setLabel(label);
+                boolean saved = connectionDao.update(conn);
+                logger.info("更新连接标签: {} -> {}, 持久化: {}", connectionId, label, saved);
+                if (onDataChangedListener != null) onDataChangedListener.run();
+                return saved;
+            }
+        }
+        return false;
     }
     // 更新连接类型
     public boolean updateConnectionType(int connectionId,
                                         MindMapConnection.ConnectionType newType) {
-        logger.info("更新连接类型: {} -> {}", connectionId, newType);
-        return true; // 占位实现
+        for (MindMapConnection conn : connections) {
+            if (conn.getId() == connectionId) {
+                conn.setConnectionType(newType);
+                conn.setLabel(newType.getDisplayName());
+                boolean saved = connectionDao.update(conn);
+                logger.info("更新连接类型: {} -> {}, 持久化: {}", connectionId, newType, saved);
+                if (onDataChangedListener != null) onDataChangedListener.run();
+                return saved;
+            }
+        }
+        return false;
     }
     public Project getCurrentProject() {return currentProject.get();}
 }

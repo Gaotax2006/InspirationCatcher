@@ -26,9 +26,10 @@ public class IdeaDao {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Idea idea = resultSetToIdea(rs);
-                idea.setTags(getTagsForIdea(idea.getId()));
                 ideas.add(idea);
             }
+            // 批量加载标签（替代N+1）
+            batchLoadTags(ideas);
         } catch (SQLException e) {logger.error("查找灵感失败", e);}
         return ideas;
     }
@@ -49,27 +50,17 @@ public class IdeaDao {
     }
     public List<Idea> findByProjectId(Integer projectId) {
         List<Idea> ideas = new ArrayList<>();
-        Connection conn;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = DatabaseManager.getConnection();
-            String sql = "SELECT * FROM ideas WHERE project_id = ? ORDER BY created_at DESC";
-            pstmt = conn.prepareStatement(sql);
+        String sql = "SELECT * FROM ideas WHERE project_id = ? ORDER BY created_at DESC";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, projectId);
-            rs = pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) ideas.add(resultSetToIdea(rs));
+            // 批量加载标签（替代N+1）
+            batchLoadTags(ideas);
         } catch (SQLException e) {
             logger.error("根据项目ID查找灵感失败", e);
-            e.printStackTrace();
-        } finally {
-            // 手动关闭资源
-            try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-            try { if (pstmt != null) pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-            // 注意：不要关闭连接，连接池或DatabaseManager会管理
         }
-        // 现在为每个灵感获取标签
-        for (Idea idea : ideas) idea.setTags(getTagsForIdea(idea.getId()));
         return ideas;
     }
     // 插入新灵感
@@ -140,6 +131,7 @@ public class IdeaDao {
         String deleteSql = "DELETE FROM idea_tags WHERE idea_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(deleteSql)) {
             pstmt.setInt(1, idea.getId());
+            pstmt.executeUpdate();
         } catch (SQLException e) {logger.error("删除旧标签关联失败", e);}
         // 插入新的标签关联
         String insertSql = "INSERT OR IGNORE INTO idea_tags (idea_id, tag_id) VALUES (?, ?)";
@@ -329,6 +321,46 @@ public class IdeaDao {
             throw new SQLException("转换数据失败: " + e.getMessage());
         }
     }
+    // 批量加载标签（替代N+1查询）
+    private void batchLoadTags(List<Idea> ideas) {
+        if (ideas == null || ideas.isEmpty()) return;
+        List<Integer> ids = new ArrayList<>();
+        for (Idea idea : ideas) if (idea.getId() != null) ids.add(idea.getId());
+        if (ids.isEmpty()) return;
+        // 构建IN子句
+        StringBuilder sql = new StringBuilder(
+                "SELECT it.idea_id, t.id, t.name, t.color FROM idea_tags it JOIN tags t ON t.id = it.tag_id WHERE it.idea_id IN (");
+        for (int i = 0; i < ids.size(); i++) {
+            if (i > 0) sql.append(",");
+            sql.append("?");
+        }
+        sql.append(") ORDER BY it.idea_id");
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < ids.size(); i++) pstmt.setInt(i + 1, ids.get(i));
+            ResultSet rs = pstmt.executeQuery();
+            // 按 idea_id 分组
+            java.util.Map<Integer, List<Tag>> tagMap = new java.util.HashMap<>();
+            while (rs.next()) {
+                int ideaId = rs.getInt("idea_id");
+                Tag tag = new Tag();
+                tag.setId(rs.getInt("id"));
+                tag.setName(rs.getString("name"));
+                tag.setColor(rs.getString("color"));
+                tagMap.computeIfAbsent(ideaId, _ -> new ArrayList<>()).add(tag);
+            }
+            // 为每个 Idea 设置标签
+            for (Idea idea : ideas) {
+                if (idea.getId() != null) {
+                    List<Tag> tags = tagMap.get(idea.getId());
+                    if (tags != null) idea.setTags(tags);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("批量加载标签失败", e);
+        }
+    }
+
     // 获取灵感的标签
     private List<Tag> getTagsForIdea(int ideaId) {
         List<Tag> tags = new ArrayList<>();
@@ -372,9 +404,9 @@ public class IdeaDao {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Idea idea = resultSetToIdea(rs);
-                idea.setTags(getTagsForIdea(idea.getId()));
                 results.add(idea);
             }
+            batchLoadTags(results);
         } catch (SQLException e) {logger.error("搜索灵感失败", e);}
         return results;
     }

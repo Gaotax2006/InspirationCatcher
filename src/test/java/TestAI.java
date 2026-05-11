@@ -9,7 +9,11 @@ public class TestAI {
     }
 
     private static void testDeepSeekConnection() {
-        String apiKey = "sk-66e4a64d330f45baa9b6f24c39ef68ee"; // 在这里填入你的API密钥
+        String apiKey = System.getenv("DEEPSEEK_API_KEY");
+        if (apiKey == null || apiKey.isEmpty()) {
+            System.out.println("请设置环境变量 DEEPSEEK_API_KEY");
+            return;
+        }
 
         try {
             URL url = new URL("https://api.deepseek.com/v1/chat/completions");

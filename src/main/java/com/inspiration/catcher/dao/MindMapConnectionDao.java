@@ -165,4 +165,25 @@ public class MindMapConnectionDao {
         }
         return 0;
     }
+
+    // 更新连接（标签、类型、颜色等）
+    public boolean update(MindMapConnection connection) {
+        if (connection == null || connection.getId() == null) return false;
+        String sql = "UPDATE mindmap_connections SET connection_type = ?, label = ?, color = ?, " +
+                "width = ?, style = ?, strength = ? WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, connection.getConnectionType().name());
+            pstmt.setString(2, connection.getLabel());
+            pstmt.setString(3, connection.getColor());
+            pstmt.setInt(4, connection.getWidth());
+            pstmt.setString(5, connection.getStyle().name());
+            pstmt.setDouble(6, connection.getStrength());
+            pstmt.setInt(7, connection.getId());
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            logger.error("更新连接失败: id={}", connection.getId(), e);
+        }
+        return false;
+    }
 }

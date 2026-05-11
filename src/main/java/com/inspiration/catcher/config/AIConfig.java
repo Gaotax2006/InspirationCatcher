@@ -76,7 +76,7 @@ public class AIConfig {
     }
 
     public static String getApiKey() {
-        return props.getProperty("ai.api.key", "sk-66e4a64d330f45baa9b6f24c39ef68ee");
+        return props.getProperty("ai.api.key", "");
     }
 
     public static String getModel() {
