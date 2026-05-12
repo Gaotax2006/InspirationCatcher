@@ -916,21 +916,20 @@ public class MindMapView extends Pane {
             return saveImageWithJavaFX(image, file);
         } catch (Exception e) {logger.error("保存图片失败", e);return false;}
     }
-    // 使用 Java 标准库保存图片（不依赖 SwingFXUtils）
+    // Save WritableImage to PNG via bulk pixel transfer
     private boolean saveImageWithJavaFX(WritableImage fxImage, File file) {
         try {
-            // 获取图片尺寸
             int width = (int) fxImage.getWidth();
             int height = (int) fxImage.getHeight();
-            // 创建 BufferedImage
             java.awt.image.BufferedImage bufferedImage = new java.awt.image.BufferedImage(
                     width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB
             );
-            // 使用 PixelReader 读取每个像素
+            // Bulk pixel read/write (avoids O(width*height) loop overhead)
             PixelReader pixelReader = fxImage.getPixelReader();
-            for (int y = 0; y < height; y++) for (int x = 0; x < width; x++)
-                    bufferedImage.setRGB(x, y, pixelReader.getArgb(x, y));
-            // 保存为 PNG
+            int[] pixels = new int[width * height];
+            pixelReader.getPixels(0, 0, width, height,
+                    javafx.scene.image.PixelFormat.getIntArgbInstance(), pixels, 0, width);
+            bufferedImage.setRGB(0, 0, width, height, pixels, 0, width);
             javax.imageio.ImageIO.write(bufferedImage, "png", file);
             return true;
         } catch (Exception e) {logger.error("保存图片文件失败", e);return false;}

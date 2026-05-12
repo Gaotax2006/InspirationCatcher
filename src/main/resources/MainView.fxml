@@ -169,6 +169,11 @@
                                 <Button text="删除" onAction="#handleDeleteIdea"
                                         styleClass="button-danger button-sm"/>
                                 <Separator orientation="VERTICAL"/>
+                                <Button text="导出 JSON" onAction="#handleExportJson"
+                                        styleClass="button-ghost button-sm"/>
+                                <Button text="导出 MD" onAction="#handleExportMarkdown"
+                                        styleClass="button-ghost button-sm"/>
+                                <Separator orientation="VERTICAL"/>
                                 <Button onAction="#handleCleanUnusedTags" styleClass="button-icon"
                                         prefWidth="28" prefHeight="28">
                                     <graphic><FontIcon iconLiteral="fth-tag" iconSize="14"/></graphic>

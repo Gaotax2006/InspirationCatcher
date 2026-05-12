@@ -21,6 +21,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -489,6 +490,52 @@ public class MainController implements Initializable {
         if (outline.isEmpty()) { statusManager.showAlert("No headings found"); return; }
         markdownEditor.setText("## Outline\n\n" + outline + "\n---\n\n" + content);
         statusLabel.setText("Outline generated"); handleSave();
+    }
+
+    // Export
+    @FXML private void handleExportJson() {
+        try {
+            List<Idea> ideas = new ArrayList<>(ideaTableView.getItems());
+            if (ideas.isEmpty()) { statusManager.showAlert("No ideas to export"); return; }
+            FileChooser fc = new FileChooser();
+            fc.setTitle("Export as JSON");
+            fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
+            fc.setInitialFileName("ideas-export.json");
+            File file = fc.showSaveDialog(ideaTableView.getScene().getWindow());
+            if (file == null) return;
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            mapper.writerWithDefaultPrettyPrinter().writeValue(file, ideas);
+            statusLabel.setText("Exported " + ideas.size() + " ideas to JSON");
+        } catch (Exception e) { logger.error("Export failed", e); statusManager.showError("Export failed", e.getMessage()); }
+    }
+
+    @FXML private void handleExportMarkdown() {
+        try {
+            List<Idea> ideas = new ArrayList<>(ideaTableView.getItems());
+            if (ideas.isEmpty()) { statusManager.showAlert("No ideas to export"); return; }
+            FileChooser fc = new FileChooser();
+            fc.setTitle("Export as Markdown");
+            fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Markdown", "*.md"));
+            fc.setInitialFileName("ideas-export.md");
+            File file = fc.showSaveDialog(ideaTableView.getScene().getWindow());
+            if (file == null) return;
+            StringBuilder sb = new StringBuilder("# Exported Ideas\n\n");
+            for (Idea idea : ideas) {
+                sb.append("## ").append(idea.getTitle() != null ? idea.getTitle() : "Untitled").append("\n\n");
+                sb.append("**Type:** ").append(idea.getType().getDisplayName()).append("  \n");
+                sb.append("**Importance:** ").append("★".repeat(idea.getImportance())).append("☆".repeat(5 - idea.getImportance())).append("  \n");
+                sb.append("**Mood:** ").append(idea.getMood().getDisplayName()).append("  \n");
+                sb.append("**Created:** ").append(idea.getCreatedAt()).append("  \n");
+                if (!idea.getTags().isEmpty()) {
+                    sb.append("**Tags:** ");
+                    for (Tag t : idea.getTags()) sb.append("#").append(t.getName()).append(" ");
+                    sb.append("  \n");
+                }
+                sb.append("\n").append(idea.getContent()).append("\n\n---\n\n");
+            }
+            java.nio.file.Files.writeString(file.toPath(), sb.toString());
+            statusLabel.setText("Exported " + ideas.size() + " ideas to Markdown");
+        } catch (Exception e) { logger.error("Export failed", e); statusManager.showError("Export failed", e.getMessage()); }
     }
 
     // Tag management
