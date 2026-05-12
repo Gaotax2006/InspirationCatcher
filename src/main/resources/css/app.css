@@ -431,21 +431,21 @@
     -fx-border-width: 0 0 1px 0;
     -fx-padding: 8 6;
 }
-.table-view .column-header .label { -fx-font-weight: 600; -fx-font-size: 11px; -fx-text-fill: -fx-text-tertiary; }
+.table-view .column-header .label { -fx-font-weight: 700; -fx-font-size: 12px; -fx-text-fill: -fx-text-secondary; -fx-underline: true; }
 .table-view .filler { -fx-background-color: transparent; }
 .table-row-cell {
     -fx-background-color: transparent;
     -fx-border-color: transparent transparent -fx-border-subtle transparent;
     -fx-border-width: 0 0 1px 0;
-    -fx-padding: 2 0;
-    -fx-cell-size: 38px;
+    -fx-padding: 3 0;
+    -fx-cell-size: 40px;
     -fx-text-fill: -fx-text-primary;
 }
-.table-row-cell:hover { -fx-background-color: -fx-bg-hover; }
+.table-row-cell:hover { -fx-background-color: #F0ECE6; }
 .table-row-cell:selected { -fx-background-color: -fx-primary-bg; }
-.table-row-cell:selected .text { -fx-fill: -fx-primary; }
+.table-row-cell:selected .text { -fx-fill: -fx-primary-dark; -fx-font-weight: 600; }
 .table-row-cell:empty { -fx-border-color: transparent; }
-.table-view .table-cell { -fx-padding: 4 6; -fx-font-size: 13px; -fx-text-fill: -fx-text-primary; -fx-border-color: transparent; }
+.table-view .table-cell { -fx-padding: 5 8; -fx-font-size: 13px; -fx-text-fill: -fx-text-primary; -fx-border-color: transparent; }
 
 /* ==============================================================
    13. AI & CHAT
