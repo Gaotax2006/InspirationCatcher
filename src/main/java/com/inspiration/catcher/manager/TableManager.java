@@ -17,7 +17,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,7 +145,7 @@ public class TableManager {
         });
         // 重要性列 - 使用PropertyValueFactory
         importanceColumn.setCellValueFactory(new PropertyValueFactory<>("importance"));
-        // 设置重要性列的单元格工厂，显示为星级
+        // 设置重要性列的单元格工厂，显示为星级（Ikonli图标）
         importanceColumn.setCellFactory(_ -> new TableCell<>() {
             @Override
             protected void updateItem(Integer importance, boolean empty) {
@@ -151,14 +154,16 @@ public class TableManager {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    // 创建星级显示
                     HBox stars = new HBox(2);
                     for (int i = 1; i <= 5; i++) {
-                        Label star = new Label(i <= importance ? "★" : "☆");
-                        star.setStyle(i <= importance ?
-                                "-fx-font-size: 14px;" :
-                                "-fx-text-fill: #CCCCCC; ");
-                        stars.getChildren().add(star);
+                        FontIcon starIcon = new FontIcon(FontAwesomeSolid.STAR);
+                        starIcon.setIconSize(12);
+                        if (i <= importance) {
+                            starIcon.setIconColor(Color.web("#C4843C"));
+                        } else {
+                            starIcon.setIconColor(Color.web("#E2DDD4"));
+                        }
+                        stars.getChildren().add(starIcon);
                     }
                     setGraphic(stars);
                     setText(null);

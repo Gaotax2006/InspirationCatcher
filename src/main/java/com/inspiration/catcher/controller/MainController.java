@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -100,7 +101,12 @@ public class MainController implements Initializable {
             tableManager.setupTable();
             tableManager.loadDataToTable();
             editorController.setupEditor();
-            fontManager.updateAllFonts(this);
+            // Connect FontManager to scene for root-level CSS font scaling
+            javafx.application.Platform.runLater(() -> {
+                if (projectSelector != null && projectSelector.getScene() != null) {
+                    fontManager.setTargetScene(projectSelector.getScene());
+                }
+            });
             loadProjectData(projectManager.getCurrentProject());
             initializeMindMap();
             projectManager.currentProjectProperty().addListener((_, _, newProject) -> {
@@ -211,7 +217,7 @@ public class MainController implements Initializable {
                     ideaTableView, mainTabPane, ideaManager,
                     statusManager, () -> handleSave()
             );
-            fontManager = new FontManager(configManager, this);
+            fontManager = new FontManager(configManager);
             shortcutManager = new ShortcutManager(this);
             tableManager.setupTable();
             tableManager.loadDataToTable();

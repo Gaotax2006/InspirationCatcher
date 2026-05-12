@@ -13,8 +13,8 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,28 +103,146 @@ public class AIPanelController {
         )).start();
     }
 
+    /** Multi-section settings dialog */
     public void showSettings() {
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle("AI设置");
-        dialog.setHeaderText("配置AI API密钥");
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("设置");
+        dialog.setHeaderText("灵感捕手 — 偏好设置");
+
+        TabPane tabs = new TabPane();
+        tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+
+        // Tab 1: AI Settings
+        tabs.getTabs().add(createAISettingsTab());
+        // Tab 2: General
+        tabs.getTabs().add(createGeneralSettingsTab());
+        // Tab 3: About
+        tabs.getTabs().add(createAboutTab());
+
+        dialog.getDialogPane().setContent(tabs);
+        dialog.getDialogPane().setPrefSize(520, 400);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.showAndWait();
+    }
+
+    private Tab createAISettingsTab() {
+        VBox content = new VBox(12);
+        content.setPadding(new Insets(20));
+
         GridPane grid = new GridPane();
         grid.setHgap(10); grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-        TextField apiKeyField = new TextField();
-        apiKeyField.setPromptText("输入DeepSeek API密钥");
-        apiKeyField.setText(AIConfig.getApiKey());
-        Label infoLabel = new Label("获取API密钥：https://platform.deepseek.com/api_keys");
-        infoLabel.setStyle("-fx-text-fill: #666; -fx-font-size: 11px;");
+
+        // API Key
         grid.add(new Label("API密钥:"), 0, 0);
+        PasswordField apiKeyField = new PasswordField();
+        apiKeyField.setText(AIConfig.getApiKey());
+        apiKeyField.setPrefWidth(300);
         grid.add(apiKeyField, 1, 0);
-        grid.add(infoLabel, 1, 1);
-        dialog.getDialogPane().setContent(grid);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        dialog.setResultConverter(buttonType -> buttonType == ButtonType.OK ? apiKeyField.getText() : null);
-        dialog.showAndWait().ifPresent(apiKey -> {
-            saveApiKey(apiKey);
-            statusLabel.setText("API密钥已保存");
+
+        // API URL
+        grid.add(new Label("API地址:"), 0, 1);
+        TextField urlField = new TextField(AIConfig.getApiUrl());
+        urlField.setPrefWidth(300);
+        grid.add(urlField, 1, 1);
+
+        // Model
+        grid.add(new Label("模型:"), 0, 2);
+        ComboBox<String> modelCombo = new ComboBox<>();
+        modelCombo.getItems().addAll("deepseek-chat", "deepseek-reasoner", "gpt-4o", "gpt-4o-mini");
+        modelCombo.setValue(AIConfig.getModel());
+        modelCombo.setEditable(true);
+        grid.add(modelCombo, 1, 2);
+
+        // Max Tokens
+        grid.add(new Label("最大Token:"), 0, 3);
+        Spinner<Integer> tokensSpinner = new Spinner<>(256, 8192, AIConfig.getMaxTokens(), 256);
+        tokensSpinner.setEditable(true);
+        grid.add(tokensSpinner, 1, 3);
+
+        // Temperature
+        grid.add(new Label("温度(T):"), 0, 4);
+        Slider tempSlider = new Slider(0, 2, AIConfig.getTemperature());
+        tempSlider.setShowTickLabels(true);
+        tempSlider.setShowTickMarks(true);
+        tempSlider.setMajorTickUnit(0.5);
+        tempSlider.setBlockIncrement(0.1);
+        Label tempLabel = new Label(String.format("%.1f", AIConfig.getTemperature()));
+        tempSlider.valueProperty().addListener((_, _, v) -> tempLabel.setText(String.format("%.1f", v)));
+        HBox tempBox = new HBox(10, tempSlider, tempLabel);
+        HBox.setHgrow(tempSlider, Priority.ALWAYS);
+        grid.add(tempBox, 1, 4);
+
+        // Fallback toggle
+        grid.add(new Label("离线备用:"), 0, 5);
+        CheckBox fallbackCheck = new CheckBox("AI连接失败时使用离线模板");
+        fallbackCheck.setSelected(AIConfig.isFallbackEnabled());
+        grid.add(fallbackCheck, 1, 5);
+
+        // Test & Save buttons
+        HBox buttons = new HBox(10);
+        Button testBtn = new Button("测试连接");
+        Button saveBtn = new Button("保存");
+        saveBtn.setDefaultButton(true);
+        buttons.getChildren().addAll(testBtn, saveBtn);
+
+        testBtn.setOnAction(_ -> {
+            statusLabel.setText("测试连接...");
+            new Thread(() -> {
+                boolean ok = aiService.testConnection();
+                Platform.runLater(() -> statusLabel.setText(ok ? "✅ 连接成功" : "❌ 连接失败"));
+            }).start();
         });
+
+        saveBtn.setOnAction(_ -> {
+            Properties props = new Properties();
+            props.setProperty("ai.api.key", apiKeyField.getText());
+            props.setProperty("ai.api.url", urlField.getText());
+            props.setProperty("ai.model", modelCombo.getValue());
+            props.setProperty("ai.max_tokens", String.valueOf(tokensSpinner.getValue()));
+            props.setProperty("ai.temperature", String.format("%.1f", tempSlider.getValue()));
+            props.setProperty("ai.fallback.enabled", String.valueOf(fallbackCheck.isSelected()));
+            saveProperties(props);
+            statusLabel.setText("设置已保存");
+        });
+
+        content.getChildren().addAll(grid, buttons);
+        Tab tab = new Tab("AI 设置");
+        tab.setContent(content);
+        return tab;
+    }
+
+    private Tab createGeneralSettingsTab() {
+        VBox content = new VBox(12);
+        content.setPadding(new Insets(20));
+        content.getChildren().add(new Label("通用设置（开发中）"));
+        content.getChildren().add(new Label("• 默认字体大小可通过工具栏 A− / A / A+ 调节"));
+        content.getChildren().add(new Label("• 默认项目在侧边栏顶部选择器切换"));
+        Tab tab = new Tab("通用");
+        tab.setContent(content);
+        return tab;
+    }
+
+    private Tab createAboutTab() {
+        VBox content = new VBox(8);
+        content.setPadding(new Insets(20));
+        content.getChildren().add(new Label("灵感捕手 (Inspiration Catcher)"));
+        content.getChildren().add(new Label("版本 1.0.0"));
+        content.getChildren().add(new Label("技术栈: JavaFX 21 + AtlantaFX + SQLite + DeepSeek AI"));
+        content.getChildren().add(new Label("作者: 高天翔"));
+        Tab tab = new Tab("关于");
+        tab.setContent(content);
+        return tab;
+    }
+
+    private void saveProperties(Properties props) {
+        File configFile = new File(System.getProperty("user.home") + "/.inspiration-catcher/ai.properties");
+        configFile.getParentFile().mkdirs();
+        try (OutputStream output = new FileOutputStream(configFile)) {
+            props.store(output, "AI Configuration for Inspiration Catcher");
+        } catch (IOException e) {
+            logger.error("保存设置失败", e);
+            statusManager.showAlert("保存失败: " + e.getMessage());
+        }
     }
 
     // === Private helpers ===
@@ -166,13 +284,13 @@ public class AIPanelController {
         ButtonType cancelButton = new ButtonType("取消", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(sendButton, cancelButton);
         dialog.setResultConverter(buttonType -> {
-            if (buttonType == sendButton) generateWithCustomPrompt(idea, promptEditor.getText());
+            if (buttonType == sendButton) generateCustomPromptStreaming(idea, promptEditor.getText());
             return buttonType;
         });
         dialog.showAndWait();
     }
 
-    private void generateWithCustomPrompt(Idea idea, String customPrompt) {
+    private void generateCustomPromptStreaming(Idea idea, String customPrompt) {
         statusLabel.setText("🤖 AI生成中...");
         aiSuggestions.setText("");
         disableAIButtons();
@@ -190,17 +308,6 @@ public class AIPanelController {
                 synchronized (aiLock) { isAIGenerating = false; }
             })
         );
-    }
-
-    private void displayAIResults(Idea idea, String suggestions, String usedPrompt) {
-        aiSuggestions.setText(suggestions);
-        statusLabel.setText("AI扩展生成完成");
-        String metaInfo = String.format("\n\n---\n\n*提示词定制信息*\n- 灵感ID: %d\n- 生成时间: %s\n- 提示词长度: %d字符",
-                idea.getId() != null ? idea.getId() : 0,
-                java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                usedPrompt.length());
-        aiSuggestions.appendText(metaInfo);
-        addAIResultActions(idea, usedPrompt);
     }
 
     private void addAIResultActions(Idea idea, String usedPrompt) {
@@ -271,19 +378,6 @@ public class AIPanelController {
             content.putString(aiContent);
             Clipboard.getSystemClipboard().setContent(content);
             statusLabel.setText("AI建议已复制到剪贴板");
-        }
-    }
-
-    private void saveApiKey(String apiKey) {
-        try {
-            Properties props = new Properties();
-            props.setProperty("ai.api.key", apiKey);
-            File configFile = new File(System.getProperty("user.home") + "/.inspiration-catcher/ai.properties");
-            configFile.getParentFile().mkdirs();
-            try (OutputStream output = new FileOutputStream(configFile)) { props.store(output, "AI Configuration"); }
-        } catch (IOException e) {
-            logger.error("保存API密钥失败", e);
-            statusManager.showAlert("保存失败\n\n无法保存API密钥: " + e.getMessage());
         }
     }
 
