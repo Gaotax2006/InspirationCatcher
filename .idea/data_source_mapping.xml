@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/src/main/java/com/inspiration/catcher/dao/DatabaseManager.java" value="76485ba4-3322-4d4a-8f76-1cf936ca4e80" />
+    <file url="file://$PROJECT_DIR$/src/test/project_intro.sql" value="76485ba4-3322-4d4a-8f76-1cf936ca4e80" />
+    <file url="file://$PROJECT_DIR$/src/test/压力测试.sql" value="76485ba4-3322-4d4a-8f76-1cf936ca4e80" />
+  </component>
+</project>

@@ -1,6 +1,6 @@
 package com.inspiration.catcher;
 
-import atlantafx.base.theme.PrimerDark;
+import atlantafx.base.theme.PrimerLight;
 import com.inspiration.catcher.dao.DatabaseManager;
 import com.inspiration.catcher.dao.ProjectDao;
 import javafx.application.Application;
@@ -61,8 +61,8 @@ public class MainApp extends Application {
                     alert.showAndWait();
                 });
             });
-            // 应用 AtlantaFX 深色主题
-            Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+            // 应用 AtlantaFX 主题（浅色）
+            Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
             // 加载主界面
             primaryStage = stage;
             loadMainView();

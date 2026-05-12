@@ -40,7 +40,7 @@ public class MarkdownUtil {
             """,getMarkdownStyles(), html);
         } catch (Exception e) {return "<pre>" + escapeHtml(markdown) + "</pre>";}
     }
-    // 获取 Markdown样式（深色主题）
+    // 获取 Markdown样式（暖色浅色主题）
     private static String getMarkdownStyles() {
         return """
             * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -51,21 +51,21 @@ public class MarkdownUtil {
                 line-height: 1.6;
                 word-wrap: break-word;
                 padding: 20px;
-                color: #E4E4E7;
-                background-color: #1E1E2E;
+                color: #2C2924;
+                background-color: #FFFFFF;
             }
             .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
                 margin-top: 24px;
                 margin-bottom: 16px;
                 font-weight: 600;
                 line-height: 1.25;
-                border-bottom: 1px solid #2A2A3C;
+                border-bottom: 1px solid #E2DDD4;
                 padding-bottom: 0.3em;
-                color: #F0C060;
+                color: #C4843C;
             }
             .markdown-body h1 { font-size: 2em; }
             .markdown-body h2 { font-size: 1.5em; }
-            .markdown-body h3 { font-size: 1.25em; color: #E4E4E7; }
+            .markdown-body h3 { font-size: 1.25em; color: #2C2924; }
             .markdown-body p { margin-top: 0; margin-bottom: 16px; }
             .markdown-body ul, .markdown-body ol {
                 padding-left: 2em;
@@ -75,8 +75,8 @@ public class MarkdownUtil {
             .markdown-body li { margin-bottom: 0.25em; }
             .markdown-body blockquote {
                 padding: 0 1em;
-                color: #A1A1AA;
-                border-left: 0.25em solid #3A3A4C;
+                color: #7A746E;
+                border-left: 0.25em solid #E2DDD4;
                 margin: 0 0 16px 0;
             }
             .markdown-body pre {
@@ -84,25 +84,25 @@ public class MarkdownUtil {
                 overflow: auto;
                 font-size: 85%;
                 line-height: 1.45;
-                background-color: #13131E;
+                background-color: #F7F4F0;
                 border-radius: 6px;
                 margin-bottom: 16px;
                 font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, "Courier New", Courier, monospace;
-                border: 1px solid #2A2A3C;
+                border: 1px solid #E2DDD4;
             }
             .markdown-body code {
                 padding: 0.2em 0.4em;
                 margin: 0;
                 font-size: 85%;
-                background-color: rgba(240, 192, 96, 0.1);
+                background-color: rgba(196, 132, 60, 0.08);
                 border-radius: 3px;
                 font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, "Courier New", Courier, monospace;
-                color: #F5D08A;
+                color: #A86828;
             }
             .markdown-body pre code {
                 background-color: transparent;
                 padding: 0;
-                color: #E4E4E7;
+                color: #2C2924;
             }
             .markdown-body table {
                 border-spacing: 0;
@@ -112,33 +112,24 @@ public class MarkdownUtil {
             }
             .markdown-body table th, .markdown-body table td {
                 padding: 6px 13px;
-                border: 1px solid #3A3A4C;
+                border: 1px solid #E2DDD4;
             }
             .markdown-body table th {
                 font-weight: 600;
-                background-color: #181825;
-                color: #F0C060;
+                background-color: #F0ECE6;
+                color: #C4843C;
             }
-            .markdown-body table td {
-                color: #E4E4E7;
-            }
+            .markdown-body table td { color: #2C2924; }
             .markdown-body img { max-width: 100%; }
-            .markdown-body a { color: #F0C060; text-decoration: none; }
+            .markdown-body a { color: #C4843C; text-decoration: none; }
             .markdown-body a:hover { text-decoration: underline; }
-            .markdown-body strong,
-            .markdown-body b {
-                font-weight: 700;
-                color: #F5D08A;
-            }
-            .markdown-body em,
-            .markdown-body i {
-                font-style: italic;
-            }
+            .markdown-body strong, .markdown-body b { font-weight: 700; color: #A86828; }
+            .markdown-body em, .markdown-body i { font-style: italic; }
             .markdown-body hr {
                 height: 1px;
                 padding: 0;
                 margin: 24px 0;
-                background-color: #3A3A4C;
+                background-color: #E2DDD4;
                 border: 0;
             }
             """;

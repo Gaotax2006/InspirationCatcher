@@ -1,0 +1,127 @@
+<mxGraphModel adaptiveColors="auto">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+    <!-- 标题 -->
+    <mxCell id="t0" value="&lt;b&gt;InspirationCatcher 使用流程图&lt;/b&gt;" style="text;html=1;fontSize=20;align=center;fontColor=#333;" vertex="1" parent="1">
+      <mxGeometry x="190" y="10" width="500" height="40" as="geometry"/>
+    </mxCell>
+    <!-- ===== Row 0: 启动 ===== -->
+    <mxCell id="n0" value="启动应用程序" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4A90E2;fontColor=#FFFFFF;fontStyle=1;strokeColor=#357ABD;" vertex="1" parent="1">
+      <mxGeometry x="370" y="60" width="140" height="50" as="geometry"/>
+    </mxCell>
+    <!-- ===== Row 1: 主界面 ===== -->
+    <mxCell id="n1" value="主界面&#xa;(三栏布局)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#5B9BD5;fontColor=#FFFFFF;strokeColor=#4A90E2;" vertex="1" parent="1">
+      <mxGeometry x="370" y="160" width="140" height="60" as="geometry"/>
+    </mxCell>
+    <!-- ===== Row 2: 三大功能分支 ===== -->
+    <mxCell id="n2" value="快速捕捉灵感&#xa;(Ctrl+Q)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#36B37E;fontColor=#FFFFFF;strokeColor=#2D9D6B;" vertex="1" parent="1">
+      <mxGeometry x="30" y="290" width="140" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="n3" value="浏览灵感列表&#xa;(表格/筛选/搜索)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#36B37E;fontColor=#FFFFFF;strokeColor=#2D9D6B;" vertex="1" parent="1">
+      <mxGeometry x="370" y="290" width="140" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="n4" value="思维导图视图" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#36B37E;fontColor=#FFFFFF;strokeColor=#2D9D6B;" vertex="1" parent="1">
+      <mxGeometry x="710" y="290" width="140" height="60" as="geometry"/>
+    </mxCell>
+    <!-- ===== Row 3: 各分支后续 ===== -->
+    <mxCell id="n5" value="填写标题/内容&#xa;选择类型/标签/心情" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#70AD47;fontColor=#FFFFFF;strokeColor=#5C8E3A;" vertex="1" parent="1">
+      <mxGeometry x="30" y="410" width="140" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="n6" value="双击进入&#xa;编辑器(Markdown)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#70AD47;fontColor=#FFFFFF;strokeColor=#5C8E3A;" vertex="1" parent="1">
+      <mxGeometry x="370" y="410" width="140" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="n7" value="拖拽灵感/&#xa;创建概念节点" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#70AD47;fontColor=#FFFFFF;strokeColor=#5C8E3A;" vertex="1" parent="1">
+      <mxGeometry x="710" y="410" width="140" height="60" as="geometry"/>
+    </mxCell>
+    <!-- ===== Row 4: 后续操作 ===== -->
+    <mxCell id="n8" value="保存灵感&#xa;(自动添加标签关联)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFC107;fontColor=#333;strokeColor=#D4A000;" vertex="1" parent="1">
+      <mxGeometry x="30" y="530" width="140" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="n9" value="AI扩展建议&#xa;(调用DeepSeek API)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9800;fontColor=#FFFFFF;strokeColor=#E67F00;" vertex="1" parent="1">
+      <mxGeometry x="370" y="530" width="140" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="n10" value="连接节点&#xa;(Ctrl+拖拽)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFC107;fontColor=#333;strokeColor=#D4A000;" vertex="1" parent="1">
+      <mxGeometry x="710" y="530" width="140" height="60" as="geometry"/>
+    </mxCell>
+    <!-- ===== Row 5: 最终操作 ===== -->
+    <mxCell id="n11" value="再次快速捕捉&#xa;或关闭" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9E9E9E;fontColor=#FFFFFF;strokeColor=#7F7F7F;dashed=1;" vertex="1" parent="1">
+      <mxGeometry x="30" y="650" width="140" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="n12" value="插入AI建议&#xa;继续编辑/保存" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9800;fontColor=#FFFFFF;strokeColor=#E67F00;" vertex="1" parent="1">
+      <mxGeometry x="370" y="650" width="140" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="n13" value="自动布局/&#xa;导出图片" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9E9E9E;fontColor=#FFFFFF;strokeColor=#7F7F7F;dashed=1;" vertex="1" parent="1">
+      <mxGeometry x="710" y="650" width="140" height="50" as="geometry"/>
+    </mxCell>
+    <!-- ===== 辅助功能 ===== -->
+    <mxCell id="ns1" value="项目管理器&#xa;(新建/切换项目)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#E8D5F5;fontColor=#333;strokeColor=#B891D4;" vertex="1" parent="1">
+      <mxGeometry x="910" y="160" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="ns2" value="标签管理&#xa;(创建/过滤/统计)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#E8D5F5;fontColor=#333;strokeColor=#B891D4;" vertex="1" parent="1">
+      <mxGeometry x="910" y="290" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="ns3" value="字体/主题&#xa;设置" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#E8D5F5;fontColor=#333;strokeColor=#B891D4;" vertex="1" parent="1">
+      <mxGeometry x="910" y="410" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <!-- ===== Edges: 主流程 ===== -->
+    <mxCell id="e0" edge="1" parent="1" source="n0" target="n1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4A90E2;strokeWidth=2;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e1a" edge="1" parent="1" source="n1" target="n2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#36B37E;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e1b" edge="1" parent="1" source="n1" target="n3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#36B37E;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e1c" edge="1" parent="1" source="n1" target="n4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#36B37E;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- 快速捕捉分支 -->
+    <mxCell id="e2" edge="1" parent="1" source="n2" target="n5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e5" edge="1" parent="1" source="n5" target="n8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="eloop" value="再记一条" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#9E9E9E;dashed=1;" edge="1" parent="1" source="n11" target="n5">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="eback" value="返回列表" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#9E9E9E;dashed=1;strokeWidth=1;" edge="1" parent="1" source="n11" target="n3">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- 列表→编辑器分支 -->
+    <mxCell id="e3" edge="1" parent="1" source="n3" target="n6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e6" edge="1" parent="1" source="n6" target="n9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e9" edge="1" parent="1" source="n9" target="n12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e12back" value="返回列表" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#9E9E9E;dashed=1;" edge="1" parent="1" source="n12" target="n3">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- 思维导图分支 -->
+    <mxCell id="e4" edge="1" parent="1" source="n4" target="n7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e7" edge="1" parent="1" source="n7" target="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e10" edge="1" parent="1" source="n10" target="n13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- ===== Edges: 辅助功能 ===== -->
+    <mxCell id="es1" value="全局可用" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B891D4;dashed=1;" edge="1" parent="1" source="n1" target="ns1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="es2" edge="1" parent="1" source="n3" target="ns2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B891D4;dashed=1;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="es3" edge="1" parent="1" source="n6" target="ns3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#B891D4;dashed=1;">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+  </root>
+</mxGraphModel>

@@ -561,21 +561,21 @@ public class MainController implements Initializable {
     private Node createMindMapIdeaCard(Idea idea) {
         VBox card = new VBox(5);
         card.setPadding(new Insets(10));
-        card.setStyle("-fx-background-color: #252535; -fx-border-color: #2A2A3C; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5;");
-        card.setOnMouseEntered(_ -> card.setStyle("-fx-background-color: #2A2A3C; -fx-border-color: #3A3A4C; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5; -fx-cursor: hand;"));
-        card.setOnMouseExited(_ -> card.setStyle("-fx-background-color: #252535; -fx-border-color: #2A2A3C; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5;"));
+        card.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #E2DDD4; -fx-border-width: 1; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-effect: dropshadow(gaussian, rgba(44,41,36,0.06), 4, 0, 0, 1);");
+        card.setOnMouseEntered(_ -> card.setStyle("-fx-background-color: #EBE6DE; -fx-border-color: #CDC7BE; -fx-border-width: 1; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-cursor: hand;"));
+        card.setOnMouseExited(_ -> card.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #E2DDD4; -fx-border-width: 1; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-effect: dropshadow(gaussian, rgba(44,41,36,0.06), 4, 0, 0, 1);"));
         HBox titleRow = new HBox(5);
         titleRow.setAlignment(Pos.CENTER_LEFT);
         titleRow.getChildren().add(createMindMapTypeIcon(idea.getType()));
         Label titleLabel = new Label(idea.getTitle());
-        titleLabel.setStyle("-fx-text-fill: #F0C060; -fx-font-weight: bold; -fx-font-size: 14px;");
+        titleLabel.setStyle("-fx-text-fill: #C4843C; -fx-font-weight: bold; -fx-font-size: 14px;");
         titleLabel.setWrapText(true);
         HBox.setHgrow(titleLabel, Priority.ALWAYS);
         titleRow.getChildren().add(titleLabel);
         String preview = idea.getContent();
         if (preview.length() > 80) preview = preview.substring(0, 80) + "...";
         Label contentLabel = new Label(preview);
-        contentLabel.setStyle("-fx-text-fill: #A1A1AA; -fx-font-size: 12px;"); contentLabel.setWrapText(true);
+        contentLabel.setStyle("-fx-text-fill: #7A746E; -fx-font-size: 12px;"); contentLabel.setWrapText(true);
         HBox metaRow = new HBox(10);
         metaRow.setAlignment(Pos.CENTER_LEFT);
         HBox tagsBox = new HBox(3);
@@ -588,7 +588,7 @@ public class MainController implements Initializable {
             }
         }
         HBox starsBox = new HBox(1);
-        for (int i = 0; i < 5; i++) { Label star = new Label(i < idea.getImportance() ? "★" : "☆"); star.setStyle("-fx-text-fill: #F0C060; -fx-font-size: 16px;"); starsBox.getChildren().add(star); }
+        for (int i = 0; i < 5; i++) { Label star = new Label(i < idea.getImportance() ? "★" : "☆"); star.setStyle("-fx-text-fill: #C4843C; -fx-font-size: 16px;"); starsBox.getChildren().add(star); }
         metaRow.getChildren().addAll(tagsBox, starsBox, createMindMapMoodIcon(idea.getMood()));
         card.getChildren().addAll(titleRow, contentLabel, metaRow);
         setupMindMapCardDrag(card, idea);
@@ -602,7 +602,7 @@ public class MainController implements Initializable {
             case DISCOVERY -> FontAwesomeSolid.SEARCH; case CONFUSION -> FontAwesomeSolid.QUESTION;
             case HYPOTHESIS -> FontAwesomeSolid.FLASK;
         };
-        FontIcon fi = new FontIcon(icon); fi.setIconSize(14); fi.setIconColor(javafx.scene.paint.Color.web("#F0C060"));
+        FontIcon fi = new FontIcon(icon); fi.setIconSize(14); fi.setIconColor(javafx.scene.paint.Color.web("#C4843C"));
         return fi;
     }
 
@@ -614,7 +614,7 @@ public class MainController implements Initializable {
             case INSPIRED -> FontAwesomeSolid.STAR; case CURIOUS -> FontAwesomeSolid.SEARCH;
             case CONFUSED -> FontAwesomeSolid.QUESTION; case FRUSTRATED -> FontAwesomeSolid.FROWN;
         };
-        FontIcon fi = new FontIcon(icon); fi.setIconSize(14); fi.setIconColor(javafx.scene.paint.Color.web("#F0C060"));
+        FontIcon fi = new FontIcon(icon); fi.setIconSize(14); fi.setIconColor(javafx.scene.paint.Color.web("#C4843C"));
         return fi;
     }
 
@@ -624,7 +624,7 @@ public class MainController implements Initializable {
             ClipboardContent content = new ClipboardContent();
             content.putString("idea:" + idea.getId());
             Rectangle dragImage = new Rectangle(120, 60);
-            dragImage.setFill(javafx.scene.paint.Color.web("#F0C060", 0.8));
+            dragImage.setFill(javafx.scene.paint.Color.web("#C4843C", 0.9));
             dragImage.setArcWidth(10); dragImage.setArcHeight(10);
             Text dragText = new Text(idea.getTitle());
             dragText.setFill(javafx.scene.paint.Color.BLACK);
@@ -635,7 +635,7 @@ public class MainController implements Initializable {
             db.setDragView(new Group(dragImage, dragText).snapshot(null, null));
             db.setContent(content); event.consume();
         });
-        card.setOnDragDone(_ -> card.setStyle("-fx-background-color: #252535; -fx-border-color: #2A2A3C; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5;"));
+        card.setOnDragDone(_ -> card.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #E2DDD4; -fx-border-width: 1; -fx-border-radius: 6px; -fx-background-radius: 6px;"));
     }
 
     @FXML private void handleAddIdeaNodeToMindMap() { addMindMapNode("idea"); }

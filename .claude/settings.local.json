@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git reset *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git config *)",
+      "Bash(gh auth *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(curl -v --connect-timeout 5 https://github.com)",
+      "Bash(env)",
+      "Bash(ping -n 1 -w 3000 github.com)",
+      "Bash(curl -x http://127.0.0.1:7890 -v --connect-timeout 5 https://www.baidu.com)"
+    ]
+  }
+}

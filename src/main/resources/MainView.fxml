@@ -214,42 +214,54 @@
                     <!-- ===== TAB 2: 思维导图 ===== -->
                     <Tab text="思维导图">
                         <HBox spacing="0">
+                            <!-- Left: idea card list (drag source) — clearly bounded panel -->
                             <VBox spacing="8"
-                                  prefWidth="220" minWidth="180"
-                                  styleClass="card-subtle" style="-fx-padding: 10;">
-                                <ToolBar style="-fx-padding: 4 0;">
-                                    <Button text="添加概念" onAction="#handleAddConceptNodeToMindMap"
+                                  prefWidth="240" minWidth="200"
+                                  style="-fx-background-color: -fx-bg-raised; -fx-border-color: -fx-border-subtle; -fx-border-width: 0 1 0 0; -fx-padding: 12;">
+                                <Label text="灵感卡片" styleClass="text-sm text-semibold text-secondary"/>
+                                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                                            style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                                    <VBox fx:id="mindMapIdeaListContainer" spacing="6" style="-fx-padding: 2;"/>
+                                </ScrollPane>
+                                <!-- Quick actions at bottom -->
+                                <HBox spacing="6" alignment="CENTER_LEFT"
+                                      style="-fx-padding: 8 0 0 0; -fx-border-color: -fx-border-subtle transparent transparent transparent; -fx-border-width: 1 0 0 0;">
+                                    <Button text="+概念" onAction="#handleAddConceptNodeToMindMap"
                                             styleClass="button-ghost button-sm"/>
-                                </ToolBar>
-                                <HBox spacing="8" alignment="CENTER_LEFT">
-                                    <Label text="灵感卡片" styleClass="slide-panel-section-title"/>
+                                    <Button text="+链接" onAction="#handleAddExternalNodeToMindMap"
+                                            styleClass="button-ghost button-sm"/>
                                     <Region HBox.hgrow="ALWAYS"/>
                                     <Button onAction="#refreshMindMapIdeaList"
                                             styleClass="button-icon" prefWidth="26" prefHeight="26">
                                         <graphic><FontIcon iconLiteral="fth-refresh-cw" iconSize="14"/></graphic>
                                     </Button>
                                 </HBox>
-                                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
-                                            style="-fx-background-color: transparent;">
-                                    <VBox fx:id="mindMapIdeaListContainer" spacing="5" style="-fx-padding: 2;"/>
-                                </ScrollPane>
                             </VBox>
 
-                            <BorderPane HBox.hgrow="ALWAYS">
+                            <!-- Right: canvas with clear boundary frame -->
+                            <BorderPane HBox.hgrow="ALWAYS"
+                                        style="-fx-background-color: -fx-bg-subtle;">
                                 <top>
-                                    <HBox spacing="8" style="-fx-padding: 8 16;" styleClass="workspace-toolbar">
-                                        <Button text="添加灵感节点" onAction="#handleAddIdeaNodeToMindMap"
-                                                styleClass="button-ghost button-sm"/>
-                                        <Button text="添加概念节点" onAction="#handleAddConceptNodeToMindMap"
-                                                styleClass="button-ghost button-sm"/>
-                                        <Button text="添加链接" onAction="#handleAddExternalNodeToMindMap"
-                                                styleClass="button-ghost button-sm"/>
+                                    <HBox spacing="6" alignment="CENTER_LEFT"
+                                          style="-fx-padding: 8 16; -fx-background-color: -fx-bg; -fx-border-color: transparent transparent -fx-border-subtle transparent; -fx-border-width: 0 0 1 0;">
+                                        <Label text="思维导图" styleClass="text-sm text-medium"/>
                                         <Region HBox.hgrow="ALWAYS"/>
+                                        <Button text="添加灵感" onAction="#handleAddIdeaNodeToMindMap"
+                                                styleClass="button-outline button-sm"/>
+                                        <Button text="自动布局" styleClass="button-ghost button-sm" disable="true"/>
                                     </HBox>
                                 </top>
                                 <center>
-                                    <Pane fx:id="mindMapPane"/>
+                                    <Pane fx:id="mindMapPane"
+                                          style="-fx-background-color: -fx-bg; -fx-border-color: -fx-border-subtle; -fx-border-width: 0; -fx-background-radius: 0;"/>
                                 </center>
+                                <!-- Bottom-left hint -->
+                                <bottom>
+                                    <HBox spacing="6" alignment="CENTER_LEFT"
+                                          style="-fx-padding: 4 12; -fx-background-color: -fx-bg-subtle; -fx-border-color: -fx-border-subtle transparent transparent transparent; -fx-border-width: 1 0 0 0;">
+                                        <Label text="拖拽左侧卡片到画布添加节点 · 双击编辑 · 滚轮缩放" styleClass="text-xs text-tertiary"/>
+                                    </HBox>
+                                </bottom>
                             </BorderPane>
                         </HBox>
                     </Tab>
