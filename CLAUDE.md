@@ -87,3 +87,5 @@ Four files loaded in cascade order (each overrides the previous):
 - **Database path:** `inspiration.db` in the working directory (not user home).
 - **Logs:** SLF4J + Logback. Configurable via `logback.xml` if placed on classpath (not currently present).
 - **Single test file:** `src/test/java/TestAI.java` is a standalone `main()` method test for the AI API, not a JUnit test.
+- **Current state:** ~9,300 lines across 37 source files, 0 compile errors, 0 runtime exceptions.
+- **Design report:** See `设计报告.md` in project root.

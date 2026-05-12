@@ -223,12 +223,23 @@ public class AIPanelController {
     }
 
     private Tab createAboutTab() {
-        VBox content = new VBox(8);
-        content.setPadding(new Insets(20));
-        content.getChildren().add(new Label("灵感捕手 (Inspiration Catcher)"));
-        content.getChildren().add(new Label("版本 1.0.0"));
-        content.getChildren().add(new Label("技术栈: JavaFX 21 + AtlantaFX + SQLite + DeepSeek AI"));
-        content.getChildren().add(new Label("作者: 高天翔"));
+        VBox content = new VBox(10);
+        content.setPadding(new Insets(25));
+        Label title = new Label("灵感捕手");
+        title.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: -fx-primary;");
+        Label subtitle = new Label("Inspiration Catcher");
+        subtitle.setStyle("-fx-font-size: 14px; -fx-text-fill: -fx-text-secondary;");
+        Separator sep1 = new Separator();
+        Label version = new Label("版本 1.0.0");
+        Label tech = new Label("技术栈: JavaFX 24 · AtlantaFX · SQLite · DeepSeek AI");
+        Label author = new Label("作者: 高天翔");
+        author.setStyle("-fx-font-size: 13px;");
+        Separator sep2 = new Separator();
+        Label desc = new Label("一款面向创作者和知识工作者的灵感管理工具，\n支持 Markdown 编辑、思维导图可视化和 AI 辅助扩展。");
+        desc.setStyle("-fx-font-size: 12px; -fx-text-fill: -fx-text-secondary;");
+        Label stats = new Label("代码统计: 34 Java + 2 FXML + 1 CSS = ~9,300 行");
+        stats.setStyle("-fx-font-size: 11px; -fx-text-fill: -fx-text-tertiary;");
+        content.getChildren().addAll(title, subtitle, sep1, version, tech, author, sep2, desc, stats);
         Tab tab = new Tab("关于");
         tab.setContent(content);
         return tab;
