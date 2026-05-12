@@ -1,70 +1,67 @@
 /* ================================================================
-   app.css — 灵感捕手 Design System
-   VS Code Light+ inspired · clean · premium
-   Layer on top of AtlantaFX PrimerLight
+   app.css — 灵感捕手 "深夜书房" Dark Theme
+   Anchored on AtlantaFX PrimerDark · warm amber accent palette
    ================================================================ */
 
 /* ==============================================================
    1. DESIGN TOKENS
    ============================================================== */
 .root {
-    /* ---- Brand (premium blue) ---- */
-    -fx-primary: #2563EB;
-    -fx-primary-dark: #1D4ED8;
-    -fx-primary-light: #60A5FA;
-    -fx-primary-bg: #EFF6FF;
+    /* ---- Brand: warm amber (lamplight) ---- */
+    -fx-primary: #F0C060;
+    -fx-primary-dark: #D4A54A;
+    -fx-primary-light: #F5D08A;
+    -fx-primary-bg: #2D2818;
+    -fx-primary-hover: #F5D08A;
 
     /* ---- Semantic Accents ---- */
-    -fx-green: #16A34A;
-    -fx-green-bg: #F0FDF4;
-    -fx-orange: #D97706;
-    -fx-orange-bg: #FFF7ED;
-    -fx-red: #DC2626;
-    -fx-red-bg: #FEF2F2;
-    -fx-blue: #2563EB;
-    -fx-blue-bg: #EFF6FF;
-    -fx-yellow: #CA8A04;
-    -fx-yellow-bg: #FEFCE8;
-    -fx-purple: #7C3AED;
-    -fx-purple-bg: #F5F3FF;
+    -fx-green: #34D399;
+    -fx-green-bg: #14372B;
+    -fx-orange: #FB923C;
+    -fx-orange-bg: #2D1F12;
+    -fx-red: #FB7185;
+    -fx-red-bg: #2D1620;
+    -fx-blue: #60A5FA;
+    -fx-blue-bg: #16233B;
+    -fx-yellow: #FACC15;
+    -fx-yellow-bg: #2D2810;
+    -fx-purple: #A78BFA;
+    -fx-purple-bg: #1E1835;
 
-    /* ---- Neutral Palette ---- */
-    -fx-gray-50: #F9FAFB;
-    -fx-gray-100: #F3F4F6;
-    -fx-gray-200: #E5E7EB;
-    -fx-gray-300: #D1D5DB;
-    -fx-gray-400: #9CA3AF;
-    -fx-gray-500: #6B7280;
-    -fx-gray-600: #4B5563;
-    -fx-gray-700: #374151;
-    -fx-gray-800: #1F2937;
-    -fx-gray-900: #111827;
+    /* ---- Neutral Palette (dark) ---- */
+    -fx-bg: #1E1E2E;
+    -fx-bg-subtle: #181825;
+    -fx-bg-hover: #2A2A3C;
+    -fx-bg-active: #333348;
+    -fx-bg-raised: #252535;
+    -fx-bg-inset: #13131E;
+    -fx-bg-overlay: rgba(0, 0, 0, 0.6);
 
-    /* ---- Surface Colors ---- */
-    -fx-bg: #FFFFFF;
-    -fx-bg-subtle: #F3F4F6;
-    -fx-bg-hover: #EBEBEB;
-    -fx-bg-active: #DCDCDC;
-    -fx-bg-raised: #FFFFFF;
+    /* ---- Surface / Nav ---- */
+    -fx-rail-bg: #16161E;
+    -fx-rail-width: 48px;
+    -fx-sidebar-bg: #1A1A28;
+    -fx-surface-card: #252535;
 
     /* ---- Text Colors ---- */
-    -fx-text-primary: -fx-gray-800;
-    -fx-text-secondary: -fx-gray-500;
-    -fx-text-tertiary: -fx-gray-400;
-    -fx-text-inverse: #FFFFFF;
+    -fx-text-primary: #E4E4E7;
+    -fx-text-secondary: #A1A1AA;
+    -fx-text-tertiary: #71717A;
+    -fx-text-inverse: #111111;
     -fx-text-link: -fx-primary;
 
     /* ---- Border Colors ---- */
-    -fx-border-subtle: -fx-gray-200;
-    -fx-border-default: -fx-gray-300;
+    -fx-border-subtle: #2A2A3C;
+    -fx-border-default: #3A3A4C;
     -fx-border-focus: -fx-primary;
 
-    /* ---- Shadows ---- */
-    -fx-shadow-xs: dropshadow(gaussian, rgba(0,0,0,0.03), 2, 0, 0, 1);
-    -fx-shadow-sm: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 1);
-    -fx-shadow-md: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);
-    -fx-shadow-lg: dropshadow(gaussian, rgba(0,0,0,0.08), 16, 0, 0, 4);
-    -fx-shadow-xl: dropshadow(gaussian, rgba(0,0,0,0.10), 24, 0, 0, 6);
+    /* ---- Shadows (dark-mode: less contrast, more spread) ---- */
+    -fx-shadow-xs: dropshadow(gaussian, rgba(0,0,0,0.25), 2, 0, 0, 1);
+    -fx-shadow-sm: dropshadow(gaussian, rgba(0,0,0,0.30), 4, 0, 0, 1);
+    -fx-shadow-md: dropshadow(gaussian, rgba(0,0,0,0.35), 8, 0, 0, 2);
+    -fx-shadow-lg: dropshadow(gaussian, rgba(0,0,0,0.40), 16, 0, 0, 4);
+    -fx-shadow-xl: dropshadow(gaussian, rgba(0,0,0,0.45), 24, 0, 0, 6);
+    -fx-shadow-glow: dropshadow(gaussian, rgba(240,192,96,0.15), 12, 0, 0, 0);
 
     /* ---- Border Radius ---- */
     -fx-radius-xs: 4px;
@@ -86,7 +83,7 @@
     -fx-space-12: 48px;
 
     /* ---- Typography ---- */
-    -fx-font-family: "Segoe UI", "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    -fx-font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", system-ui, sans-serif;
     -fx-font-family-mono: "JetBrains Mono", "SF Mono", "Consolas", "Monaco", monospace;
     -fx-font-size-xs: 11px;
     -fx-font-size-sm: 12px;
@@ -95,29 +92,29 @@
     -fx-font-size-xl: 16px;
     -fx-font-size-2xl: 18px;
     -fx-font-size-3xl: 22px;
-
-    /* ---- Layout ---- */
-    -fx-rail-bg: #F3F3F3;
-    -fx-rail-width: 48px;
 }
-
 
 /* ==============================================================
    2. BASE RESET
    ============================================================== */
 .root {
-    -fx-font-family: "Segoe UI", "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    -fx-font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", system-ui, sans-serif;
     -fx-font-size: 13px;
     -fx-background-color: -fx-bg;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.label {
+    -fx-text-fill: -fx-text-primary;
 }
 
 .text-input:focused,
 .text-area:focused {
     -fx-highlight-fill: -fx-primary-bg;
-    -fx-highlight-text-fill: -fx-text-primary;
+    -fx-highlight-text-fill: -fx-primary;
 }
 
-/* Scrollbar */
+/* ---- Scrollbar ---- */
 .scroll-pane,
 .scroll-pane .viewport {
     -fx-background-color: transparent;
@@ -136,7 +133,7 @@
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: -fx-gray-300;
+    -fx-background-color: -fx-border-default;
     -fx-background-radius: 3px;
     -fx-pref-width: 4px;
     -fx-cursor: hand;
@@ -144,7 +141,7 @@
 
 .scroll-bar .thumb:hover,
 .scroll-bar .thumb:pressed {
-    -fx-background-color: -fx-gray-400;
+    -fx-background-color: -fx-text-tertiary;
 }
 
 .scroll-bar .increment-button,
@@ -166,16 +163,15 @@
     -fx-faint-focus-color: transparent;
 }
 
-
 /* ==============================================================
-   3. NAVIGATION RAIL — VS Code style light activity bar
+   3. NAVIGATION RAIL
    ============================================================== */
 .nav-rail {
     -fx-pref-width: 48px;
     -fx-min-width: 48px;
     -fx-max-width: 48px;
     -fx-background-color: -fx-rail-bg;
-    -fx-border-color: transparent -fx-gray-200 transparent transparent;
+    -fx-border-color: transparent -fx-border-subtle transparent transparent;
     -fx-border-width: 0 1 0 0;
     -fx-padding: 0;
     -fx-spacing: 0;
@@ -200,7 +196,6 @@
     -fx-alignment: center;
 }
 
-/* VS Code active indicator bar — left border on selected item */
 .nav-item {
     -fx-background-color: transparent;
     -fx-background-radius: 0;
@@ -216,22 +211,22 @@
 }
 
 .nav-item:hover {
-    -fx-background-color: rgba(0, 0, 0, 0.05);
+    -fx-background-color: rgba(255, 255, 255, 0.05);
 }
 
 .nav-item:selected,
 .nav-item.active {
-    -fx-background-color: rgba(0, 0, 0, 0.07);
+    -fx-background-color: rgba(240, 192, 96, 0.08);
     -fx-border-color: transparent transparent transparent -fx-primary;
 }
 
 .nav-item .ikonli-font-icon {
-    -fx-icon-color: rgba(0, 0, 0, 0.50);
+    -fx-icon-color: rgba(255, 255, 255, 0.40);
     -fx-icon-size: 20px;
 }
 
 .nav-item:hover .ikonli-font-icon {
-    -fx-icon-color: rgba(0, 0, 0, 0.70);
+    -fx-icon-color: rgba(255, 255, 255, 0.60);
 }
 
 .nav-item:selected .ikonli-font-icon,
@@ -249,28 +244,26 @@
 }
 
 .nav-brand .ikonli-font-icon {
-    -fx-icon-color: #FFFFFF;
+    -fx-icon-color: #111111;
     -fx-icon-size: 16px;
 }
 
-/* Spacing between groups */
 .nav-rail-separator {
     -fx-min-height: 1px;
     -fx-max-height: 1px;
-    -fx-background-color: -fx-gray-200;
+    -fx-background-color: -fx-border-subtle;
     -fx-margin: 4 8;
 }
 
-
 /* ==============================================================
-   4. LIBRARY PANEL — VS Code sidebar style
+   4. SIDEBAR / LIBRARY PANEL
    ============================================================== */
 .library-panel {
     -fx-pref-width: 260px;
     -fx-min-width: 200px;
     -fx-max-width: 360px;
-    -fx-background-color: -fx-bg-subtle;
-    -fx-border-color: transparent -fx-gray-200 transparent transparent;
+    -fx-background-color: -fx-sidebar-bg;
+    -fx-border-color: transparent -fx-border-subtle transparent transparent;
     -fx-border-width: 0 1 0 0;
     -fx-padding: 0;
 }
@@ -281,19 +274,20 @@
 }
 
 .library-search {
-    -fx-background-color: -fx-bg;
-    -fx-background-radius: 4px;
-    -fx-border-color: -fx-gray-300;
-    -fx-border-radius: 4px;
+    -fx-background-color: -fx-bg-inset;
+    -fx-background-radius: 6px;
+    -fx-border-color: -fx-border-subtle;
+    -fx-border-radius: 6px;
     -fx-border-width: 1;
-    -fx-padding: 5 8;
+    -fx-padding: 6 10;
     -fx-font-size: 13px;
     -fx-prompt-text-fill: -fx-text-tertiary;
+    -fx-text-fill: -fx-text-primary;
 }
 
 .library-search:focused {
     -fx-border-color: -fx-primary;
-    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.10), 6, 0, 0, 0);
+    -fx-effect: -fx-shadow-glow;
 }
 
 .library-section-title {
@@ -301,9 +295,11 @@
     -fx-font-weight: 600;
     -fx-text-fill: -fx-text-tertiary;
     -fx-padding: 8 12 2 12;
+    -fx-text-transform: uppercase;
+    -fx-letter-spacing: 0.5px;
 }
 
-/* Filters */
+/* ---- Filters ---- */
 .titled-pane {
     -fx-text-fill: -fx-text-primary;
 }
@@ -313,6 +309,7 @@
     -fx-padding: 6 12;
     -fx-font-size: 12px;
     -fx-font-weight: 500;
+    -fx-text-fill: -fx-text-secondary;
 }
 
 .titled-pane > .title:hover {
@@ -324,7 +321,6 @@
     -fx-border-color: transparent;
 }
 
-
 /* ==============================================================
    5. WORKSPACE
    ============================================================== */
@@ -335,7 +331,7 @@
 
 .workspace-toolbar {
     -fx-background-color: -fx-bg;
-    -fx-border-color: transparent transparent -fx-gray-200 transparent;
+    -fx-border-color: transparent transparent -fx-border-subtle transparent;
     -fx-border-width: 0 0 1 0;
     -fx-padding: 6 16;
     -fx-spacing: 6;
@@ -354,14 +350,13 @@
     -fx-text-fill: -fx-text-primary;
 }
 
-
 /* ==============================================================
    6. CARDS
    ============================================================== */
 .card {
     -fx-background-color: -fx-bg-raised;
     -fx-background-radius: 8px;
-    -fx-border-color: -fx-gray-200;
+    -fx-border-color: -fx-border-subtle;
     -fx-border-radius: 8px;
     -fx-border-width: 1;
     -fx-padding: 12;
@@ -373,16 +368,16 @@
 }
 
 .card-subtle {
-    -fx-background-color: -fx-bg;
+    -fx-background-color: -fx-bg-inset;
     -fx-background-radius: 6px;
-    -fx-border-color: -fx-gray-200;
+    -fx-border-color: -fx-border-subtle;
     -fx-border-radius: 6px;
     -fx-border-width: 1;
     -fx-padding: 10;
 }
 
 .card-subtle:hover {
-    -fx-border-color: -fx-gray-300;
+    -fx-border-color: -fx-border-default;
     -fx-background-color: -fx-bg-hover;
 }
 
@@ -400,11 +395,11 @@
 .card-accent-purple { -fx-border-color: transparent transparent transparent -fx-purple; }
 .card-accent-blue { -fx-border-color: transparent transparent transparent -fx-blue; }
 
-/* Mind map / list idea card */
+/* Idea card */
 .idea-card {
-    -fx-background-color: -fx-bg;
+    -fx-background-color: -fx-bg-raised;
     -fx-background-radius: 6px;
-    -fx-border-color: -fx-gray-200;
+    -fx-border-color: -fx-border-subtle;
     -fx-border-radius: 6px;
     -fx-border-width: 1;
     -fx-padding: 8;
@@ -414,6 +409,7 @@
 
 .idea-card:hover {
     -fx-background-color: -fx-bg-hover;
+    -fx-border-color: -fx-border-default;
 }
 
 .idea-card-title {
@@ -427,14 +423,13 @@
     -fx-text-fill: -fx-text-secondary;
 }
 
-
 /* ==============================================================
    7. BUTTONS
    ============================================================== */
 .button {
-    -fx-background-color: -fx-bg;
+    -fx-background-color: -fx-bg-raised;
     -fx-background-radius: 6px;
-    -fx-border-color: -fx-gray-200;
+    -fx-border-color: -fx-border-subtle;
     -fx-border-radius: 6px;
     -fx-border-width: 1;
     -fx-padding: 6 12;
@@ -446,7 +441,7 @@
 
 .button:hover {
     -fx-background-color: -fx-bg-hover;
-    -fx-border-color: -fx-gray-300;
+    -fx-border-color: -fx-border-default;
 }
 
 .button:pressed,
@@ -456,8 +451,9 @@
 
 .button-primary {
     -fx-background-color: -fx-primary;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: -fx-text-inverse;
     -fx-border-color: transparent;
+    -fx-font-weight: 600;
 }
 
 .button-primary:hover {
@@ -465,7 +461,7 @@
 }
 
 .button-primary:pressed {
-    -fx-background-color: #1E40AF;
+    -fx-background-color: #B8922E;
 }
 
 .button-ghost {
@@ -479,17 +475,17 @@
 
 .button-outline {
     -fx-background-color: transparent;
-    -fx-border-color: -fx-gray-200;
+    -fx-border-color: -fx-border-subtle;
 }
 
 .button-outline:hover {
     -fx-background-color: -fx-bg-hover;
-    -fx-border-color: -fx-gray-300;
+    -fx-border-color: -fx-border-default;
 }
 
 .button-icon {
     -fx-background-color: transparent;
-    -fx-background-radius: 6px;
+    -fx-background-radius: 4px;
     -fx-border-color: transparent;
     -fx-min-width: 28px;
     -fx-min-height: 28px;
@@ -508,7 +504,7 @@
 }
 
 .button-danger:hover {
-    -fx-background-color: #B91C1C;
+    -fx-background-color: #E54865;
 }
 
 .button-success {
@@ -522,7 +518,7 @@
     -fx-font-size: 12px;
 }
 
-/* Editor markdown toolbar buttons */
+/* Markdown toolbar */
 .button-toolbar {
     -fx-background-color: transparent;
     -fx-background-radius: 4px;
@@ -541,10 +537,10 @@
     -fx-text-fill: -fx-text-primary;
 }
 
-/* Quick capture button */
+/* Quick capture */
 .quick-capture-btn {
     -fx-background-color: -fx-primary;
-    -fx-text-fill: white;
+    -fx-text-fill: -fx-text-inverse;
     -fx-background-radius: 6px;
     -fx-padding: 8 16;
     -fx-font-size: 13px;
@@ -553,14 +549,13 @@
     -fx-cursor: hand;
 }
 
-
 /* ==============================================================
    8. TEXT INPUTS
    ============================================================== */
 .text-field,
 .text-area {
-    -fx-background-color: -fx-bg;
-    -fx-border-color: -fx-gray-300;
+    -fx-background-color: -fx-bg-inset;
+    -fx-border-color: -fx-border-subtle;
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
     -fx-padding: 6 8;
@@ -572,8 +567,8 @@
 .text-field:focused,
 .text-area:focused {
     -fx-border-color: -fx-primary;
-    -fx-background-color: -fx-bg;
-    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.08), 4, 0, 0, 0);
+    -fx-background-color: -fx-bg-inset;
+    -fx-effect: -fx-shadow-glow;
 }
 
 .text-area {
@@ -586,21 +581,21 @@
     -fx-padding: 0;
 }
 
-
 /* ==============================================================
    9. COMBOBOX
    ============================================================== */
 .combo-box {
-    -fx-background-color: -fx-bg;
-    -fx-border-color: -fx-gray-300;
+    -fx-background-color: -fx-bg-inset;
+    -fx-border-color: -fx-border-subtle;
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
     -fx-padding: 2 6;
     -fx-font-size: 13px;
+    -fx-text-fill: -fx-text-primary;
 }
 
 .combo-box:hover {
-    -fx-border-color: -fx-gray-400;
+    -fx-border-color: -fx-border-default;
 }
 
 .combo-box:focused {
@@ -622,12 +617,17 @@
 
 .combo-box-popup .list-cell:selected {
     -fx-background-color: -fx-primary;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: -fx-text-inverse;
 }
 
+.combo-box .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 2 4;
+}
 
 /* ==============================================================
-   10. TABPANE — clean underline style
+   10. TABPANE
    ============================================================== */
 .tab-pane {
     -fx-tab-min-height: 34px;
@@ -645,11 +645,6 @@
 
 .tab-pane:top .tab-header-area {
     -fx-background-insets: 0;
-}
-
-.tab-pane:top *.tab-header-area {
-    -fx-background-insets: 0;
-    -fx-padding: 0;
 }
 
 .tab {
@@ -682,6 +677,10 @@
     -fx-font-weight: 600;
 }
 
+/* Floating tabs (used in slide panel) */
+.tab-pane-floating .tab-header-area {
+    -fx-padding: 0 8;
+}
 
 /* ==============================================================
    11. TABLE VIEW
@@ -698,7 +697,7 @@
 
 .table-view .column-header {
     -fx-background-color: transparent;
-    -fx-border-color: transparent transparent -fx-gray-200 transparent;
+    -fx-border-color: transparent transparent -fx-border-subtle transparent;
     -fx-border-width: 0 0 1 0;
     -fx-padding: 8 6;
 }
@@ -715,10 +714,11 @@
 
 .table-row-cell {
     -fx-background-color: transparent;
-    -fx-border-color: transparent transparent -fx-gray-200 transparent;
+    -fx-border-color: transparent transparent -fx-border-subtle transparent;
     -fx-border-width: 0 0 1 0;
     -fx-padding: 2 0;
     -fx-cell-size: 36px;
+    -fx-text-fill: -fx-text-primary;
 }
 
 .table-row-cell:hover {
@@ -744,20 +744,19 @@
     -fx-border-color: transparent;
 }
 
-
 /* ==============================================================
-   12. AI CHAT BUBBLES
+   12. AI & CHAT
    ============================================================== */
 .chat-bubble-user {
     -fx-background-color: -fx-primary;
     -fx-background-radius: 12px 12px 4px 12px;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: -fx-text-inverse;
     -fx-padding: 8 12;
     -fx-max-width: 360px;
 }
 
 .chat-bubble-ai {
-    -fx-background-color: -fx-gray-100;
+    -fx-background-color: -fx-bg-raised;
     -fx-background-radius: 12px 12px 12px 4px;
     -fx-text-fill: -fx-text-primary;
     -fx-padding: 8 12;
@@ -774,14 +773,14 @@
     -fx-text-fill: -fx-text-tertiary;
 }
 
-/* AI suggestion card */
+/* AI card */
 .ai-card {
     -fx-background-color: -fx-primary-bg;
     -fx-background-radius: 8px;
     -fx-border-color: transparent;
     -fx-border-radius: 8px;
     -fx-padding: 12;
-    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.05), 6, 0, 0, 2);
+    -fx-effect: -fx-shadow-glow;
 }
 
 .ai-card-title {
@@ -795,7 +794,6 @@
     -fx-font-size: 13px;
     -fx-text-fill: -fx-text-secondary;
 }
-
 
 /* ==============================================================
    13. TAGS & BADGES
@@ -826,14 +824,13 @@
 .badge-success { -fx-background-color: -fx-green; }
 .badge-danger { -fx-background-color: -fx-red; }
 .badge-warning { -fx-background-color: -fx-orange; }
-.badge-muted { -fx-background-color: -fx-gray-300; -fx-text-fill: -fx-gray-600; }
-
+.badge-muted { -fx-background-color: -fx-text-tertiary; }
 
 /* ==============================================================
    14. MIND MAP NODES
    ============================================================== */
 .mindmap-node {
-    -fx-background-color: #FFFFFF;
+    -fx-background-color: -fx-bg-raised;
     -fx-background-radius: 6px;
     -fx-border-radius: 6px;
     -fx-border-width: 0 0 0 3px;
@@ -841,12 +838,12 @@
     -fx-spacing: 4;
     -fx-min-width: 100;
     -fx-max-width: 220;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 1);
+    -fx-effect: -fx-shadow-sm;
     -fx-cursor: hand;
 }
 
 .mindmap-node:hover {
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 3);
+    -fx-effect: -fx-shadow-md;
 }
 
 .mindmap-node-idea { -fx-border-color: transparent transparent transparent -fx-primary; }
@@ -864,13 +861,12 @@
     -fx-text-fill: -fx-text-secondary;
 }
 
-
 /* ==============================================================
    15. STATUSBAR
    ============================================================== */
 .status-bar {
-    -fx-background-color: #F3F4F6;
-    -fx-border-color: -fx-gray-200 transparent transparent transparent;
+    -fx-background-color: -fx-bg-subtle;
+    -fx-border-color: -fx-border-subtle transparent transparent transparent;
     -fx-border-width: 1 0 0 0;
     -fx-padding: 3 16;
     -fx-min-height: 24px;
@@ -881,13 +877,12 @@
     -fx-text-fill: -fx-text-tertiary;
 }
 
-
 /* ==============================================================
-   16. SLIDE-OUT PANEL (right contextual panel)
+   16. SLIDE-OUT PANEL
    ============================================================== */
 .slide-panel {
-    -fx-background-color: -fx-bg-subtle;
-    -fx-border-color: transparent transparent transparent -fx-gray-200;
+    -fx-background-color: -fx-sidebar-bg;
+    -fx-border-color: transparent transparent transparent -fx-border-subtle;
     -fx-border-width: 0 0 0 1;
     -fx-padding: 12;
     -fx-spacing: 8;
@@ -899,7 +894,7 @@
     -fx-padding: 0 0 8 0;
     -fx-spacing: 8;
     -fx-alignment: center-left;
-    -fx-border-color: transparent transparent -fx-gray-200 transparent;
+    -fx-border-color: transparent transparent -fx-border-subtle transparent;
     -fx-border-width: 0 0 1 0;
 }
 
@@ -914,7 +909,6 @@
     -fx-font-weight: 600;
     -fx-text-fill: -fx-text-tertiary;
 }
-
 
 /* ==============================================================
    17. EMPTY STATE
@@ -938,114 +932,11 @@
     -fx-text-alignment: center;
 }
 
-
 /* ==============================================================
-   18. SEPARATOR
+   18. UTILITY CLASSES
    ============================================================== */
-.separator {
-    -fx-padding: 4 0;
-}
 
-.separator .line {
-    -fx-border-color: -fx-gray-200;
-    -fx-border-width: 0 0 1 0;
-}
-
-
-/* ==============================================================
-   19. SPLITPANE
-   ============================================================== */
-.split-pane {
-    -fx-background-color: transparent;
-    -fx-padding: 0;
-}
-
-.split-pane:horizontal > .split-pane-divider {
-    -fx-background-color: -fx-gray-200;
-    -fx-padding: 0 1;
-}
-
-.split-pane:horizontal > .split-pane-divider:hover {
-    -fx-background-color: -fx-primary-light;
-    -fx-padding: 0 2;
-}
-
-.split-pane:vertical > .split-pane-divider {
-    -fx-background-color: -fx-gray-200;
-    -fx-padding: 1 0;
-}
-
-
-/* ==============================================================
-   20. MENU BAR
-   ============================================================== */
-.menu-bar {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-padding: 2 8;
-    -fx-min-height: 28px;
-}
-
-.menu-bar .menu .label {
-    -fx-text-fill: -fx-text-secondary;
-    -fx-font-size: 12px;
-}
-
-.menu-bar .menu:hover {
-    -fx-background-color: -fx-bg-hover;
-    -fx-background-radius: 4px;
-}
-
-.menu-item {
-    -fx-padding: 4 16;
-}
-
-.menu-item:hover {
-    -fx-background-color: -fx-primary-bg;
-}
-
-.menu-item:hover .label {
-    -fx-text-fill: -fx-primary;
-}
-
-
-/* ==============================================================
-   21. TOGGLE BUTTONS
-   ============================================================== */
-.toggle-button {
-    -fx-background-color: transparent;
-    -fx-border-color: -fx-gray-200;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
-    -fx-padding: 4 12;
-    -fx-text-fill: -fx-text-secondary;
-    -fx-font-size: 12px;
-}
-
-.toggle-button:selected {
-    -fx-background-color: -fx-primary-bg;
-    -fx-border-color: -fx-primary;
-    -fx-text-fill: -fx-primary;
-    -fx-font-weight: 500;
-}
-
-
-/* ==============================================================
-   22. TOOLTIP
-   ============================================================== */
-.tooltip {
-    -fx-background-color: -fx-gray-800;
-    -fx-text-fill: #FFFFFF;
-    -fx-background-radius: 4px;
-    -fx-padding: 4 8;
-    -fx-font-size: 12px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 3);
-}
-
-
-/* ==============================================================
-   23. TYPOGRAPHY UTILITY CLASSES
-   ============================================================== */
+/* ---- Typography ---- */
 .text-xs { -fx-font-size: 11px; }
 .text-sm { -fx-font-size: 12px; }
 .text-base { -fx-font-size: 13px; }
@@ -1063,23 +954,15 @@
 .text-secondary { -fx-text-fill: -fx-text-secondary; }
 .text-tertiary { -fx-text-fill: -fx-text-tertiary; }
 .text-accent { -fx-text-fill: -fx-primary; }
-.text-inverse { -fx-text-fill: #FFFFFF; }
+.text-inverse { -fx-text-fill: -fx-text-inverse; }
 .text-green { -fx-text-fill: -fx-green; }
 .text-red { -fx-text-fill: -fx-red; }
-
+.text-blue { -fx-text-fill: -fx-blue; }
 .text-mono {
     -fx-font-family: "JetBrains Mono", "SF Mono", "Consolas", "Monaco", monospace;
 }
 
-.text-truncate {
-    -fx-text-overrun: ellipsis;
-    -fx-max-width: Infinity;
-}
-
-
-/* ==============================================================
-   24. SPACING & LAYOUT HELPERS
-   ============================================================== */
+/* ---- Spacing & Layout ---- */
 .p-0 { -fx-padding: 0; }
 .p-1 { -fx-padding: 4; }
 .p-2 { -fx-padding: 8; }
@@ -1088,7 +971,6 @@
 .p-5 { -fx-padding: 20; }
 .p-6 { -fx-padding: 24; }
 .p-8 { -fx-padding: 32; }
-.p-10 { -fx-padding: 40; }
 
 .gap-1 { -fx-spacing: 4; }
 .gap-2 { -fx-spacing: 8; }
@@ -1105,3 +987,182 @@
 .rounded-md { -fx-background-radius: 6px; }
 .rounded-lg { -fx-background-radius: 8px; }
 .rounded-full { -fx-background-radius: 999px; }
+
+/* ---- Separator ---- */
+.separator {
+    -fx-padding: 4 0;
+}
+
+.separator .line {
+    -fx-border-color: -fx-border-subtle;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* ---- SplitPane ---- */
+.split-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.split-pane:horizontal > .split-pane-divider {
+    -fx-background-color: -fx-border-subtle;
+    -fx-padding: 0 1;
+}
+
+.split-pane:horizontal > .split-pane-divider:hover {
+    -fx-background-color: -fx-primary-light;
+    -fx-padding: 0 2;
+}
+
+.split-pane:vertical > .split-pane-divider {
+    -fx-background-color: -fx-border-subtle;
+    -fx-padding: 1 0;
+}
+
+/* ---- Menu Bar ---- */
+.menu-bar {
+    -fx-background-color: -fx-sidebar-bg;
+    -fx-border-color: transparent transparent -fx-border-subtle transparent;
+    -fx-padding: 2 8;
+    -fx-min-height: 28px;
+}
+
+.menu-bar .menu .label {
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 12px;
+}
+
+.menu-bar .menu:hover {
+    -fx-background-color: -fx-bg-hover;
+    -fx-background-radius: 4px;
+}
+
+.menu-item {
+    -fx-padding: 4 16;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.menu-item:hover {
+    -fx-background-color: -fx-primary-bg;
+}
+
+.menu-item:hover .label {
+    -fx-text-fill: -fx-primary;
+}
+
+/* ---- Toggle Buttons ---- */
+.toggle-button {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-border-subtle;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 4 12;
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 12px;
+}
+
+.toggle-button:selected {
+    -fx-background-color: -fx-primary-bg;
+    -fx-border-color: -fx-primary;
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: 500;
+}
+
+/* ---- Tooltip ---- */
+.tooltip {
+    -fx-background-color: #2A2A3C;
+    -fx-text-fill: -fx-text-primary;
+    -fx-background-radius: 4px;
+    -fx-padding: 4 8;
+    -fx-font-size: 12px;
+    -fx-effect: -fx-shadow-md;
+}
+
+/* ---- Toolbar ---- */
+.tool-bar {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -fx-border-subtle transparent;
+    -fx-padding: 6 12;
+}
+
+/* ---- WebView ---- */
+.web-view {
+    -fx-border-color: -fx-border-subtle;
+    -fx-border-radius: 4px;
+}
+
+/* ---- Context Menu ---- */
+.context-menu {
+    -fx-background-color: -fx-bg-raised;
+    -fx-background-radius: 6px;
+    -fx-border-color: -fx-border-subtle;
+    -fx-border-radius: 6px;
+    -fx-padding: 4;
+    -fx-effect: -fx-shadow-lg;
+}
+
+.context-menu .menu-item {
+    -fx-padding: 6 12;
+    -fx-background-radius: 4px;
+}
+
+.context-menu .menu-item:hover {
+    -fx-background-color: -fx-primary-bg;
+}
+
+/* ---- Dialog / Alert ---- */
+.dialog-pane {
+    -fx-background-color: -fx-bg;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: -fx-bg-subtle;
+}
+
+.dialog-pane .button {
+    -fx-min-width: 80px;
+}
+
+/* ---- Spinner ---- */
+.spinner {
+    -fx-background-color: -fx-bg-inset;
+    -fx-border-color: -fx-border-subtle;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.spinner:focused {
+    -fx-border-color: -fx-primary;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: -fx-bg-hover;
+}
+
+/* ---- Progress Indicator ---- */
+.progress-indicator {
+    -fx-accent: -fx-primary;
+    -fx-progress-color: -fx-primary;
+}
+
+/* ---- AI Suggestions TextArea ---- */
+.text-area-ai {
+    -fx-background-color: -fx-primary-bg;
+    -fx-border-color: -fx-border-subtle;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10;
+}
+
+.text-area-ai .content {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+}

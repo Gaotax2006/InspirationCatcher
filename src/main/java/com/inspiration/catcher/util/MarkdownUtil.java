@@ -40,30 +40,32 @@ public class MarkdownUtil {
             """,getMarkdownStyles(), html);
         } catch (Exception e) {return "<pre>" + escapeHtml(markdown) + "</pre>";}
     }
-    // 获取 Markdown样式
+    // 获取 Markdown样式（深色主题）
     private static String getMarkdownStyles() {
         return """
-            .markdown-body {
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body.markdown-body {
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
                 "Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB", "Source Han Sans", "WenQuanYi Micro Hei", sans-serif;
                 font-size: 16px;
                 line-height: 1.6;
                 word-wrap: break-word;
                 padding: 20px;
-                color: #24292e;
-                background-color: #fff;
+                color: #E4E4E7;
+                background-color: #1E1E2E;
             }
             .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
                 margin-top: 24px;
                 margin-bottom: 16px;
                 font-weight: 600;
                 line-height: 1.25;
-                border-bottom: 1px solid #eaecef;
+                border-bottom: 1px solid #2A2A3C;
                 padding-bottom: 0.3em;
+                color: #F0C060;
             }
             .markdown-body h1 { font-size: 2em; }
             .markdown-body h2 { font-size: 1.5em; }
-            .markdown-body h3 { font-size: 1.25em; }
+            .markdown-body h3 { font-size: 1.25em; color: #E4E4E7; }
             .markdown-body p { margin-top: 0; margin-bottom: 16px; }
             .markdown-body ul, .markdown-body ol {
                 padding-left: 2em;
@@ -73,8 +75,8 @@ public class MarkdownUtil {
             .markdown-body li { margin-bottom: 0.25em; }
             .markdown-body blockquote {
                 padding: 0 1em;
-                color: #6a737d;
-                border-left: 0.25em solid #dfe2e5;
+                color: #A1A1AA;
+                border-left: 0.25em solid #3A3A4C;
                 margin: 0 0 16px 0;
             }
             .markdown-body pre {
@@ -82,18 +84,25 @@ public class MarkdownUtil {
                 overflow: auto;
                 font-size: 85%;
                 line-height: 1.45;
-                background-color: #f6f8fa;
+                background-color: #13131E;
                 border-radius: 6px;
                 margin-bottom: 16px;
                 font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, "Courier New", Courier, monospace;
+                border: 1px solid #2A2A3C;
             }
             .markdown-body code {
                 padding: 0.2em 0.4em;
                 margin: 0;
                 font-size: 85%;
-                background-color: rgba(27,31,35,0.05);
+                background-color: rgba(240, 192, 96, 0.1);
                 border-radius: 3px;
                 font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, "Courier New", Courier, monospace;
+                color: #F5D08A;
+            }
+            .markdown-body pre code {
+                background-color: transparent;
+                padding: 0;
+                color: #E4E4E7;
             }
             .markdown-body table {
                 border-spacing: 0;
@@ -103,35 +112,33 @@ public class MarkdownUtil {
             }
             .markdown-body table th, .markdown-body table td {
                 padding: 6px 13px;
-                border: 1px solid #dfe2e5;
+                border: 1px solid #3A3A4C;
             }
             .markdown-body table th {
                 font-weight: 600;
-                background-color: #f6f8fa;
+                background-color: #181825;
+                color: #F0C060;
+            }
+            .markdown-body table td {
+                color: #E4E4E7;
             }
             .markdown-body img { max-width: 100%; }
-            .markdown-body a { color: #0366d6; text-decoration: none; }
+            .markdown-body a { color: #F0C060; text-decoration: none; }
             .markdown-body a:hover { text-decoration: underline; }
             .markdown-body strong,
             .markdown-body b {
                 font-weight: 700;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
-                             "Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB",
-                             "Source Han Sans", "WenQuanYi Micro Hei", sans-serif;
+                color: #F5D08A;
             }
             .markdown-body em,
             .markdown-body i {
                 font-style: italic;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
-                             "Microsoft YaHei", "微软雅黑", "PingFang SC", "Hiragino Sans GB",
-                             "Source Han Sans", "WenQuanYi Micro Hei", sans-serif;
             }
-            .markdown-body * {font-family: inherit;}
             .markdown-body hr {
-                height: 0.25em;
+                height: 1px;
                 padding: 0;
                 margin: 24px 0;
-                background-color: #e1e4e8;
+                background-color: #3A3A4C;
                 border: 0;
             }
             """;

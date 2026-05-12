@@ -1,6 +1,6 @@
 package com.inspiration.catcher;
 
-import atlantafx.base.theme.PrimerLight;
+import atlantafx.base.theme.PrimerDark;
 import com.inspiration.catcher.dao.DatabaseManager;
 import com.inspiration.catcher.dao.ProjectDao;
 import javafx.application.Application;
@@ -61,8 +61,8 @@ public class MainApp extends Application {
                     alert.showAndWait();
                 });
             });
-            // 应用 AtlantaFX 主题
-            Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+            // 应用 AtlantaFX 深色主题
+            Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
             // 加载主界面
             primaryStage = stage;
             loadMainView();
@@ -103,12 +103,9 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/MainView.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root, 1200, 800);
-        // 加载CSS层叠：app.css (设计基础) → theme.css → components.css → main.css (最高优先级)
-        String[] cssFiles = {"/css/app.css", "/css/theme.css", "/css/components.css", "/css/main.css"};
-        for (String cssFile : cssFiles) {
-            URL cssUrl = getClass().getResource(cssFile);
-            if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
-        }
+        // 加载自定义样式（覆盖 AtlantaFX PrimerDark 基础主题）
+        URL cssUrl = getClass().getResource("/css/app.css");
+        if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
         primaryStage.setTitle("灵感捕手 - AI Powered Writing Assistant");
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(800);
