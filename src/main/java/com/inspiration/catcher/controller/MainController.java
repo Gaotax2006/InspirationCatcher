@@ -1,7 +1,7 @@
 package com.inspiration.catcher.controller;
 
+import com.inspiration.catcher.component.JGraphXMindMapView;
 import com.inspiration.catcher.component.MindMapHandler;
-import com.inspiration.catcher.component.MindMapView;
 import com.inspiration.catcher.manager.FontManager;
 import com.inspiration.catcher.manager.ShortcutManager;
 import com.inspiration.catcher.manager.TableManager;
@@ -56,7 +56,7 @@ public class MainController implements Initializable {
     private EditorController editorController;
     private AIPanelController aiPanelController;
     private MindMapHandler mindMapHandler;
-    private MindMapView mindMapView;
+    private JGraphXMindMapView mindMapView;
     private StatisticsManager statisticsManager;
     private SnippetsManager snippetsManager;
     private CollectionManager collectionManager;

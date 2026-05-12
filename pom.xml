@@ -45,6 +45,21 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- JavaFX Swing模块 - 用于在JavaFX中嵌入JGraphX -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JGraphX - 思维导图引擎 -->
+        <dependency>
+            <groupId>com.github.vlsi.mxgraph</groupId>
+            <artifactId>jgraphx</artifactId>
+            <version>4.2.2</version>
+        </dependency>
+
         <!-- Ikonli - 图标库 -->
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>

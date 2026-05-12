@@ -8,8 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Build fat JAR (shade plugin bundles runtime deps; JavaFX is provided scope)
 mvn clean package -DskipTests
 
-# Run (requires JavaFX SDK at javafx-sdk-21.0.1/lib)
-java --module-path "javafx-sdk-21.0.1/lib" --add-modules javafx.controls,javafx.fxml,javafx.web \
+# Run (requires JavaFX SDK at javafx-sdk-21.0.1/lib; javafx.swing needed for JGraphX)
+java --module-path "javafx-sdk-21.0.1/lib" --add-modules javafx.controls,javafx.fxml,javafx.web,javafx.swing \
   --add-opens javafx.graphics/javafx.scene=ALL-UNNAMED \
   --add-opens javafx.controls/javafx.scene.control=ALL-UNNAMED \
   -jar target/InspirationCatcher.jar
