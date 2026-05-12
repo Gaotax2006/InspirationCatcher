@@ -1,5 +1,6 @@
 package com.inspiration.catcher.controller;
 
+import com.inspiration.catcher.component.MindMapHandler;
 import com.inspiration.catcher.component.MindMapView;
 import com.inspiration.catcher.manager.FontManager;
 import com.inspiration.catcher.manager.ShortcutManager;
@@ -52,6 +53,7 @@ public class MainController implements Initializable {
     private FilterController filterController;
     private EditorController editorController;
     private AIPanelController aiPanelController;
+    private MindMapHandler mindMapHandler;
     private MindMapView mindMapView;
     // FXML injected UI components
     @FXML private ComboBox<Project> projectSelector;
@@ -218,6 +220,10 @@ public class MainController implements Initializable {
                     statusManager, () -> handleSave()
             );
             fontManager = new FontManager(configManager);
+            mindMapHandler = new MindMapHandler(mindMapPane, mindMapIdeaListContainer,
+                    statusLabel, mainTabPane, ideaManager, projectManager,
+                    editorController, tableManager);
+            mindMapHandler.setMindMapManager(mindMapManager);
             shortcutManager = new ShortcutManager(this);
             tableManager.setupTable();
             tableManager.loadDataToTable();
@@ -517,160 +523,18 @@ public class MainController implements Initializable {
         } catch (Exception e) { logger.error("Tag stats failed", e); statusManager.showError("Stats failed", e.getMessage()); }
     }
 
-    // Mind map initialization
+    // Mind map — delegated to MindMapHandler
     private void initializeMindMap() {
-        if (mindMapPane == null) { logger.error("mindMapPane is null"); return; }
-        try {
-            mindMapView = new MindMapView();
-            mindMapView.setIdeaJumpCallback(ideaId -> Platform.runLater(() -> jumpToIdea(ideaId)));
-            mindMapView.setPrefSize(800, 600);
-            if (mindMapManager != null) mindMapView.setMindMapManager(mindMapManager);
-            Project currentProject = projectManager.getCurrentProject();
-            if (currentProject != null) {
-                mindMapView.setCurrentProject(currentProject.getId());
-                loadIdeasToMindMapPanel(currentProject);
-            }
-            mindMapPane.getChildren().add(mindMapView);
-        } catch (Exception e) { logger.error("Mind map init failed", e); }
-    }
-
-    public void refreshMindMap() {
-        if (mindMapManager != null) {
-            Project p = projectManager.getCurrentProject();
-            if (p != null) { mindMapManager.loadProjectMindMap(p.getId()); loadIdeasToMindMapPanel(p); statusLabel.setText("Mind map refreshed"); }
+        if (mindMapHandler != null) {
+            mindMapHandler.initialize();
+            mindMapView = mindMapHandler.getMindMapView();
         }
     }
-
-    public void jumpToIdea(Integer ideaId) {
-        if (ideaId == null) return;
-        Idea idea = ideaManager.getIdeaById(ideaId);
-        if (idea == null) { statusLabel.setText("Idea not found: ID " + ideaId); return; }
-        mainTabPane.getSelectionModel().select(2);
-        editorController.switchToEditMode(idea);
-        tableManager.selectAndShowIdea(idea);
-        statusLabel.setText("Jumped to: " + (idea.getTitle() != null ? idea.getTitle() : "untitled"));
-    }
-
-    private void loadIdeasToMindMapPanel(Project project) {
-        if (project == null || mindMapIdeaListContainer == null) return;
-        mindMapIdeaListContainer.getChildren().clear();
-        List<Idea> ideas = ideaManager.getIdeasByProject(project.getId());
-        if (ideas == null || ideas.isEmpty()) {
-            Label empty = new Label("No ideas");
-            empty.setStyle("-fx-text-fill: #999; -fx-font-style: italic; -fx-padding: 20;");
-            mindMapIdeaListContainer.getChildren().add(empty);
-            return;
-        }
-        for (Idea idea : ideas) mindMapIdeaListContainer.getChildren().add(createMindMapIdeaCard(idea));
-    }
-
-    private Node createMindMapIdeaCard(Idea idea) {
-        VBox card = new VBox(5);
-        card.setPadding(new Insets(10));
-        card.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #E2DDD4; -fx-border-width: 1; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-effect: dropshadow(gaussian, rgba(44,41,36,0.06), 4, 0, 0, 1);");
-        card.setOnMouseEntered(_ -> card.setStyle("-fx-background-color: #EBE6DE; -fx-border-color: #CDC7BE; -fx-border-width: 1; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-cursor: hand;"));
-        card.setOnMouseExited(_ -> card.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #E2DDD4; -fx-border-width: 1; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-effect: dropshadow(gaussian, rgba(44,41,36,0.06), 4, 0, 0, 1);"));
-        HBox titleRow = new HBox(5);
-        titleRow.setAlignment(Pos.CENTER_LEFT);
-        titleRow.getChildren().add(createMindMapTypeIcon(idea.getType()));
-        Label titleLabel = new Label(idea.getTitle());
-        titleLabel.setStyle("-fx-text-fill: #C4843C; -fx-font-weight: bold; -fx-font-size: 14px;");
-        titleLabel.setWrapText(true);
-        HBox.setHgrow(titleLabel, Priority.ALWAYS);
-        titleRow.getChildren().add(titleLabel);
-        String preview = idea.getContent();
-        if (preview.length() > 80) preview = preview.substring(0, 80) + "...";
-        Label contentLabel = new Label(preview);
-        contentLabel.setStyle("-fx-text-fill: #7A746E; -fx-font-size: 12px;"); contentLabel.setWrapText(true);
-        HBox metaRow = new HBox(10);
-        metaRow.setAlignment(Pos.CENTER_LEFT);
-        HBox tagsBox = new HBox(3);
-        if (idea.getTags() != null && !idea.getTags().isEmpty()) {
-            for (int i = 0; i < Math.min(2, idea.getTags().size()); i++) {
-                Tag tag = idea.getTags().get(i);
-                Label tagLabel = new Label("#" + tag.getName());
-                tagLabel.setStyle(String.format("-fx-background-color: %s; -fx-text-fill: white; -fx-padding: 1 4; -fx-background-radius: 8; -fx-font-size: 12px;", tag.getColor() != null ? tag.getColor() : "#4A90E2"));
-                tagsBox.getChildren().add(tagLabel);
-            }
-        }
-        HBox starsBox = new HBox(1);
-        for (int i = 0; i < 5; i++) { Label star = new Label(i < idea.getImportance() ? "★" : "☆"); star.setStyle("-fx-text-fill: #C4843C; -fx-font-size: 16px;"); starsBox.getChildren().add(star); }
-        metaRow.getChildren().addAll(tagsBox, starsBox, createMindMapMoodIcon(idea.getMood()));
-        card.getChildren().addAll(titleRow, contentLabel, metaRow);
-        setupMindMapCardDrag(card, idea);
-        return card;
-    }
-
-    private Node createMindMapTypeIcon(Idea.IdeaType type) {
-        FontAwesomeSolid icon = switch (type) {
-            case IDEA -> FontAwesomeSolid.LIGHTBULB; case QUOTE -> FontAwesomeSolid.QUOTE_LEFT;
-            case QUESTION -> FontAwesomeSolid.QUESTION_CIRCLE; case TODO -> FontAwesomeSolid.CHECK_CIRCLE;
-            case DISCOVERY -> FontAwesomeSolid.SEARCH; case CONFUSION -> FontAwesomeSolid.QUESTION;
-            case HYPOTHESIS -> FontAwesomeSolid.FLASK;
-        };
-        FontIcon fi = new FontIcon(icon); fi.setIconSize(14); fi.setIconColor(javafx.scene.paint.Color.web("#C4843C"));
-        return fi;
-    }
-
-    private Node createMindMapMoodIcon(Idea.Mood mood) {
-        FontAwesomeSolid icon = switch (mood) {
-            case HAPPY -> FontAwesomeSolid.SMILE; case EXCITED -> FontAwesomeSolid.GRIN_STARS;
-            case CALM -> FontAwesomeSolid.SMILE_BEAM; case NEUTRAL -> FontAwesomeSolid.MEH;
-            case THOUGHTFUL -> FontAwesomeSolid.COMMENT; case CREATIVE -> FontAwesomeSolid.PALETTE;
-            case INSPIRED -> FontAwesomeSolid.STAR; case CURIOUS -> FontAwesomeSolid.SEARCH;
-            case CONFUSED -> FontAwesomeSolid.QUESTION; case FRUSTRATED -> FontAwesomeSolid.FROWN;
-        };
-        FontIcon fi = new FontIcon(icon); fi.setIconSize(14); fi.setIconColor(javafx.scene.paint.Color.web("#C4843C"));
-        return fi;
-    }
-
-    private void setupMindMapCardDrag(Node card, Idea idea) {
-        card.setOnDragDetected(event -> {
-            Dragboard db = card.startDragAndDrop(TransferMode.COPY);
-            ClipboardContent content = new ClipboardContent();
-            content.putString("idea:" + idea.getId());
-            Rectangle dragImage = new Rectangle(120, 60);
-            dragImage.setFill(javafx.scene.paint.Color.web("#C4843C", 0.9));
-            dragImage.setArcWidth(10); dragImage.setArcHeight(10);
-            Text dragText = new Text(idea.getTitle());
-            dragText.setFill(javafx.scene.paint.Color.BLACK);
-            dragText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-            Bounds tb = dragText.getBoundsInLocal();
-            dragText.setTranslateX((120 - tb.getWidth()) / 2);
-            dragText.setTranslateY((60 + tb.getHeight()) / 2 - 4);
-            db.setDragView(new Group(dragImage, dragText).snapshot(null, null));
-            db.setContent(content); event.consume();
-        });
-        card.setOnDragDone(_ -> card.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #E2DDD4; -fx-border-width: 1; -fx-border-radius: 6px; -fx-background-radius: 6px;"));
-    }
-
-    @FXML private void handleAddIdeaNodeToMindMap() { addMindMapNode("idea"); }
-    @FXML private void handleAddConceptNodeToMindMap() { addMindMapNode("concept"); }
-    @FXML private void handleAddExternalNodeToMindMap() { addMindMapNode("external"); }
-
-    private void addMindMapNode(String type) {
-        if (mindMapManager == null || mindMapView == null) return;
-        TextInputDialog dialog = new TextInputDialog();
-        String title = switch (type) {
-            case "idea" -> "Add Idea Node"; case "concept" -> "Add Concept Node"; default -> "Add External Link";
-        };
-        dialog.setTitle(title); dialog.setHeaderText("Create a new " + type + " node"); dialog.setContentText("Node text:");
-        dialog.showAndWait().ifPresent(text -> {
-            if (text.trim().isEmpty()) return;
-            double cx = mindMapPane.getWidth() / 2, cy = mindMapPane.getHeight() / 2;
-            if ("external".equals(type)) {
-                TextInputDialog urlDialog = new TextInputDialog("https://");
-                urlDialog.setTitle("URL"); urlDialog.setContentText("URL:");
-                urlDialog.showAndWait().ifPresent(url -> { if (!url.trim().isEmpty()) mindMapManager.createExternalNode(text.trim(), url.trim(), cx, cy); });
-            } else {
-                mindMapManager.createConceptNode(text.trim(), cx, cy);
-            }
-            if (mindMapView != null) mindMapView.redraw();
-        });
-    }
-
-    @FXML private void refreshMindMapIdeaList() {
-        Project p = projectManager.getCurrentProject();
-        if (p != null) { loadIdeasToMindMapPanel(p); logger.info("Mind map idea list refreshed"); }
-    }
+    public void refreshMindMap() { if (mindMapHandler != null) mindMapHandler.refresh(); }
+    public void jumpToIdea(Integer ideaId) { if (mindMapHandler != null) mindMapHandler.jumpToIdea(ideaId); }
+    public void loadIdeasToMindMapPanel(Project project) { if (mindMapHandler != null) mindMapHandler.loadIdeasToMindMapPanel(project); }
+    @FXML private void handleAddIdeaNodeToMindMap() { if (mindMapHandler != null) mindMapHandler.addConceptNode(); }
+    @FXML private void handleAddConceptNodeToMindMap() { if (mindMapHandler != null) mindMapHandler.addConceptNode(); }
+    @FXML private void handleAddExternalNodeToMindMap() { if (mindMapHandler != null) mindMapHandler.addExternalNode(); }
+    @FXML private void refreshMindMapIdeaList() { if (mindMapHandler != null) mindMapHandler.refreshIdeaList(); }
 }

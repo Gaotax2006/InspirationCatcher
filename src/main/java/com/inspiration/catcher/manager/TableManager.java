@@ -157,15 +157,10 @@ public class TableManager {
                     HBox stars = new HBox(2);
                     for (int i = 1; i <= 5; i++) {
                         FontIcon starIcon = new FontIcon(FontAwesomeSolid.STAR);
-                        starIcon.setIconSize(13);
-                        if (i <= importance) {
-                            // Bright gold for filled stars
-                            starIcon.setIconColor(Color.web("#E8A838"));
-                            starIcon.setStyle("-fx-effect: dropshadow(gaussian, rgba(232,168,56,0.3), 2, 0, 0, 0);");
-                        } else {
-                            // Visible light gray for empty stars
-                            starIcon.setIconColor(Color.web("#C0B8B0"));
-                        }
+                        starIcon.setIconSize(14);
+                        starIcon.setIconColor(i <= importance
+                                ? Color.web("#E8A838")
+                                : Color.web("#C8C0B8"));
                         stars.getChildren().add(starIcon);
                     }
                     setGraphic(stars);
