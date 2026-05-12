@@ -253,7 +253,8 @@
                                         <Region HBox.hgrow="ALWAYS"/>
                                         <Button text="添加灵感" onAction="#handleAddIdeaNodeToMindMap"
                                                 styleClass="button-outline button-sm"/>
-                                        <Button text="自动布局" styleClass="button-ghost button-sm" disable="true"/>
+                                        <Button text="自动布局" onAction="#handleAutoLayout" styleClass="button-ghost button-sm"/>
+                                        <Button text="导出图片" onAction="#handleExportMindMapImage" styleClass="button-ghost button-sm"/>
                                     </HBox>
                                 </top>
                                 <center>

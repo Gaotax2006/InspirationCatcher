@@ -255,6 +255,20 @@ public class MindMapHandler {
         });
     }
 
+    /** Apply tree auto-layout to organize the mind map */
+    public void applyAutoLayout() {
+        if (mindMapManager != null) {
+            mindMapManager.applyTreeLayout();
+            if (mindMapView != null) mindMapView.redraw();
+            statusLabel.setText("Auto-layout applied");
+        }
+    }
+
+    /** Export mind map as PNG image */
+    public void exportImage() {
+        if (mindMapView != null) mindMapView.exportToImage();
+    }
+
     public void refreshIdeaList() {
         Project p = projectManager.getCurrentProject();
         if (p != null) { loadIdeasToMindMapPanel(p); logger.info("Mind map idea list refreshed"); }

@@ -584,4 +584,6 @@ public class MainController implements Initializable {
     @FXML private void handleAddConceptNodeToMindMap() { if (mindMapHandler != null) mindMapHandler.addConceptNode(); }
     @FXML private void handleAddExternalNodeToMindMap() { if (mindMapHandler != null) mindMapHandler.addExternalNode(); }
     @FXML private void refreshMindMapIdeaList() { if (mindMapHandler != null) mindMapHandler.refreshIdeaList(); }
+    @FXML private void handleAutoLayout() { if (mindMapHandler != null) mindMapHandler.applyAutoLayout(); }
+    @FXML private void handleExportMindMapImage() { if (mindMapHandler != null) mindMapHandler.exportImage(); }
 }
