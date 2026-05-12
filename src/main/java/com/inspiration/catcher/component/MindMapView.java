@@ -45,7 +45,6 @@ public class MindMapView extends Pane {
     // 右侧画布组件
     private Canvas canvas;
     private Group nodeGroup;
-    private Group connectionGroup;
     // 交互状态
     private boolean isPanning = false;
     private double panStartX, panStartY;
@@ -116,7 +115,7 @@ public class MindMapView extends Pane {
     private void clear() {
         nodeUIMap.clear();
         nodeGroup.getChildren().clear();
-        connectionGroup.getChildren().clear();
+        // connectionGroup removed
         selectedNode = null;
     }
     // 更新节点显示
@@ -496,8 +495,6 @@ public class MindMapView extends Pane {
     // 更新连接显示
     private void updateConnections() {
         if (mindMapManager == null) return;
-        // 清空现有连接
-        connectionGroup.getChildren().clear();
         // 在画布上绘制连接线
         redrawConnections();
     }
@@ -986,9 +983,9 @@ public class MindMapView extends Pane {
         canvas.heightProperty().bind(contentPane.prefHeightProperty());
         // 创建分组用于管理节点和连接
         nodeGroup = new Group();
-        connectionGroup = new Group();
+        // connectionGroup removed
         // 添加组件到内容容器
-        contentPane.getChildren().addAll(canvas, connectionGroup, nodeGroup);
+        contentPane.getChildren().addAll(canvas, nodeGroup);
         // 设置ScrollPane的内容
         scrollPane.setContent(contentPane);
         // 监听画布大小变化，重新绘制
@@ -1055,7 +1052,7 @@ public class MindMapView extends Pane {
     // 取消连接
     private void cancelConnection() {
         if (tempConnectionLine != null) {
-            connectionGroup.getChildren().remove(tempConnectionLine);
+            // connectionGroup removed
             tempConnectionLine = null;
         }
         connectingSource = null;

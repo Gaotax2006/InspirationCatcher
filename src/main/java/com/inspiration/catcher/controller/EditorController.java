@@ -33,6 +33,10 @@ public class EditorController {
     private final TagManager tagManager = new TagManager();
     // 模式管理器
     private final EditorModeManager modeManager = new EditorModeManager();
+    // Preview scroll restoration — store listener ref to prevent leak
+    private javafx.beans.value.ChangeListener<javafx.concurrent.Worker.State> previewScrollListener;
+    // Autosave
+    private javafx.animation.PauseTransition autosaveTimer;
     public EditorController(TextField editorTitleField,
                             ComboBox<String> editorTypeCombo,
                             Spinner<Integer> importanceSpinner,
@@ -175,14 +179,32 @@ public class EditorController {
             return trimmed.substring(lastSeparatorIndex + 1);
         }
     }
+    // Autosave debounce state
+    private long lastEditTime = 0;
+    private static final long AUTOSAVE_DELAY_MS = 5000;
+
     //设置事件处理器
     public void setupEventHandlers() {
         // Markdown 内容变化时更新预览
         markdownEditor.textProperty().addListener((_, _, _) -> updateMarkdownPreview());
-        // 标题变化时自动保存草稿（可选）
-        editorTitleField.textProperty().addListener((_, _, _) -> {
-            // 这里可以添加自动保存草稿的逻辑
-        });
+        // 自动保存草稿（防抖5秒）
+        javafx.beans.value.ChangeListener<String> autosaveTrigger = (_, _, _) -> {
+            lastEditTime = System.currentTimeMillis();
+            Platform.runLater(() -> {
+                if (System.currentTimeMillis() - lastEditTime >= AUTOSAVE_DELAY_MS
+                        && !modeManager.isNewMode() && markdownEditor.getText().trim().length() > 10) {
+                    Idea idea = modeManager.getCurrentIdea();
+                    if (idea != null && idea.getId() != null) {
+                        idea.setContent(markdownEditor.getText());
+                        idea.setTitle(editorTitleField.getText());
+                        ideaManager.saveIdea(idea);
+                        mainController.getStatusLabel().setText("Draft auto-saved");
+                    }
+                }
+            });
+        };
+        markdownEditor.textProperty().addListener(autosaveTrigger);
+        editorTitleField.textProperty().addListener(autosaveTrigger);
     }
 
     //切换到新建模式
@@ -352,20 +374,7 @@ public class EditorController {
             }
         newIdea.setMood(mood);
         // 处理标签
-        String tagsText = tagsInputField.getText().trim();
-
-        if (!tagsText.isEmpty()) {
-            // 支持中文逗号、英文逗号、空格分隔
-            String[] tagNames = tagsText.split("[，,\\s]+");
-
-            for (String name : tagNames) {
-                String tagName = name.trim();
-                if (!tagName.isEmpty()) {
-                    Tag tag = tagManager.findOrCreateTag(tagName);
-                    if (tag != null && tag.getId() != null) newIdea.addTag(tag);
-                }
-            }
-        }
+        parseAndAssignTags(newIdea);
         LocalDateTime now = LocalDateTime.now();
         newIdea.setCreatedAt(now);
         newIdea.setUpdatedAt(now);
@@ -382,6 +391,19 @@ public class EditorController {
         saveTagsToDatabase(savedIdea);
         logger.info("新灵感创建成功: ID={}", savedIdea.getId());
         return savedIdea;
+    }
+
+    // Shared tag parsing: split comma/space-separated input, find-or-create each tag
+    private void parseAndAssignTags(Idea idea) {
+        String tagsText = tagsInputField.getText().trim();
+        if (tagsText.isEmpty()) return;
+        for (String name : tagsText.split("[，,\\s]+")) {
+            String tagName = name.trim();
+            if (!tagName.isEmpty()) {
+                Tag tag = tagManager.findOrCreateTag(tagName);
+                if (tag != null && tag.getId() != null) idea.addTag(tag);
+            }
+        }
     }
 
     // 保存标签到数据库
@@ -437,14 +459,8 @@ public class EditorController {
 
         // 更新标签
         if (tagsChanged) {
-            currentIdea.getTags().clear(); // 清空旧标签
-            if (!tagsText.isEmpty()) {
-                String[] tagNames = tagsText.split("[，,\\s]+");
-                for (String tagName : tagNames) if (!tagName.trim().isEmpty()) {
-                        Tag tag = tagManager.findOrCreateTag(tagName.trim());
-                        if (tag != null) currentIdea.addTag(tag);
-                }
-            }
+            currentIdea.getTags().clear();
+            parseAndAssignTags(currentIdea);
         }
         // 保存到数据库
         Idea savedIdea = ideaManager.saveIdea(currentIdea);
@@ -510,22 +526,24 @@ public class EditorController {
                 Object result = markdownPreview.getEngine().executeScript("window.scrollY || document.documentElement.scrollTop");
                 if (result instanceof Number) currentScrollTop = ((Number) result).doubleValue();
             } catch (Exception _) {}
-            // 标记当前是否需要恢复滚动位置
-            final double scrollPositionToRestore = currentScrollTop;
-            // 设置一个监听器，在页面加载完成后恢复滚动位置
-            markdownPreview.getEngine().getLoadWorker().stateProperty().addListener(
-                    (_, _, newState) -> {
-                        // 延迟一小段时间确保页面完全渲染
-                        if (newState == javafx.concurrent.Worker.State.SUCCEEDED) Platform.runLater(() -> {
-                            try {
-                                if (scrollPositionToRestore > 0) markdownPreview.getEngine().executeScript(
-                                        String.format("window.scrollTo(0, %f);", scrollPositionToRestore)
-                                );
-                            } catch (Exception _) {
-                            } // 忽略恢复滚动位置的错误
-                        });
+            // Remove previous scroll listener to prevent leak
+            if (previewScrollListener != null) {
+                markdownPreview.getEngine().getLoadWorker().stateProperty().removeListener(previewScrollListener);
+            }
+            // Set a one-shot scroll-restore listener
+            final double scrollPos = currentScrollTop;
+            previewScrollListener = (_, _, newState) -> {
+                if (newState == javafx.concurrent.Worker.State.SUCCEEDED) Platform.runLater(() -> {
+                    if (scrollPos > 0) {
+                        try { markdownPreview.getEngine().executeScript(
+                                String.format("window.scrollTo(0, %f);", scrollPos));
+                        } catch (Exception _) {}
                     }
-            );
+                    // Self-remove after firing
+                    markdownPreview.getEngine().getLoadWorker().stateProperty().removeListener(previewScrollListener);
+                });
+            };
+            markdownPreview.getEngine().getLoadWorker().stateProperty().addListener(previewScrollListener);
             // 加载新内容
             markdownPreview.getEngine().loadContent(html);
         } catch (Exception e) {
