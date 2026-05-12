@@ -180,13 +180,34 @@
    5. SIDEBAR / LIBRARY PANEL
    ============================================================== */
 .library-panel {
-    -fx-pref-width: 260px; -fx-min-width: 200px; -fx-max-width: 360px;
+    -fx-pref-width: 240px; -fx-min-width: 200px; -fx-max-width: 300px;
     -fx-background-color: -fx-sidebar-bg;
     -fx-border-color: transparent -fx-border-subtle transparent transparent;
     -fx-border-width: 0 1 0 0;
     -fx-padding: 0;
 }
-.library-header { -fx-padding: 12 12 8 12; -fx-spacing: 8; }
+.library-header { -fx-padding: 8 16 8 16; -fx-spacing: 6; }
+
+/* Sidebar logo area */
+.sidebar-logo {
+    -fx-padding: 0 16;
+    -fx-min-height: 56px;
+    -fx-pref-height: 56px;
+    -fx-border-color: transparent transparent -fx-border-subtle transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.sidebar-logo-icon {
+    -fx-min-width: 32px; -fx-min-height: 32px;
+    -fx-background-color: -fx-primary;
+    -fx-background-radius: 8px;
+    -fx-alignment: center;
+}
+.sidebar-logo-icon .ikonli-font-icon { -fx-icon-color: #FFFFFF; -fx-icon-size: 18px; }
+.sidebar-logo-text {
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -fx-text-primary;
+}
 .library-search {
     -fx-background-color: -fx-bg;
     -fx-background-radius: 6px;
@@ -225,12 +246,11 @@
    ============================================================== */
 .workspace { -fx-background-color: -fx-bg; -fx-padding: 0; }
 .workspace-toolbar {
-    -fx-background-color: -fx-bg;
-    -fx-border-color: transparent transparent -fx-border-subtle transparent;
-    -fx-border-width: 0 0 1 0;
-    -fx-padding: 6 16; -fx-spacing: 6;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 8 24; -fx-spacing: 8;
     -fx-alignment: center-left;
-    -fx-min-height: 36px;
+    -fx-min-height: 48px;
 }
 .workspace-content { -fx-padding: 0; -fx-background-color: transparent; }
 .page-title { -fx-font-size: 20px; -fx-font-weight: 600; -fx-text-fill: -fx-text-primary; }
@@ -295,15 +315,16 @@
    8. BUTTONS
    ============================================================== */
 .button {
-    -fx-background-color: -fx-bg;
-    -fx-background-radius: 6px;
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
     -fx-border-color: -fx-border-subtle;
-    -fx-border-radius: 6px;
+    -fx-border-radius: 8px;
     -fx-border-width: 1;
     -fx-padding: 6 14;
     -fx-cursor: hand;
     -fx-text-fill: -fx-text-primary;
     -fx-font-size: 12px; -fx-font-weight: 500;
+    -fx-min-height: 32px;
 }
 .button:hover { -fx-background-color: -fx-bg-hover; -fx-border-color: -fx-border-default; }
 .button:pressed, .button:armed { -fx-background-color: -fx-bg-active; }
@@ -359,19 +380,19 @@
    9. TEXT INPUTS
    ============================================================== */
 .text-field, .text-area {
-    -fx-background-color: -fx-bg;
+    -fx-background-color: -fx-bg-raised;
     -fx-border-color: -fx-border-subtle;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
-    -fx-padding: 6 10;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 8 12;
     -fx-font-size: 13px;
     -fx-text-fill: -fx-text-primary;
     -fx-prompt-text-fill: -fx-text-tertiary;
 }
 .text-field:focused, .text-area:focused {
     -fx-border-color: -fx-primary;
-    -fx-background-color: -fx-bg;
-    -fx-effect: -fx-shadow-glow;
+    -fx-background-color: -fx-bg-raised;
+    -fx-effect: dropshadow(gaussian, rgba(196,132,60,0.15), 0, 0, 0, 3);
 }
 .text-area { -fx-background-insets: 0; }
 .text-area .content { -fx-background-color: transparent; -fx-background-radius: 0; -fx-padding: 0; }
@@ -490,12 +511,13 @@
    14. TAGS & BADGES
    ============================================================== */
 .tag-label {
-    -fx-background-radius: 4px; -fx-padding: 2 6;
-    -fx-font-size: 11px; -fx-font-weight: 500;
+    -fx-background-radius: 999px; -fx-padding: 3 10;
+    -fx-font-size: 12px; -fx-font-weight: 500;
     -fx-text-fill: -fx-primary; -fx-background-color: -fx-primary-bg;
     -fx-cursor: hand;
+    -fx-border-color: transparent;
 }
-.tag-label:hover { -fx-opacity: 0.8; }
+.tag-label:hover { -fx-opacity: 0.85; }
 .badge { -fx-background-radius: 4px; -fx-padding: 2 6; -fx-font-size: 11px; -fx-font-weight: 600; -fx-text-fill: #FFFFFF; -fx-background-color: -fx-primary; }
 .badge-success { -fx-background-color: -fx-green; }
 .badge-danger { -fx-background-color: -fx-red; }

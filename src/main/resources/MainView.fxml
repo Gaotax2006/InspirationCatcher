@@ -54,11 +54,19 @@
             </VBox>
 
             <!-- ============================================================
-                 COL 2: Library Panel — project selector + search + filters
+                 COL 2: Sidebar — project selector + search + filters
                  ============================================================ -->
             <VBox styleClass="library-panel" spacing="0">
-                <HBox styleClass="library-header" spacing="8">
-                    <ComboBox fx:id="projectSelector" prefWidth="140" styleClass="combo-box"/>
+                <!-- Logo area -->
+                <HBox styleClass="sidebar-logo" spacing="10" alignment="CENTER_LEFT">
+                    <StackPane styleClass="sidebar-logo-icon">
+                        <FontIcon iconLiteral="fth-zap" iconSize="20"/>
+                    </StackPane>
+                    <Label text="灵感捕手" styleClass="sidebar-logo-text"/>
+                </HBox>
+
+                <HBox styleClass="library-header" spacing="6">
+                    <ComboBox fx:id="projectSelector" prefWidth="130" styleClass="combo-box"/>
                     <Button onAction="#handleNewProject" styleClass="button-icon"
                             prefWidth="28" prefHeight="28">
                         <graphic><FontIcon iconLiteral="fth-folder-plus" iconSize="14"/></graphic>
