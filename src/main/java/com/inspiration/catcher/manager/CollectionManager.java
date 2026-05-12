@@ -94,11 +94,19 @@ public class CollectionManager {
         }
         try {
             List<Collection> loaded = mapper.readValue(file, new TypeReference<List<Collection>>() {});
-            collections.clear();
-            collections.addAll(loaded);
-            logger.info("Loaded {} collections", collections.size());
-        } catch (IOException e) {
-            logger.warn("Failed to load collections, using defaults", e);
+            if (loaded != null && !loaded.isEmpty()) {
+                collections.clear();
+                collections.addAll(loaded);
+                logger.info("Loaded {} collections", collections.size());
+                return;
+            }
+        } catch (Exception e) {
+            logger.debug("Collections file issue (non-fatal): {}", e.getMessage());
+        }
+        // Fallback defaults
+        if (collections.isEmpty()) {
+            Collection c1 = new Collection("收藏"); c1.setId(1); collections.add(c1);
+            Collection c2 = new Collection("稍后阅读"); c2.setId(2); collections.add(c2);
         }
     }
 

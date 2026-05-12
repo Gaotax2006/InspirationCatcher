@@ -77,6 +77,18 @@ public class MindMapHandler {
     public void initialize() {
         if (mindMapPane == null) { logger.error("mindMapPane is null"); return; }
         try {
+            // Graceful fallback if javafx.swing or JGraphX classes are absent
+            try {
+                Class.forName("javafx.embed.swing.SwingNode");
+                Class.forName("com.mxgraph.swing.mxGraphComponent");
+            } catch (ClassNotFoundException e) {
+                Label fallback = new Label("思维导图需要 javafx.swing 模块。\n请添加 --add-modules javafx.swing 到运行参数");
+                fallback.setStyle("-fx-font-size: 14px; -fx-text-fill: -fx-text-secondary; -fx-padding: 40;");
+                fallback.setWrapText(true);
+                mindMapPane.getChildren().add(fallback);
+                logger.warn("JGraphX not available: {}", e.getMessage());
+                return;
+            }
             jgraphxView = new JGraphXMindMapView();
             jgraphxView.setPrefSize(800, 600);
             if (mindMapManager != null) jgraphxView.setMindMapManager(mindMapManager);
@@ -87,8 +99,11 @@ public class MindMapHandler {
             }
             mindMapPane.getChildren().add(jgraphxView);
             logger.info("JGraphX mind map initialized");
-        } catch (Exception e) {
-            logger.error("JGraphX mind map init failed", e);
+        } catch (NoClassDefFoundError | Exception e) {
+            logger.error("JGraphX mind map init failed: {}", e.getMessage());
+            Label fallback = new Label("思维导图初始化失败: " + e.getMessage());
+            fallback.setStyle("-fx-font-size: 14px; -fx-text-fill: -fx-red; -fx-padding: 40;");
+            mindMapPane.getChildren().add(fallback);
         }
     }
 

@@ -37,7 +37,7 @@ echo @echo off > release\%RELEASE_DIR%\run.bat
 echo chcp 65001 > nul >>  release\%RELEASE_DIR%\run.bat
 echo echo 正在启动灵感捕手... >> release\%RELEASE_DIR%\run.bat
 echo echo ======================================== >> release\%RELEASE_DIR%\run.bat
-echo java --module-path "./javafx-sdk-21.0.1/lib" --add-modules javafx.controls,javafx.fxml,javafx.web -jar "%APP_NAME%.jar" >> release\%RELEASE_DIR%\run.bat
+echo java --module-path "./javafx-sdk-21.0.1/lib" --add-modules javafx.controls,javafx.fxml,javafx.web,javafx.swing -jar "%APP_NAME%.jar" >> release\%RELEASE_DIR%\run.bat
 echo echo. >> release\%RELEASE_DIR%\run.bat
 echo echo 程序已退出 >> release\%RELEASE_DIR%\run.bat
 echo pause >> release\%RELEASE_DIR%\run.bat
@@ -46,7 +46,7 @@ REM 创建Mac/Linux启动脚本
 echo #!/bin/bash > release\%RELEASE_DIR%\run.sh
 echo echo "正在启动灵感捕手..." >> release\%RELEASE_DIR%\run.sh
 echo echo "========================================" >> release\%RELEASE_DIR%\run.sh
-echo java --module-path "./javafx-sdk-21.0.1/lib" --add-modules javafx.controls,javafx.fxml,javafx.web -jar "%APP_NAME%.jar" >> release\%RELEASE_DIR%\run.sh
+echo java --module-path "./javafx-sdk-21.0.1/lib" --add-modules javafx.controls,javafx.fxml,javafx.web,javafx.swing -jar "%APP_NAME%.jar" >> release\%RELEASE_DIR%\run.sh
 echo echo "" >> release\%RELEASE_DIR%\run.sh
 echo echo "程序已退出" >> release\%RELEASE_DIR%\run.sh
 
@@ -82,7 +82,7 @@ echo. >> release\%RELEASE_DIR%\README.md
 echo ### 错误: "JavaFX模块找不到" >> release\%RELEASE_DIR%\README.md
 echo 使用以下命令启动: >> release\%RELEASE_DIR%\README.md
 echo ``` bash >> release\%RELEASE_DIR%\README.md
-echo java --module-path "./javafx-sdk-21.0.1/lib" --add-modules javafx.controls,javafx.fxml,javafx.web -jar InspirationCatcher.jar >> release\%RELEASE_DIR%\README.md
+echo java --module-path "./javafx-sdk-21.0.1/lib" --add-modules javafx.controls,javafx.fxml,javafx.web,javafx.swing -jar InspirationCatcher.jar >> release\%RELEASE_DIR%\README.md
 echo ``` >> release\%RELEASE_DIR%\README.md
 
 pause

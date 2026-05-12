@@ -25,15 +25,18 @@ public class IdeaManager {
     public IdeaManager(ProjectManager projectManager) {this.projectManager = projectManager;}
     // 加载所有灵感
     public void loadAllIdeas() {
-        logger.info("加载所有灵感");
+        logger.debug("加载所有灵感");
         Project currentProject = projectManager.getCurrentProject();
         ideaList.clear();
         if (currentProject == null) currentProject = projectManager.findDefaultProject();
         List<Idea> ideas = ideaDao.findByProjectId(currentProject.getId());
         ideaList.addAll(ideas);
-        logger.info("成功加载 {} 条灵感", ideas.size());
+        logger.debug("成功加载 {} 条灵感", ideas.size());
     }
-    public ObservableList<Idea> getIdeaList() {loadAllIdeas(); return ideaList;}
+    public ObservableList<Idea> getIdeaList() {
+        if (ideaList.isEmpty()) loadAllIdeas();
+        return ideaList;
+    }
     public int getIdeaCount() {
         return ideaList.size();
     }

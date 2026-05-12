@@ -45,7 +45,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- JavaFX Swing模块 - 用于在JavaFX中嵌入JGraphX -->
+        <!-- JavaFX Swing模块 - 用于在JavaFX中嵌入JGraphX（模块路径运行，provided不打包） -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
