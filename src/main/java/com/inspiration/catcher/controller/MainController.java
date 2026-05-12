@@ -186,7 +186,7 @@ public class MainController implements Initializable {
         if (tableManager != null) tableManager.loadDataToTable();
         if (mindMapManager != null) { mindMapManager.setCurrentProject(project); refreshMindMap(); }
         if (filterController != null) filterController.updateFilterPredicate();
-        if (statusLabel != null) statusLabel.setText("Current: " + project.getName() + " - " + ideaManager.getIdeaCount() + " ideas");
+        if (statusLabel != null) statusLabel.setText(project.getName() + " - " + ideaManager.getIdeaCount() + " 条灵感");
         updateStatistics();
         ideaTableView.refresh();
     }
@@ -268,12 +268,12 @@ public class MainController implements Initializable {
             int filtered = tableManager.getFilteredCount();
             int weekly = ideaManager.getWeeklyCount();
             String topTag = ideaManager.getTopTag();
-            totalIdeasLabel.setText("Total: " + total);
-            weeklyIdeasLabel.setText("+ " + weekly + " this week");
-            topTagLabel.setText("Tag: " + topTag);
+            totalIdeasLabel.setText("共 " + total);
+            weeklyIdeasLabel.setText("本周 +" + weekly);
+            topTagLabel.setText("标签: " + topTag);
             statusLabel.setText(filtered == total
-                    ? "Showing all " + total + " ideas"
-                    : "Showing " + filtered + " of " + total + " ideas");
+                    ? "显示全部 " + total + " 条灵感"
+                    : "显示 " + filtered + " 条（共 " + total + " 条）");
         } catch (Exception e) { logger.error("Failed to update statistics", e); }
     }
 
@@ -310,7 +310,7 @@ public class MainController implements Initializable {
             }
         } catch (Exception e) {
             logger.error("Failed to refresh table", e);
-            statusLabel.setText("Refresh failed: " + e.getMessage());
+            statusLabel.setText("刷新失败: " + e.getMessage());
         }
     }
 
@@ -352,7 +352,7 @@ public class MainController implements Initializable {
             Project newProject = projectManager.createProject(projectName, "", "#36B37E");
             if (newProject != null) {
                 projectManager.switchToProject(newProject);
-                statusLabel.setText("Created and switched to: " + projectName);
+                statusLabel.setText("已创建并切换到项目: " + projectName);
             }
         });
     }
@@ -381,7 +381,7 @@ public class MainController implements Initializable {
                 try {
                     ideaManager.deleteIdea(selected);
                     tableManager.refreshTable();
-                    statusLabel.setText("Idea deleted");
+                    statusLabel.setText("灵感已删除");
                     updateStatistics(); updateHotTags();
                 } catch (Exception e) { statusManager.showError("Delete failed", e.getMessage()); }
             }
@@ -408,7 +408,7 @@ public class MainController implements Initializable {
         }
     }
 
-    @FXML public void handleSave() { logger.info("Save clicked"); editorController.saveCurrentIdea(); updateStatistics(); }
+    @FXML public void handleSave() { logger.info("保存"); editorController.saveCurrentIdea(); updateStatistics(); }
 
     // Font controls
     @FXML private void handleIncreaseFont() { fontManager.increaseFontSize(); fontManager.updateAllFonts(this); statusLabel.setText("Font increased"); }

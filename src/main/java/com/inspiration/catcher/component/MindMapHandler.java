@@ -99,7 +99,7 @@ public class MindMapHandler {
             if (p != null) {
                 mindMapManager.loadProjectMindMap(p.getId());
                 loadIdeasToMindMapPanel(p);
-                statusLabel.setText("Mind map refreshed");
+                statusLabel.setText("思维导图已刷新");
             }
         }
     }
@@ -260,7 +260,7 @@ public class MindMapHandler {
         if (mindMapManager != null) {
             mindMapManager.applyTreeLayout();
             if (mindMapView != null) mindMapView.redraw();
-            statusLabel.setText("Auto-layout applied");
+            statusLabel.setText("自动布局完成");
         }
     }
 
