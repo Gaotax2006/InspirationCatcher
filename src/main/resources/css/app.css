@@ -165,12 +165,13 @@
 .nav-item.active .ikonli-font-icon { -fx-icon-color: -fx-primary; }
 
 .nav-brand {
-    -fx-min-width: 32px; -fx-min-height: 32px;
+    -fx-min-width: 8px; -fx-min-height: 8px;
+    -fx-max-width: 8px; -fx-max-height: 8px;
     -fx-background-color: -fx-primary;
-    -fx-background-radius: 8px;
+    -fx-background-radius: 4px;
     -fx-alignment: center;
+    -fx-margin: 12 0 4 0;
 }
-.nav-brand .ikonli-font-icon { -fx-icon-color: #FFFFFF; -fx-icon-size: 16px; }
 .nav-rail-separator {
     -fx-min-height: 1px; -fx-max-height: 1px;
     -fx-background-color: -fx-border-subtle;
@@ -455,17 +456,28 @@
 .table-view .column-header .label { -fx-font-weight: 700; -fx-font-size: 12px; -fx-text-fill: -fx-text-secondary; -fx-underline: true; }
 .table-view .filler { -fx-background-color: transparent; }
 .table-row-cell {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent transparent -fx-border-subtle transparent;
-    -fx-border-width: 0 0 1px 0;
-    -fx-padding: 3 0;
-    -fx-cell-size: 40px;
+    -fx-background-color: -fx-bg-raised;
+    -fx-background-radius: 8px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 4 8;
+    -fx-cell-size: 48px;
     -fx-text-fill: -fx-text-primary;
+    -fx-effect: -fx-shadow-xs;
+    -fx-background-insets: 4px 8px;
 }
-.table-row-cell:hover { -fx-background-color: #F0ECE6; }
-.table-row-cell:selected { -fx-background-color: -fx-primary-bg; }
-.table-row-cell:selected .text { -fx-fill: -fx-primary-dark; -fx-font-weight: 600; }
-.table-row-cell:empty { -fx-border-color: transparent; }
+.table-row-cell:hover {
+    -fx-background-color: -fx-bg-raised;
+    -fx-effect: -fx-shadow-md;
+}
+.table-row-cell:selected {
+    -fx-background-color: -fx-bg-raised;
+    -fx-border-color: transparent transparent transparent -fx-primary;
+    -fx-border-width: 0 0 0 3px;
+    -fx-background-insets: 4px 8px 4px 5px;
+}
+.table-row-cell:selected .text { -fx-fill: -fx-primary; -fx-font-weight: 600; }
+.table-row-cell:empty { -fx-background-color: transparent; -fx-effect: none; -fx-border-width: 0; }
 .table-view .table-cell { -fx-padding: 5 8; -fx-font-size: 13px; -fx-text-fill: -fx-text-primary; -fx-border-color: transparent; }
 
 /* ==============================================================
