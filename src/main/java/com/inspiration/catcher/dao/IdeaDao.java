@@ -96,7 +96,7 @@ public class IdeaDao {
                 }
             }
             return idea;
-        } catch (SQLException e) {return idea;}
+        } catch (SQLException e) {logger.error("插入灵感失败", e); return null;}
         finally {try {if (pstmt != null) pstmt.close();} catch (SQLException _) {}}
     }
     // 更新灵感
@@ -146,7 +146,6 @@ public class IdeaDao {
             logger.info("保存了 {} 个标签关联", idea.getTags().size());
         } catch (SQLException e) {
             logger.error("保存标签关联失败", e);
-            e.printStackTrace();
         }
     }
     // 更新标签-复用保存逻辑
@@ -161,6 +160,7 @@ public class IdeaDao {
         PreparedStatement selectUsageStmt = null;
         try {
             conn = DatabaseManager.getConnection();
+            if (conn == null) { logger.error("删除灵感失败: 数据库连接为null"); return false; }
             conn.setAutoCommit(false);
             // 1. 获取这个灵感的所有标签ID
             List<Integer> tagIds = new ArrayList<>();
@@ -215,7 +215,7 @@ public class IdeaDao {
             return true;
         } catch (SQLException e) {
             logger.error("删除灵感失败: id={}", id, e);
-            try {if (!conn.isClosed()) conn.rollback();
+            try {if (conn != null && !conn.isClosed()) conn.rollback();
             } catch (SQLException rollbackEx) {logger.error("回滚事务失败", rollbackEx);}
             return false;
         } finally {// 清理资源

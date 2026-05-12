@@ -1096,9 +1096,10 @@ public class MindMapView extends Pane {
     // 更改连接类型
     private void changeConnectionType(MindMapConnection conn,
                                       MindMapConnection.ConnectionType newType) {
-        // TODO: 实现连接类型更新
-        // mindMapManager.updateConnectionType(conn.getId(), newType);
-        logger.info("更改连接类型: {} -> {}", conn.getConnectionType(), newType);
+        if (mindMapManager != null) {
+            mindMapManager.updateConnectionType(conn.getId(), newType);
+            redraw();
+        }
     }
     // 创建画布工具栏
     private Node createCanvasToolbar() {
@@ -1202,8 +1203,8 @@ public class MindMapView extends Pane {
                 e.consume();
             }
         });
-        // 缩放（鼠标滚轮）
-        contentPane.setOnScroll(e -> {
+        // 缩放（鼠标滚轮）- 用 addEventFilter 防止被 ScrollPane 截获
+        contentPane.addEventFilter(ScrollEvent.SCROLL, e -> {
             double delta = e.getDeltaY() > 0 ? SCALE_STEP : -SCALE_STEP;
             double newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale + delta));
             if (newScale != scale) {
@@ -1248,23 +1249,18 @@ public class MindMapView extends Pane {
         contentPane.setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
             boolean success = false;
-            logger.debug("拖拽释放，数据: {}", db.getString());
             if (db.hasString() && db.getString().startsWith("idea:")) {
                 String data = db.getString();
                 String[] parts = data.split(":");
                 if (parts.length == 2 && mindMapManager != null) {
                     try {
                         int ideaId = Integer.parseInt(parts[1]);
-                        // 计算画布坐标（考虑缩放和平移）
-                        Point2D contentLocal = contentPane.sceneToLocal(event.getSceneX(), event.getSceneY());
-                        double canvasX = contentLocal.getX();
-                        double canvasY = contentLocal.getY();
-                        logger.info("在位置 ({}, {}) 创建灵感节点，灵感ID: {}",
-                                canvasX, canvasY, ideaId);
-                        // 创建灵感节点
+                        // 将屏幕坐标转换为画布逻辑坐标（反转 scale 和 translate）
+                        Point2D paneLocal = contentPane.sceneToLocal(event.getSceneX(), event.getSceneY());
+                        double canvasX = (paneLocal.getX() - translateX.get()) / scale;
+                        double canvasY = (paneLocal.getY() - translateY.get()) / scale;
                         mindMapManager.createIdeaNode(ideaId, canvasX, canvasY);
                         success = true;
-
                     } catch (NumberFormatException e) {logger.error("解析灵感ID失败: {}", data, e);}
                 }
             }

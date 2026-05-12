@@ -60,26 +60,23 @@ public class AIPanelController {
         }
         Idea selected = ideaTableView.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            statusLabel.setText("🤖 AI思考中...");
-            aiSuggestions.setText("正在生成AI建议，请稍候...");
+            statusLabel.setText("🤖 AI生成中...");
+            aiSuggestions.setText("");
             disableAIButtons();
-            ideaManager.generateAISuggestions(selected)
-                    .thenAccept(suggestions -> Platform.runLater(() -> {
-                        aiSuggestions.setText(suggestions);
-                        statusLabel.setText("AI建议生成完成");
-                        enableAIButtons();
-                        addInsertButtons();
-                        synchronized (aiLock) { isAIGenerating = false; }
-                    }))
-                    .exceptionally(e -> {
-                        Platform.runLater(() -> {
-                            aiSuggestions.setText("AI建议生成失败: " + e.getMessage());
-                            statusLabel.setText("AI生成失败");
-                            enableAIButtons();
-                            synchronized (aiLock) { isAIGenerating = false; }
-                        });
-                        return null;
-                    });
+            aiService.generateSuggestionsStreaming(selected,
+                token -> Platform.runLater(() -> aiSuggestions.appendText(token)),
+                () -> Platform.runLater(() -> {
+                    statusLabel.setText("AI建议生成完成");
+                    enableAIButtons();
+                    addInsertButtons();
+                    synchronized (aiLock) { isAIGenerating = false; }
+                }),
+                error -> Platform.runLater(() -> {
+                    statusLabel.setText("AI生成失败: " + error.getMessage());
+                    enableAIButtons();
+                    synchronized (aiLock) { isAIGenerating = false; }
+                })
+            );
         } else {
             statusManager.showAlert("请先选择一个灵感");
             synchronized (aiLock) { isAIGenerating = false; }
@@ -176,24 +173,23 @@ public class AIPanelController {
     }
 
     private void generateWithCustomPrompt(Idea idea, String customPrompt) {
-        statusLabel.setText("🤖 AI正在根据您的提示词思考...");
-        aiSuggestions.setText("正在生成AI扩展，请稍候...");
+        statusLabel.setText("🤖 AI生成中...");
+        aiSuggestions.setText("");
         disableAIButtons();
-        aiService.generateWithCustomPrompt(customPrompt)
-                .thenAccept(suggestions -> Platform.runLater(() -> {
-                    displayAIResults(idea, suggestions, customPrompt);
-                    enableAIButtons();
-                    synchronized (aiLock) { isAIGenerating = false; }
-                }))
-                .exceptionally(e -> {
-                    Platform.runLater(() -> {
-                        aiSuggestions.setText("AI扩展生成失败: " + e);
-                        statusLabel.setText("AI扩展失败");
-                        enableAIButtons();
-                        synchronized (aiLock) { isAIGenerating = false; }
-                    });
-                    return null;
-                });
+        aiService.generateWithCustomPromptStreaming(customPrompt,
+            token -> Platform.runLater(() -> aiSuggestions.appendText(token)),
+            () -> Platform.runLater(() -> {
+                statusLabel.setText("AI扩展生成完成");
+                enableAIButtons();
+                addAIResultActions(idea, customPrompt);
+                synchronized (aiLock) { isAIGenerating = false; }
+            }),
+            error -> Platform.runLater(() -> {
+                statusLabel.setText("AI扩展失败: " + error.getMessage());
+                enableAIButtons();
+                synchronized (aiLock) { isAIGenerating = false; }
+            })
+        );
     }
 
     private void displayAIResults(Idea idea, String suggestions, String usedPrompt) {
