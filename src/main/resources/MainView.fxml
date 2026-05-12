@@ -76,6 +76,16 @@
                             prefWidth="32" prefHeight="32" minWidth="32">
                         <graphic><FontIcon iconLiteral="fth-plus" iconSize="16"/></graphic>
                     </Button>
+                    <Button onAction="#handleSaveProjectToFile" styleClass="button-icon"
+                            prefWidth="28" prefHeight="28">
+                        <graphic><FontIcon iconLiteral="fth-download" iconSize="14"/></graphic>
+                        <tooltip><Tooltip text="保存项目到文件"/></tooltip>
+                    </Button>
+                    <Button onAction="#handleOpenProjectFromFile" styleClass="button-icon"
+                            prefWidth="28" prefHeight="28">
+                        <graphic><FontIcon iconLiteral="fth-folder" iconSize="14"/></graphic>
+                        <tooltip><Tooltip text="从文件打开项目"/></tooltip>
+                    </Button>
                 </HBox>
 
                 <TextField fx:id="searchField" promptText="搜索灵感..."
@@ -114,21 +124,35 @@
                     </VBox>
                 </TitledPane>
 
-                <VBox spacing="4" style="-fx-padding: 4 12 0 12;">
-                    <Label text="热门标签" styleClass="library-section-title"/>
-                    <FlowPane fx:id="tagCloud" hgap="5" vgap="5" prefHeight="60" maxHeight="80"/>
+                <VBox spacing="4" style="-fx-padding: 4 12 0 12;" VBox.vgrow="NEVER">
+                    <Label text="标签导航" styleClass="library-section-title"/>
+                    <TreeView fx:id="tagTreeView" prefHeight="120" maxHeight="160"
+                              style="-fx-background-color: transparent; -fx-border-color: transparent;"/>
                 </VBox>
 
                 <Region VBox.vgrow="ALWAYS"/>
 
-                <!-- Statistics in sidebar footer -->
-                <VBox spacing="3" style="-fx-padding: 8 12;">
-                    <Label text="统计" styleClass="library-section-title"/>
-                    <HBox spacing="8">
-                        <Label fx:id="totalIdeasLabel" styleClass="text-xs text-tertiary"/>
-                        <Label fx:id="weeklyIdeasLabel" styleClass="text-xs text-tertiary"/>
-                    </HBox>
-                </VBox>
+                <!-- Statistics Dashboard -->
+                <TitledPane text="统计" animated="true" collapsible="true" expanded="false"
+                            styleClass="titled-pane">
+                    <VBox spacing="4" style="-fx-padding: 0 8 8 8;">
+                        <HBox spacing="6">
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <Label fx:id="totalIdeasLabel" styleClass="stat-number"/>
+                                <Label text="总计" styleClass="stat-label"/>
+                            </VBox>
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <Label fx:id="weeklyIdeasLabel" styleClass="stat-number"/>
+                                <Label text="本周" styleClass="stat-label"/>
+                            </VBox>
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <Label fx:id="topTagLabel" styleClass="stat-number" wrapText="true"/>
+                                <Label text="热门标签" styleClass="stat-label"/>
+                            </VBox>
+                        </HBox>
+                        <VBox fx:id="chartContainer" spacing="6" VBox.vgrow="ALWAYS"/>
+                    </VBox>
+                </TitledPane>
             </VBox>
 
             <!-- ============================================================
@@ -177,9 +201,14 @@
                                 <Button text="删除" onAction="#handleDeleteIdea"
                                         styleClass="button-danger button-sm"/>
                                 <Separator orientation="VERTICAL"/>
+                                <Button text="收藏" fx:id="favoriteBtn" onAction="#handleToggleFavorite"
+                                        styleClass="button-ghost button-sm"/>
+                                <Separator orientation="VERTICAL"/>
                                 <Button text="导出 JSON" onAction="#handleExportJson"
                                         styleClass="button-ghost button-sm"/>
                                 <Button text="导出 MD" onAction="#handleExportMarkdown"
+                                        styleClass="button-ghost button-sm"/>
+                                <Button text="导出 HTML" onAction="#handleExportHtml"
                                         styleClass="button-ghost button-sm"/>
                                 <Separator orientation="VERTICAL"/>
                                 <Button onAction="#handleCleanUnusedTags" styleClass="button-icon"
@@ -194,17 +223,11 @@
                                 </Button>
                             </HBox>
 
-                            <!-- Table -->
+                            <!-- Card-style Table (single column) -->
                             <TableView fx:id="ideaTableView" VBox.vgrow="ALWAYS"
                                        style="-fx-padding: 0 12 0 12;">
                                 <columns>
-                                    <TableColumn text="标题" fx:id="titleColumn" prefWidth="200"/>
-                                    <TableColumn text="类型" fx:id="typeColumn" prefWidth="80"/>
-                                    <TableColumn text="重要性" fx:id="importanceColumn" minWidth="80" prefWidth="100"/>
-                                    <TableColumn text="心情" fx:id="moodColumn" prefWidth="80"/>
-                                    <TableColumn text="标签" fx:id="tagsColumn" prefWidth="200"/>
-                                    <TableColumn text="创建时间" fx:id="createdAtColumn" prefWidth="180"/>
-                                    <TableColumn text="更新时间" fx:id="updatedAtColumn" prefWidth="180"/>
+                                    <TableColumn text="" fx:id="cardColumn" prefWidth="200"/>
                                 </columns>
                             </TableView>
 
@@ -324,6 +347,8 @@
                                         <Button text="🔗" onAction="#handleLink" styleClass="button-toolbar"/>
                                         <Button text="🖼" onAction="#handleImage" styleClass="button-toolbar"/>
                                         <Region HBox.hgrow="ALWAYS"/>
+                                        <Button text="片段" onAction="#showSnippetsMenu"
+                                                styleClass="button-ghost button-sm"/>
                                         <Button text="大纲" onAction="#generateOutline"
                                                 styleClass="button-ghost button-sm"/>
                                         <Button text="预览" onAction="#refreshPreview"

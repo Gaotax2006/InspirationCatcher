@@ -443,42 +443,81 @@
 .tab-pane-floating .tab-header-area { -fx-padding: 0 8; }
 
 /* ==============================================================
-   12. TABLE VIEW
+   12. CARD TABLE VIEW — single-column card layout
    ============================================================== */
-.table-view { -fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 0; }
-.table-view .column-header-background { -fx-background-color: transparent; }
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-fixed-cell-size: -1; /* disable uniform cell height — cards are dynamic */
+}
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-min-height: 0;
+    -fx-padding: 0;
+}
 .table-view .column-header {
     -fx-background-color: transparent;
-    -fx-border-color: transparent transparent -fx-border-subtle transparent;
-    -fx-border-width: 0 0 1px 0;
-    -fx-padding: 8 6;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-min-height: 0;
+    -fx-opacity: 0;
+    -fx-visible: false;
 }
-.table-view .column-header .label { -fx-font-weight: 700; -fx-font-size: 12px; -fx-text-fill: -fx-text-secondary; -fx-underline: true; }
-.table-view .filler { -fx-background-color: transparent; }
+.table-view .column-header .label {
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+.table-view .filler { -fx-background-color: transparent; -fx-pref-height: 0; -fx-max-height: 0; }
+.table-view .column-header-background .nested-column-header { -fx-pref-height: 0; -fx-max-height: 0; -fx-min-height: 0; }
+
+/* Card-style rows */
 .table-row-cell {
-    -fx-background-color: -fx-bg-raised;
-    -fx-background-radius: 8px;
+    -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-border-width: 0;
     -fx-padding: 4 8;
-    -fx-cell-size: 48px;
-    -fx-text-fill: -fx-text-primary;
-    -fx-effect: -fx-shadow-xs;
-    -fx-background-insets: 4px 8px;
+    -fx-cell-size: -1;
+    -fx-background-insets: 0;
 }
 .table-row-cell:hover {
-    -fx-background-color: -fx-bg-raised;
-    -fx-effect: -fx-shadow-md;
+    -fx-background-color: transparent;
 }
 .table-row-cell:selected {
-    -fx-background-color: -fx-bg-raised;
-    -fx-border-color: transparent transparent transparent -fx-primary;
-    -fx-border-width: 0 0 0 3px;
-    -fx-background-insets: 4px 8px 4px 5px;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
 }
-.table-row-cell:selected .text { -fx-fill: -fx-primary; -fx-font-weight: 600; }
-.table-row-cell:empty { -fx-background-color: transparent; -fx-effect: none; -fx-border-width: 0; }
-.table-view .table-cell { -fx-padding: 5 8; -fx-font-size: 13px; -fx-text-fill: -fx-text-primary; -fx-border-color: transparent; }
+.table-row-cell:selected .table-cell {
+    -fx-background-color: transparent;
+}
+.table-row-cell:empty {
+    -fx-background-color: transparent;
+    -fx-effect: none;
+}
+.table-view .table-cell {
+    -fx-padding: 6 10;
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+
+/* Card cell highlight when row selected */
+.table-row-cell:selected .idea-card-row {
+    -fx-border-color: -fx-primary !important;
+    -fx-border-width: 2 !important;
+    -fx-effect: dropshadow(gaussian, rgba(196,132,60,0.2), 8, 0, 0, 2) !important;
+}
+
+/* Card hover effect */
+.idea-card-row:hover {
+    -fx-effect: dropshadow(gaussian, rgba(44,41,36,0.08), 8, 0, 0, 2) !important;
+    -fx-translate-y: -1;
+}
 
 /* ==============================================================
    13. AI & CHAT
@@ -673,3 +712,65 @@
 .spinner .increment-arrow-button:hover, .spinner .decrement-arrow-button:hover { -fx-background-color: -fx-bg-hover; }
 
 .progress-indicator { -fx-accent: -fx-primary; }
+
+/* ==============================================================
+   21. STAT CARDS & DASHBOARD
+   ============================================================== */
+.stat-card {
+    -fx-background-color: -fx-bg-raised;
+    -fx-background-radius: 6px;
+    -fx-border-color: -fx-border-subtle;
+    -fx-border-radius: 6px;
+    -fx-padding: 8 6;
+    -fx-alignment: center;
+    -fx-spacing: 2;
+    -fx-effect: dropshadow(gaussian, rgba(44,41,36,0.04), 2, 0, 0, 1);
+}
+.stat-number {
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -fx-primary;
+    -fx-alignment: center;
+}
+.stat-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -fx-text-tertiary;
+    -fx-alignment: center;
+}
+
+/* PieChart and BarChart styling */
+.chart {
+    -fx-padding: 4;
+    -fx-background-color: -fx-bg-raised;
+    -fx-background-radius: 6px;
+}
+.chart-title {
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -fx-text-secondary;
+}
+.chart-pie-label {
+    -fx-font-size: 10px;
+    -fx-fill: -fx-text-tertiary;
+}
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-font-size: 10px;
+}
+.axis-label {
+    -fx-font-size: 10px;
+    -fx-text-fill: -fx-text-tertiary;
+}
+.chart-bar {
+    -fx-bar-fill: -fx-primary;
+}
+.chart-pie {
+    -fx-pie-color-1: #C4843C;
+    -fx-pie-color-2: #5B7FAF;
+    -fx-pie-color-3: #8B6FAF;
+    -fx-pie-color-4: #5B8C5A;
+    -fx-pie-color-5: #C4A84C;
+    -fx-pie-color-6: #C45656;
+    -fx-pie-color-7: #D4A76A;
+}

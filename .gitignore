@@ -44,6 +44,8 @@ release/
 logs/
 out/
 javafx-sdk-*/
+collections.json
+projects/
 dependency-reduced-pom.xml
 *.properties
 !src/main/java/com/inspiration/catcher/config/ai.properties
