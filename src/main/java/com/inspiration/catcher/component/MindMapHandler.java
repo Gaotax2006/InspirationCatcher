@@ -150,17 +150,16 @@ public class MindMapHandler {
     // === Card rendering ===
 
     private Node createIdeaCard(Idea idea) {
-        VBox card = new VBox(5);
+        VBox card = new VBox(6);
         card.setPadding(new Insets(10));
-        card.setStyle(cardBaseStyle());
-        card.setOnMouseEntered(_ -> card.setStyle(cardHoverStyle()));
-        card.setOnMouseExited(_ -> card.setStyle(cardBaseStyle()));
+        card.getStyleClass().add("idea-card");
+        card.getStyleClass().add("card");
 
         HBox titleRow = new HBox(5);
         titleRow.setAlignment(Pos.CENTER_LEFT);
         titleRow.getChildren().add(createTypeIcon(idea.getType()));
         Label titleLabel = new Label(idea.getTitle());
-        titleLabel.setStyle("-fx-text-fill: #C4843C; -fx-font-weight: bold; -fx-font-size: 14px;");
+        titleLabel.getStyleClass().add("idea-card-title");
         titleLabel.setWrapText(true);
         HBox.setHgrow(titleLabel, Priority.ALWAYS);
         titleRow.getChildren().add(titleLabel);
@@ -168,26 +167,26 @@ public class MindMapHandler {
         String preview = idea.getContent();
         if (preview != null && preview.length() > 80) preview = preview.substring(0, 80) + "...";
         Label contentLabel = new Label(preview != null ? preview : "");
-        contentLabel.setStyle("-fx-text-fill: #7A746E; -fx-font-size: 12px;");
+        contentLabel.getStyleClass().add("idea-card-preview");
         contentLabel.setWrapText(true);
 
-        HBox metaRow = new HBox(10);
-        metaRow.setAlignment(Pos.CENTER_LEFT);
+        HBox metaRow = new HBox(8);
+        metaRow.getStyleClass().add("idea-card-meta");
         HBox tagsBox = new HBox(3);
         if (idea.getTags() != null && !idea.getTags().isEmpty()) {
             for (int i = 0; i < Math.min(2, idea.getTags().size()); i++) {
                 Tag tag = idea.getTags().get(i);
                 Label tagLabel = new Label("#" + tag.getName());
+                String c = tag.getColor() != null ? tag.getColor() : "#C4843C";
                 tagLabel.setStyle(String.format(
-                        "-fx-background-color: %s; -fx-text-fill: white; -fx-padding: 1 4; -fx-background-radius: 8; -fx-font-size: 12px;",
-                        tag.getColor() != null ? tag.getColor() : "#C4843C"));
+                        "-fx-background-color: %1$s; -fx-text-fill: white; -fx-padding: 1 6; -fx-background-radius: 8; -fx-font-size: 11px;", c));
                 tagsBox.getChildren().add(tagLabel);
             }
         }
         HBox starsBox = new HBox(1);
         for (int i = 0; i < 5; i++) {
             Label star = new Label(i < idea.getImportance() ? "★" : "☆");
-            star.setStyle("-fx-text-fill: #C4843C; -fx-font-size: 16px;");
+            star.getStyleClass().add(i < idea.getImportance() ? "idea-card-star-filled" : "idea-card-star-empty");
             starsBox.getChildren().add(star);
         }
         metaRow.getChildren().addAll(tagsBox, starsBox, createMoodIcon(idea.getMood()));
@@ -241,7 +240,7 @@ public class MindMapHandler {
             db.setDragView(new Group(dragImage, dragText).snapshot(null, null));
             db.setContent(content); event.consume();
         });
-        card.setOnDragDone(_ -> card.setStyle(cardBaseStyle()));
+        card.setOnDragDone(_ -> card.setOpacity(1.0));
     }
 
     // === Public action commands ===
@@ -313,16 +312,5 @@ public class MindMapHandler {
         if (p != null) { loadIdeasToMindMapPanel(p); logger.info("Mind map idea list refreshed"); }
     }
 
-    // === Card styles ===
-
-    private static String cardBaseStyle() {
-        return "-fx-background-color: #FFFFFF; -fx-border-color: #E2DDD4; -fx-border-width: 1; " +
-               "-fx-border-radius: 6px; -fx-background-radius: 6px; " +
-               "-fx-effect: dropshadow(gaussian, rgba(44,41,36,0.06), 4, 0, 0, 1);";
-    }
-
-    private static String cardHoverStyle() {
-        return "-fx-background-color: #EBE6DE; -fx-border-color: #CDC7BE; -fx-border-width: 1; " +
-               "-fx-border-radius: 6px; -fx-background-radius: 6px; -fx-cursor: hand;";
-    }
+    // Card styles are now defined via CSS classes (app.css: .idea-card, .card, .idea-card-meta, etc.)
 }

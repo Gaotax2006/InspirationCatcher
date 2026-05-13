@@ -53,6 +53,8 @@
                 </VBox>
             </VBox>
 
+            <SplitPane HBox.hgrow="ALWAYS" dividerPositions="0.18"
+                       style="-fx-background-color: transparent; -fx-padding: 0;">
             <!-- ============================================================
                  COL 2: Sidebar — project selector + search + filters
                  ============================================================ -->
@@ -402,6 +404,7 @@
                     </Tab>
                 </TabPane>
             </VBox>
+        </SplitPane>
         </HBox>
     </center>
 

@@ -181,10 +181,8 @@
    5. SIDEBAR / LIBRARY PANEL
    ============================================================== */
 .library-panel {
-    -fx-pref-width: 240px; -fx-min-width: 200px; -fx-max-width: 300px;
+    -fx-pref-width: 240px; -fx-min-width: 200px;
     -fx-background-color: -fx-sidebar-bg;
-    -fx-border-color: transparent -fx-border-subtle transparent transparent;
-    -fx-border-width: 0 1 0 0;
     -fx-padding: 0;
 }
 .library-header { -fx-padding: 8 16 8 16; -fx-spacing: 6; }
@@ -295,22 +293,49 @@
 
 .idea-card {
     -fx-background-color: -fx-bg-raised;
-    -fx-background-radius: 6px;
+    -fx-background-radius: 8px;
     -fx-border-color: -fx-border-subtle;
-    -fx-border-radius: 6px;
+    -fx-border-radius: 8px;
     -fx-border-width: 1;
-    -fx-padding: 8;
-    -fx-spacing: 4;
+    -fx-padding: 10;
+    -fx-spacing: 6;
     -fx-cursor: hand;
-    -fx-effect: -fx-shadow-xs;
+    -fx-effect: dropshadow(gaussian, rgba(44,41,36,0.05), 3, 0, 0, 1);
 }
 .idea-card:hover {
     -fx-background-color: -fx-bg-hover;
-    -fx-border-color: -fx-border-default;
-    -fx-effect: -fx-shadow-sm;
+    -fx-border-color: -fx-primary-light;
+    -fx-effect: dropshadow(gaussian, rgba(196,132,60,0.10), 8, 0, 0, 2);
+    -fx-translate-y: -1;
 }
-.idea-card-title { -fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: -fx-text-primary; }
-.idea-card-preview { -fx-font-size: 12px; -fx-text-fill: -fx-text-secondary; }
+.idea-card-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #C4843C;
+}
+.idea-card-preview {
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-text-secondary;
+    -fx-line-spacing: 2;
+}
+.idea-card-meta {
+    -fx-spacing: 8;
+    -fx-alignment: center-left;
+}
+.idea-card-tag {
+    -fx-background-radius: 8px;
+    -fx-padding: 1 6;
+    -fx-font-size: 11px;
+}
+.idea-card-star {
+    -fx-font-size: 14px;
+}
+.idea-card-star-filled {
+    -fx-text-fill: #E8A838;
+}
+.idea-card-star-empty {
+    -fx-text-fill: #D0C8C0;
+}
 
 /* ==============================================================
    8. BUTTONS
@@ -642,9 +667,16 @@
 .separator { -fx-padding: 4 0; }
 .separator .line { -fx-border-color: -fx-border-subtle; -fx-border-width: 0 0 1 0; }
 .split-pane { -fx-background-color: transparent; -fx-padding: 0; }
-.split-pane:horizontal > .split-pane-divider { -fx-background-color: -fx-border-subtle; -fx-padding: 0 1; }
-.split-pane:horizontal > .split-pane-divider:hover { -fx-background-color: -fx-primary-light; -fx-padding: 0 2; }
-.split-pane:vertical > .split-pane-divider { -fx-background-color: -fx-border-subtle; -fx-padding: 1 0; }
+.split-pane:horizontal > .split-pane-divider {
+    -fx-background-color: -fx-border-subtle;
+    -fx-padding: 0 3;
+    -fx-background-insets: 0;
+}
+.split-pane:horizontal > .split-pane-divider:hover {
+    -fx-background-color: -fx-primary-light;
+    -fx-padding: 0 4;
+}
+.split-pane:horizontal > .split-pane-divider .vertical-grabber { -fx-visible: false; }
 
 .menu-bar { -fx-background-color: -fx-bg-subtle; -fx-border-color: transparent transparent -fx-border-subtle transparent; -fx-padding: 2 8; -fx-min-height: 28px; }
 .menu-bar .menu .label { -fx-text-fill: -fx-text-secondary; -fx-font-size: 12px; }

@@ -93,39 +93,41 @@ public class JGraphXMindMapView extends VBox {
         graph.setAutoSizeCells(true);
         graph.setHtmlLabels(true);
 
-        // Vertex styles
+        // Vertex styles — warm palette matching "Warm Paper" theme
         Map<String, Object> vs = graph.getStylesheet().getDefaultVertexStyle();
-        vs.put(mxConstants.STYLE_SHAPE, "rect");
-        vs.put("rounded", true);
-        vs.put("arcSize", 14);
-        vs.put(mxConstants.STYLE_FILLCOLOR, "#4A90E2");
+        vs.put(mxConstants.STYLE_SHAPE, "roundrect");
+        vs.put(mxConstants.STYLE_ARCSIZE, 16);
+        vs.put(mxConstants.STYLE_FILLCOLOR, "#C4843C");
+        vs.put(mxConstants.STYLE_GRADIENTCOLOR, "#D4A76A");
         vs.put(mxConstants.STYLE_FONTCOLOR, "#FFFFFF");
         vs.put(mxConstants.STYLE_FONTSIZE, 13);
+        vs.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
         vs.put(mxConstants.STYLE_ALIGN, "center");
         vs.put(mxConstants.STYLE_VERTICAL_ALIGN, "middle");
         vs.put(mxConstants.STYLE_WHITE_SPACE, "wrap");
+        vs.put(mxConstants.STYLE_SHADOW, true);
 
-        // Edge styles
+        // Edge styles — warm grey, organic curve
         Map<String, Object> es = graph.getStylesheet().getDefaultEdgeStyle();
-        es.put(mxConstants.STYLE_STROKECOLOR, "#999999");
+        es.put(mxConstants.STYLE_STROKECOLOR, "#C4B8A8");
         es.put(mxConstants.STYLE_STROKEWIDTH, 2);
-        es.put("rounded", true);
-        es.put(mxConstants.STYLE_EDGE, "entityRelationEdgeStyle");
+        es.put(mxConstants.STYLE_ROUNDED, true);
+        es.put(mxConstants.STYLE_EDGE, mxConstants.EDGESTYLE_TOPTOBOTTOM);
         es.put("curved", true);
-        es.put(mxConstants.STYLE_ENDARROW, "classic");
-        es.put("endSize", 6);
+        es.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_CLASSIC);
+        es.put(mxConstants.STYLE_ENDSIZE, 8);
         es.put(mxConstants.STYLE_FONTSIZE, 11);
-        es.put(mxConstants.STYLE_FONTCOLOR, "#888888");
-        es.put(mxConstants.STYLE_LABEL_BACKGROUNDCOLOR, "#FFFFFF");
+        es.put(mxConstants.STYLE_FONTCOLOR, "#9A9088");
+        es.put(mxConstants.STYLE_LABEL_BACKGROUNDCOLOR, "#F7F4F0");
         es.put(mxConstants.STYLE_EXIT_X, 1.0);
         es.put(mxConstants.STYLE_EXIT_Y, 0.5);
         es.put(mxConstants.STYLE_ENTRY_X, 0.0);
         es.put(mxConstants.STYLE_ENTRY_Y, 0.5);
 
-        addNodeStyle("root", "#4A90E2", 16, 1);
-        addNodeStyle("idea", "#FF6B6B", 14, 1);
-        addNodeStyle("concept", "#36B37E", 13, 0);
-        addNodeStyle("external", "#FFD166", 13, 2);
+        addNodeStyle("root", "#C4843C", "#E8B86A", 16, mxConstants.FONT_BOLD);
+        addNodeStyle("idea", "#E86868", "#F09090", 14, mxConstants.FONT_BOLD);
+        addNodeStyle("concept", "#4A9E6B", "#70C08A", 13, 0);
+        addNodeStyle("external", "#D4A84C", "#E8C870", 13, mxConstants.FONT_ITALIC);
 
         graphComponent = new mxGraphComponent(graph);
         graphComponent.getViewport().setOpaque(true);
@@ -160,9 +162,10 @@ public class JGraphXMindMapView extends VBox {
         }
     }
 
-    private void addNodeStyle(String name, String fillColor, int fontSize, int fontStyle) {
+    private void addNodeStyle(String name, String fillColor, String gradColor, int fontSize, int fontStyle) {
         Map<String, Object> style = new HashMap<>(graph.getStylesheet().getDefaultVertexStyle());
         style.put(mxConstants.STYLE_FILLCOLOR, fillColor);
+        style.put(mxConstants.STYLE_GRADIENTCOLOR, gradColor);
         style.put(mxConstants.STYLE_FONTSIZE, fontSize);
         style.put(mxConstants.STYLE_FONTSTYLE, fontStyle);
         graph.getStylesheet().putCellStyle(name, style);
@@ -196,10 +199,24 @@ public class JGraphXMindMapView extends VBox {
             nodeCellMap.clear();
             edgeCellMap.clear();
             graph.getModel().beginUpdate();
-            try { graph.removeCells(graph.getChildVertices(graph.getDefaultParent())); }
-            finally { graph.getModel().endUpdate(); }
-            syncNodes();
-            syncEdges();
+            try {
+                graph.removeCells(graph.getChildVertices(graph.getDefaultParent()));
+                for (MindMapNode node : mindMapManager.getNodes()) {
+                    String text = node.getText() != null ? node.getText() : "节点";
+                    double w = Math.min(160, Math.max(80, text.length() * 8));
+                    mxCell cell = (mxCell) graph.insertVertex(graph.getDefaultParent(),
+                        String.valueOf(node.getId()), text, node.getX(), node.getY(), w, 36, styleFor(node));
+                    nodeCellMap.put(node.getId(), cell);
+                }
+                for (MindMapConnection conn : mindMapManager.getConnections()) {
+                    mxCell src = nodeCellMap.get(conn.getSourceNodeId());
+                    mxCell tgt = nodeCellMap.get(conn.getTargetNodeId());
+                    if (src == null || tgt == null) continue;
+                    Object edgeObj = graph.insertEdge(graph.getDefaultParent(), String.valueOf(conn.getId()),
+                        conn.getLabel() != null ? conn.getLabel() : "", src, tgt, "");
+                    if (edgeObj instanceof mxCell me) edgeCellMap.put(conn.getId(), me);
+                }
+            } finally { graph.getModel().endUpdate(); }
         } finally { isInternalUpdate = false; }
     }
 
@@ -269,13 +286,13 @@ public class JGraphXMindMapView extends VBox {
         mxCompactTreeLayout layout = new mxCompactTreeLayout(graph, true);
         layout.setUseBoundingBox(false);
         layout.setEdgeRouting(true);
-        layout.setLevelDistance(120);
-        layout.setNodeDistance(40);
+        layout.setLevelDistance(160);
+        layout.setNodeDistance(60);
         layout.setResizeParent(false);
         graph.getModel().beginUpdate();
         try { layout.execute(graph.getDefaultParent()); }
         finally { graph.getModel().endUpdate(); }
-        // Sync positions
+        // Sync positions back to model
         graph.getModel().beginUpdate();
         try {
             for (Map.Entry<Integer, mxCell> e : nodeCellMap.entrySet()) {
