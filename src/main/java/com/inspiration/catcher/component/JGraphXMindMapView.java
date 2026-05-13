@@ -135,6 +135,18 @@ public class JGraphXMindMapView extends VBox {
         graph.addListener("cellsConnected", this::onCellsConnected);
         graph.addListener("labelChanged", this::onLabelChanged);
 
+        // Right-click context menu (Freeplane-style)
+        graphComponent.getGraphControl().addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseReleased(java.awt.event.MouseEvent e) {
+                if (e.isPopupTrigger()) showContextMenu(e.getX(), e.getY());
+            }
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                if (e.isPopupTrigger()) showContextMenu(e.getX(), e.getY());
+            }
+        });
+
         // Defer SwingNode content assignment to AWT event thread via Platform.runLater
         // so JavaFX layout is complete before Swing component is attached.
         Platform.runLater(() -> {
@@ -374,6 +386,150 @@ public class JGraphXMindMapView extends VBox {
             if (bounds != null) graphComponent.getGraphControl().scrollRectToVisible(bounds.getRectangle());
             forceRefresh();
         }
+    }
+
+    // ============================================================
+    //  Right-Click Context Menu (Freeplane-style)
+    // ============================================================
+
+    private void showContextMenu(int x, int y) {
+        Object cell = graphComponent.getCellAt(x, y);
+        javax.swing.JPopupMenu menu = new javax.swing.JPopupMenu();
+
+        if (cell instanceof mxCell mxCell && mxCell.isVertex()) {
+            int nodeId = parseIntId(mxCell.getId());
+            MindMapNode node = nodeId > 0 && mindMapManager != null ? mindMapManager.findNodeById(nodeId) : null;
+            if (node == null) return;
+
+            javax.swing.JMenuItem editItem = new javax.swing.JMenuItem("编辑属性");
+            editItem.addActionListener(_ -> showNodePropertiesDialog(node));
+            menu.add(editItem);
+
+            menu.addSeparator();
+
+            javax.swing.JMenu typeMenu = new javax.swing.JMenu("更改类型");
+            for (MindMapNode.NodeType t : MindMapNode.NodeType.values()) {
+                javax.swing.JMenuItem item = new javax.swing.JMenuItem(t.getDisplayName());
+                item.addActionListener(_ -> changeNodeType(nodeId, t));
+                typeMenu.add(item);
+            }
+            menu.add(typeMenu);
+
+            menu.addSeparator();
+
+            javax.swing.JMenuItem addChildItem = new javax.swing.JMenuItem("添加子节点");
+            addChildItem.addActionListener(_ -> addChildNode(nodeId));
+            menu.add(addChildItem);
+
+            javax.swing.JMenuItem addSiblingItem = new javax.swing.JMenuItem("添加同级节点");
+            addSiblingItem.addActionListener(_ -> addSiblingNode(nodeId));
+            menu.add(addSiblingItem);
+
+            if (!node.isRoot()) {
+                menu.addSeparator();
+                javax.swing.JMenuItem deleteItem = new javax.swing.JMenuItem("删除节点");
+                deleteItem.addActionListener(_ -> deleteNodeWithCell(nodeId));
+                menu.add(deleteItem);
+            }
+        } else if (cell instanceof mxCell mxEdge && mxEdge.isEdge()) {
+            int connId = parseIntId(mxEdge.getId());
+            javax.swing.JMenuItem deleteEdgeItem = new javax.swing.JMenuItem("删除连接");
+            deleteEdgeItem.addActionListener(_ -> deleteConnectionWithCell(connId));
+            menu.add(deleteEdgeItem);
+
+            javax.swing.JMenuItem editLabelItem = new javax.swing.JMenuItem("编辑标签");
+            editLabelItem.addActionListener(_ -> showEdgeLabelDialog(connId));
+            menu.add(editLabelItem);
+
+            menu.addSeparator();
+
+            javax.swing.JMenu typeMenu = new javax.swing.JMenu("连接类型");
+            for (MindMapConnection.ConnectionType t : MindMapConnection.ConnectionType.values()) {
+                javax.swing.JMenuItem item = new javax.swing.JMenuItem(t.getDisplayName());
+                item.addActionListener(_ -> {
+                    if (mindMapManager != null) {
+                        mindMapManager.updateConnectionType(connId, t);
+                    }
+                });
+                typeMenu.add(item);
+            }
+            menu.add(typeMenu);
+        } else {
+            // Canvas: add node at click position
+            javax.swing.JMenuItem addNodeItem = new javax.swing.JMenuItem("添加概念节点");
+            final int cx = x, cy = y;
+            addNodeItem.addActionListener(_ -> addNodeAtPosition(cx, cy));
+            menu.add(addNodeItem);
+        }
+
+        menu.show(graphComponent.getGraphControl(), x, y);
+    }
+
+    private void showNodePropertiesDialog(MindMapNode node) {
+        javafx.application.Platform.runLater(() -> {
+            javafx.scene.control.TextInputDialog dialog = new javafx.scene.control.TextInputDialog(node.getText());
+            dialog.setTitle("节点属性");
+            dialog.setHeaderText("编辑节点: " + node.getText());
+            dialog.setContentText("文字:");
+            dialog.showAndWait().ifPresent(newText -> {
+                if (mindMapManager != null && !newText.trim().isEmpty())
+                    mindMapManager.updateNodeText(node.getId(), newText.trim());
+            });
+        });
+    }
+
+    private void changeNodeType(int nodeId, MindMapNode.NodeType newType) {
+        if (mindMapManager != null) {
+            mindMapManager.updateNodeType(nodeId, newType);
+        }
+    }
+
+    private void addChildNode(int parentNodeId) {
+        if (mindMapManager == null) return;
+        MindMapNode parent = mindMapManager.findNodeById(parentNodeId);
+        if (parent == null) return;
+        mindMapManager.createConceptNode("新节点", parent.getX() + 180, parent.getY() + 40);
+    }
+
+    private void addSiblingNode(int nodeId) {
+        if (mindMapManager == null) return;
+        MindMapNode node = mindMapManager.findNodeById(nodeId);
+        if (node == null) return;
+        var parents = mindMapManager.getParentNodes(nodeId);
+        if (!parents.isEmpty()) {
+            mindMapManager.createConceptNode("新同级", parents.get(0).getX() + 180, parents.get(0).getY() + 80);
+        } else {
+            mindMapManager.createConceptNode("新节点", node.getX() + 100, node.getY() + 60);
+        }
+    }
+
+    private void deleteNodeWithCell(int nodeId) {
+        if (mindMapManager != null) mindMapManager.deleteNode(nodeId);
+    }
+
+    private void deleteConnectionWithCell(int connId) {
+        if (mindMapManager != null) mindMapManager.deleteConnection(connId);
+    }
+
+    private void showEdgeLabelDialog(int connId) {
+        if (mindMapManager == null) return;
+        MindMapConnection conn = mindMapManager.findConnectionById(connId);
+        if (conn == null) return;
+        String input = javax.swing.JOptionPane.showInputDialog(graphComponent, "连接标签:", conn.getLabel());
+        if (input != null) {
+            mindMapManager.updateConnectionLabel(connId, input);
+        }
+    }
+
+    private void addNodeAtPosition(int x, int y) {
+        if (mindMapManager == null) return;
+        // Approximate canvas coordinates from pixel coordinates
+        double scale = graphComponent.getGraph().getView().getScale();
+        double tx = graphComponent.getGraph().getView().getTranslate().getX();
+        double ty = graphComponent.getGraph().getView().getTranslate().getY();
+        double canvasX = (x - tx) / scale;
+        double canvasY = (y - ty) / scale;
+        mindMapManager.createConceptNode("新节点", canvasX, canvasY);
     }
 
     /**

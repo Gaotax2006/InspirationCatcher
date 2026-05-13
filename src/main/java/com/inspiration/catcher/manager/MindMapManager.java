@@ -283,8 +283,25 @@ public class MindMapManager {
         }
 
     }
+    // 更新节点类型
+    public boolean updateNodeType(int nodeId, MindMapNode.NodeType newType) {
+        MindMapNode node = nodeMap.get(nodeId);
+        if (node == null) return false;
+        node.setNodeType(newType);
+        node.setUpdatedAt(LocalDateTime.now());
+        MindMapNode saved = nodeDao.save(node);
+        if (saved != null) {
+            nodeMap.put(nodeId, saved);
+            int idx = nodes.indexOf(node);
+            if (idx != -1) nodes.set(idx, saved);
+            if (onDataChangedListener != null) onDataChangedListener.run();
+            return true;
+        }
+        return false;
+    }
+
     // 根据ID查找连接
-    private MindMapConnection findConnectionById(int connectionId) {
+    public MindMapConnection findConnectionById(int connectionId) {
         for (MindMapConnection conn : connections) if(conn.getId() == connectionId) return conn;
         return null;
     }
