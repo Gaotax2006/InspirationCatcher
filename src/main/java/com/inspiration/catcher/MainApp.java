@@ -46,11 +46,14 @@ public class MainApp extends Application {
             ensureDefaultProject();
             // 设置全局异常处理
             Thread.setDefaultUncaughtExceptionHandler((_, throwable) -> {
-                // JGraphX SwingNode DnD 冲突是无害的已知问题，屏蔽
-                if (throwable instanceof java.awt.dnd.InvalidDnDOperationException
-                        && throwable.getMessage() != null
-                        && throwable.getMessage().contains("Drag and drop in progress")) {
-                    logger.debug("JGraphX DnD harmless exception suppressed");
+                // JGraphX SwingNode DnD 冲突引起的异常都是无害的，静默忽略
+                String msg = throwable.getMessage() != null ? throwable.getMessage() : "";
+                boolean isJGraphXDnD = throwable instanceof java.awt.dnd.InvalidDnDOperationException
+                        && msg.contains("Drag and drop in progress");
+                boolean isJGraphXCorruptedState = throwable instanceof IndexOutOfBoundsException
+                        && containsCall(throwable, "com.mxgraph.swing");
+                if (isJGraphXDnD || isJGraphXCorruptedState) {
+                    logger.debug("JGraphX AWT DnD exception suppressed (harmless in SwingNode)");
                     return;
                 }
                 logger.error("未捕获的异常", throwable);
@@ -116,6 +119,14 @@ public class MainApp extends Application {
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
     }
+    // 检查堆栈中是否包含指定类名
+    private static boolean containsCall(Throwable t, String className) {
+        for (var e : t.getStackTrace()) {
+            if (e.getClassName() != null && e.getClassName().contains(className)) return true;
+        }
+        return false;
+    }
+
     // 显示错误对话框的方法
     private static void showErrorDialog(String title, String message) {
         Platform.runLater(() -> {

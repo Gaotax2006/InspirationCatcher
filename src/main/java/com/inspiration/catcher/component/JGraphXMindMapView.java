@@ -4,7 +4,6 @@ import com.inspiration.catcher.manager.MindMapManager;
 import com.inspiration.catcher.model.*;
 import com.mxgraph.layout.mxCompactTreeLayout;
 import com.mxgraph.model.mxCell;
-import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxEventObject;
@@ -16,10 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,13 +26,14 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * JGraphX-powered mind map view via SwingNode embedding.
- * Provides auto layout (mxCompactTreeLayout), node drag, edge creation, styling.
+ * JGraphX mind map view with SwingNode embedding.
+ * Optimized for: smooth rendering, no black screen, beautiful horizontal tree layout.
  */
-public class JGraphXMindMapView extends VBox {
+public class JGraphXMindMapView extends StackPane {
     private static final Logger logger = LoggerFactory.getLogger(JGraphXMindMapView.class);
 
     private final SwingNode swingNode = new SwingNode();
+    private final VBox wrapper = new VBox();
     private mxGraph graph;
     private mxGraphComponent graphComponent;
     private MindMapManager mindMapManager;
@@ -44,13 +41,20 @@ public class JGraphXMindMapView extends VBox {
     private final Map<Integer, mxCell> nodeCellMap = new ConcurrentHashMap<>();
     private final Map<Integer, mxCell> edgeCellMap = new ConcurrentHashMap<>();
     private volatile boolean isInternalUpdate = false;
+    private volatile boolean initialized = false;
+    private volatile boolean needsLayout = true;
 
     public JGraphXMindMapView() {
-        setStyle("-fx-background-color: #f8f9fa;");
+        wrapper.setStyle("-fx-background-color: #f8f9fa;");
         buildToolbar();
         VBox.setVgrow(swingNode, Priority.ALWAYS);
-        getChildren().add(swingNode);
-        initGraph();
+        wrapper.getChildren().add(swingNode);
+        getChildren().add(wrapper);
+        // Defer heavy init until visible
+        visibleProperty().addListener((_, _, v) -> { if (v && !initialized) initGraph(); });
+        // Force repaint on resize to prevent black screen
+        widthProperty().addListener(_ -> Platform.runLater(this::forceRepaint));
+        heightProperty().addListener(_ -> Platform.runLater(this::forceRepaint));
     }
 
     private void buildToolbar() {
@@ -63,7 +67,7 @@ public class JGraphXMindMapView extends VBox {
         Button centerBtn = new Button("居中");
         centerBtn.setOnAction(_ -> centerView());
 
-        Label hint = new Label("拖拽移动 · 双击编辑 · 滚轮缩放 · 从左侧拖入灵感");
+        Label hint = new Label("拖拽移动 · 双击编辑 · 滚轮缩放");
         hint.setStyle("-fx-text-fill: #666; -fx-font-size: 11px;");
 
         ToolBar tb = new ToolBar(zoomInBtn, zoomOutBtn, centerBtn,
@@ -71,14 +75,18 @@ public class JGraphXMindMapView extends VBox {
             new Region() {{ HBox.setHgrow(this, Priority.ALWAYS); }},
             hint);
         tb.setStyle("-fx-background-color: #f5f5f5; -fx-padding: 5;");
-        getChildren().add(tb);
+        wrapper.getChildren().add(0, tb);
     }
 
     // ============================================================
-    //  Graph Initialization
+    //  Lazy Graph Initialization (deferred until visible)
     // ============================================================
 
     private void initGraph() {
+        if (initialized) return;
+        initialized = true;
+        logger.info("Initializing JGraphX engine (deferred)");
+
         graph = new mxGraph();
         graph.setCellsResizable(false);
         graph.setCellsMovable(true);
@@ -86,75 +94,83 @@ public class JGraphXMindMapView extends VBox {
         graph.setConnectableEdges(false);
         graph.setDropEnabled(false);
         graph.setSplitEnabled(false);
-        graph.setAutoSizeCells(true);
         graph.setMultigraph(false);
         graph.setAllowLoops(false);
-        graph.setBorder(60);
+        graph.setBorder(100);
+        graph.setAutoSizeCells(true);
 
-        // Default vertex style
+        // Vertex styles
         Map<String, Object> vs = graph.getStylesheet().getDefaultVertexStyle();
-        vs.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
+        vs.put(mxConstants.STYLE_SHAPE, "rect");
         vs.put("rounded", true);
-        vs.put("arcSize", 12);
+        vs.put("arcSize", 14);
         vs.put(mxConstants.STYLE_FILLCOLOR, "#4A90E2");
         vs.put(mxConstants.STYLE_FONTCOLOR, "#FFFFFF");
         vs.put(mxConstants.STYLE_FONTSIZE, 13);
+        vs.put(mxConstants.STYLE_FONTSTYLE, 0);
         vs.put(mxConstants.STYLE_ALIGN, "center");
         vs.put(mxConstants.STYLE_VERTICAL_ALIGN, "middle");
         vs.put(mxConstants.STYLE_WHITE_SPACE, "wrap");
-        vs.put(mxConstants.STYLE_SHADOW, true);
 
-        // Default edge style
+        // Edge styles
         Map<String, Object> es = graph.getStylesheet().getDefaultEdgeStyle();
-        es.put(mxConstants.STYLE_STROKECOLOR, "#666666");
+        es.put(mxConstants.STYLE_STROKECOLOR, "#999999");
         es.put(mxConstants.STYLE_STROKEWIDTH, 2);
-        es.put(mxConstants.STYLE_ROUNDED, true);
+        es.put("rounded", true);
         es.put(mxConstants.STYLE_EDGE, "entityRelationEdgeStyle");
         es.put("curved", true);
-        es.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_CLASSIC);
-        es.put("endSize", 8);
+        es.put(mxConstants.STYLE_ENDARROW, "classic");
+        es.put("endSize", 6);
         es.put(mxConstants.STYLE_FONTSIZE, 11);
-        es.put(mxConstants.STYLE_FONTCOLOR, "#666666");
+        es.put(mxConstants.STYLE_FONTCOLOR, "#888888");
         es.put(mxConstants.STYLE_LABEL_BACKGROUNDCOLOR, "#FFFFFF");
+        es.put(mxConstants.STYLE_EXIT_X, 1.0);
+        es.put(mxConstants.STYLE_EXIT_Y, 0.5);
+        es.put(mxConstants.STYLE_ENTRY_X, 0.0);
+        es.put(mxConstants.STYLE_ENTRY_Y, 0.5);
 
-        // Custom styles
-        Map<String, Object> rootStyle = new HashMap<>(vs);
-        rootStyle.put(mxConstants.STYLE_FONTSIZE, 16);
-        rootStyle.put(mxConstants.STYLE_FONTSTYLE, 1); // BOLD
-        rootStyle.put(mxConstants.STYLE_FILLCOLOR, "#4A90E2");
-        graph.getStylesheet().putCellStyle("root", rootStyle);
-
-        Map<String, Object> ideaStyle = new HashMap<>(vs);
-        ideaStyle.put(mxConstants.STYLE_FILLCOLOR, "#FF6B6B");
-        ideaStyle.put(mxConstants.STYLE_FONTSTYLE, 1);
-        graph.getStylesheet().putCellStyle("idea", ideaStyle);
-
-        Map<String, Object> conceptStyle = new HashMap<>(vs);
-        conceptStyle.put(mxConstants.STYLE_FILLCOLOR, "#36B37E");
-        graph.getStylesheet().putCellStyle("concept", conceptStyle);
-
-        Map<String, Object> externalStyle = new HashMap<>(vs);
-        externalStyle.put(mxConstants.STYLE_FILLCOLOR, "#FFD166");
-        externalStyle.put(mxConstants.STYLE_FONTCOLOR, "#333333");
-        externalStyle.put(mxConstants.STYLE_FONTSTYLE, 2); // ITALIC
-        graph.getStylesheet().putCellStyle("external", externalStyle);
+        // Node type styles
+        addNodeStyle("root", "#4A90E2", 16, 1);
+        addNodeStyle("idea", "#FF6B6B", 14, 1);
+        addNodeStyle("concept", "#36B37E", 13, 0);
+        addNodeStyle("external", "#FFD166", 13, 2);
 
         // Build Swing component
         graphComponent = new mxGraphComponent(graph);
-        graphComponent.getViewport().setOpaque(false);
+        graphComponent.getViewport().setOpaque(true);
+        graphComponent.getViewport().setBackground(new Color(0xf8, 0xf9, 0xfa));
         graphComponent.setBackground(new Color(0xf8, 0xf9, 0xfa));
-        // Note: JGraphX's AWT DragSource conflicts with SwingNode DnD bridge;
-        // the InvalidDnDOperationException is caught by the global exception handler
+        graphComponent.setWheelScrollingEnabled(false);
 
-        // Events (using string literals for cross-version compatibility)
+        // Events
         graph.addListener("cellsMoved", this::onCellsMoved);
         graph.addListener("cellsConnected", this::onCellsConnected);
         graph.addListener("labelChanged", this::onLabelChanged);
 
         SwingUtilities.invokeLater(() -> {
-            graphComponent.zoomAndCenter();
+            graphComponent.setVisible(true);
+            graphComponent.revalidate();
+            graphComponent.repaint();
             swingNode.setContent(graphComponent);
+            // Sync existing data after engine is ready
+            Platform.runLater(() -> {
+                if (mindMapManager != null) {
+                    syncAll();
+                    if (needsLayout && !nodeCellMap.isEmpty()) {
+                        applyAutoLayout();
+                        needsLayout = false;
+                    }
+                }
+            });
         });
+    }
+
+    private void addNodeStyle(String name, String fillColor, int fontSize, int fontStyle) {
+        Map<String, Object> style = new HashMap<>(graph.getStylesheet().getDefaultVertexStyle());
+        style.put(mxConstants.STYLE_FILLCOLOR, fillColor);
+        style.put(mxConstants.STYLE_FONTSIZE, fontSize);
+        style.put(mxConstants.STYLE_FONTSTYLE, fontStyle);
+        graph.getStylesheet().putCellStyle(name, style);
     }
 
     // ============================================================
@@ -172,13 +188,20 @@ public class JGraphXMindMapView extends VBox {
     }
 
     public void setCurrentProject(Integer projectId) {
-        clear();
         if (mindMapManager != null && projectId != null)
             mindMapManager.loadProjectMindMap(projectId);
     }
 
+    /** Trigger deferred initialization if not yet started. Called after adding to scene. */
+    public void ensureInitialized() {
+        if (!initialized) initGraph();
+    }
+
     public void redraw() {
-        if (graphComponent != null) graphComponent.refresh();
+        if (graphComponent != null) {
+            graphComponent.refresh();
+            graphComponent.repaint();
+        }
     }
 
     // ============================================================
@@ -186,100 +209,141 @@ public class JGraphXMindMapView extends VBox {
     // ============================================================
 
     private void syncAll() {
-        if (isInternalUpdate || mindMapManager == null) return;
-        clear();
-        syncNodes();
-        syncEdges();
-    }
-
-    private void clear() {
-        nodeCellMap.clear();
-        edgeCellMap.clear();
-        graph.getModel().beginUpdate();
+        if (!initialized || isInternalUpdate || mindMapManager == null) return;
+        isInternalUpdate = true;
         try {
-            Object[] cells = graph.getChildVertices(graph.getDefaultParent());
-            if (cells != null) graph.removeCells(cells);
+            nodeCellMap.clear();
+            edgeCellMap.clear();
+            graph.getModel().beginUpdate();
+            try {
+                Object[] cells = graph.getChildVertices(graph.getDefaultParent());
+                if (cells != null) graph.removeCells(cells);
+            } finally {
+                graph.getModel().endUpdate();
+            }
+            syncNodes();
+            syncEdges();
         } finally {
-            graph.getModel().endUpdate();
+            isInternalUpdate = false;
         }
     }
 
     private void syncNodes() {
-        if (isInternalUpdate || mindMapManager == null) return;
-        graph.getModel().beginUpdate();
+        if (!initialized || isInternalUpdate || mindMapManager == null) return;
+        isInternalUpdate = true;
         try {
+            Set<Integer> activeIds = new HashSet<>();
+            mindMapManager.getNodes().forEach(n -> activeIds.add(n.getId()));
+
             // Remove stale
-            Set<Integer> active = new HashSet<>();
-            mindMapManager.getNodes().forEach(n -> active.add(n.getId()));
             nodeCellMap.keySet().removeIf(id -> {
-                if (!active.contains(id)) {
-                    mxCell c = nodeCellMap.get(id);
+                if (!activeIds.contains(id)) {
+                    mxCell c = nodeCellMap.remove(id);
                     if (c != null) graph.removeCells(new Object[]{c});
                     return true;
                 }
                 return false;
             });
 
-            for (MindMapNode node : mindMapManager.getNodes()) {
-                if (nodeCellMap.containsKey(node.getId())) continue;
-                String style = styleFor(node);
-                String text = node.getText() != null ? node.getText() : "节点";
-                double w = Math.max(80, Math.min(160, text.length() * 8));
-                mxCell cell = (mxCell) graph.insertVertex(
-                    graph.getDefaultParent(), String.valueOf(node.getId()),
-                    text, node.getX(), node.getY(), w, 36, style);
-                nodeCellMap.put(node.getId(), cell);
+            // Add new
+            graph.getModel().beginUpdate();
+            try {
+                for (MindMapNode node : mindMapManager.getNodes()) {
+                    if (nodeCellMap.containsKey(node.getId())) continue;
+                    String text = node.getText() != null ? node.getText() : "节点";
+                    double w = Math.min(160, Math.max(80, text.length() * 8));
+                    mxCell cell = (mxCell) graph.insertVertex(
+                        graph.getDefaultParent(), String.valueOf(node.getId()),
+                        text, node.getX(), node.getY(), w, 36, styleFor(node));
+                    nodeCellMap.put(node.getId(), cell);
+                }
+            } finally {
+                graph.getModel().endUpdate();
             }
         } finally {
-            graph.getModel().endUpdate();
+            isInternalUpdate = false;
         }
     }
 
     private void syncEdges() {
-        if (isInternalUpdate || mindMapManager == null) return;
-        graph.getModel().beginUpdate();
+        if (!initialized || isInternalUpdate || mindMapManager == null) return;
+        isInternalUpdate = true;
         try {
-            Set<Integer> active = new HashSet<>();
-            mindMapManager.getConnections().forEach(c -> active.add(c.getId()));
+            Set<Integer> activeIds = new HashSet<>();
+            mindMapManager.getConnections().forEach(c -> activeIds.add(c.getId()));
+
             edgeCellMap.keySet().removeIf(id -> {
-                if (!active.contains(id)) {
-                    mxCell c = edgeCellMap.get(id);
+                if (!activeIds.contains(id)) {
+                    mxCell c = edgeCellMap.remove(id);
                     if (c != null) graph.removeCells(new Object[]{c});
                     return true;
                 }
                 return false;
             });
 
-            for (MindMapConnection conn : mindMapManager.getConnections()) {
-                if (edgeCellMap.containsKey(conn.getId())) continue;
-                mxCell src = nodeCellMap.get(conn.getSourceNodeId());
-                mxCell tgt = nodeCellMap.get(conn.getTargetNodeId());
-                if (src == null || tgt == null) continue;
-                mxCell edge = (mxCell) graph.insertEdge(
-                    graph.getDefaultParent(), String.valueOf(conn.getId()),
-                    conn.getLabel() != null ? conn.getLabel() : "",
-                    src, tgt, "");
-                edgeCellMap.put(conn.getId(), edge);
+            graph.getModel().beginUpdate();
+            try {
+                for (MindMapConnection conn : mindMapManager.getConnections()) {
+                    if (edgeCellMap.containsKey(conn.getId())) continue;
+                    mxCell src = nodeCellMap.get(conn.getSourceNodeId());
+                    mxCell tgt = nodeCellMap.get(conn.getTargetNodeId());
+                    if (src == null || tgt == null) {
+                        logger.debug("Skipping edge: missing endpoint node");
+                        continue;
+                    }
+                    mxCell edge = (mxCell) graph.insertEdge(
+                        graph.getDefaultParent(), String.valueOf(conn.getId()),
+                        conn.getLabel() != null ? conn.getLabel() : "",
+                        src, tgt, "");
+                    edgeCellMap.put(conn.getId(), edge);
+                }
+            } finally {
+                graph.getModel().endUpdate();
             }
         } finally {
-            graph.getModel().endUpdate();
+            isInternalUpdate = false;
         }
     }
 
     // ============================================================
-    //  Layout
+    //  Layout — horizontal tree optimized for mind maps
     // ============================================================
 
     public void applyAutoLayout() {
-        if (graph == null || nodeCellMap.isEmpty()) return;
-        mxCompactTreeLayout layout = new mxCompactTreeLayout(graph, false);
+        if (!initialized || graph == null || nodeCellMap.isEmpty()) return;
+        // Find root (prefer the root node, otherwise first node)
+        Object root = null;
+        for (Map.Entry<Integer, mxCell> e : nodeCellMap.entrySet()) {
+            if (e.getValue() != null) {
+                root = e.getValue();
+                break;
+            }
+        }
+        if (root == null) return;
+
+        mxCompactTreeLayout layout = new mxCompactTreeLayout(graph, true);
         layout.setUseBoundingBox(false);
-        layout.setEdgeRouting(false);
-        layout.setLevelDistance(80);
-        layout.setNodeDistance(30);
+        layout.setEdgeRouting(true);
+        layout.setLevelDistance(120);
+        layout.setNodeDistance(40);
+        layout.setResizeParent(false);
+
         graph.getModel().beginUpdate();
         try {
             layout.execute(graph.getDefaultParent());
+        } finally {
+            graph.getModel().endUpdate();
+        }
+        // Sync JGraphX positions back to MindMapManager
+        graph.getModel().beginUpdate();
+        try {
+            for (Map.Entry<Integer, mxCell> e : nodeCellMap.entrySet()) {
+                mxCell c = e.getValue();
+                if (c != null && c.getGeometry() != null) {
+                    mindMapManager.updateNodePosition(e.getKey(),
+                        c.getGeometry().getX(), c.getGeometry().getY());
+                }
+            }
         } finally {
             graph.getModel().endUpdate();
         }
@@ -291,37 +355,40 @@ public class JGraphXMindMapView extends VBox {
     // ============================================================
 
     private void onCellsMoved(Object sender, mxEventObject evt) {
-        if (isInternalUpdate || mindMapManager == null) return;
-        isInternalUpdate = true;
+        if (!initialized || isInternalUpdate || mindMapManager == null) return;
+        Object[] cells = (Object[]) evt.getProperty("cells");
+        if (cells == null) return;
+        graph.getModel().beginUpdate();
         try {
-            Object[] cells = (Object[]) evt.getProperty("cells");
-            if (cells == null) return;
             for (Object c : cells) {
-                if (c instanceof mxCell mxc) {
+                if (c instanceof mxCell mxc && mxc.getGeometry() != null) {
                     int id = parseIntId(mxc.getId());
-                    if (id > 0 && mxc.getGeometry() != null) {
+                    if (id > 0) {
                         mindMapManager.updateNodePosition(id,
                             mxc.getGeometry().getX(), mxc.getGeometry().getY());
                     }
                 }
             }
-        } finally { isInternalUpdate = false; }
+        } finally {
+            graph.getModel().endUpdate();
+        }
     }
 
     private void onCellsConnected(Object sender, mxEventObject evt) {
-        if (isInternalUpdate || mindMapManager == null) return;
+        if (!initialized || isInternalUpdate || mindMapManager == null) return;
         mxCell edge = (mxCell) evt.getProperty("edge");
         mxCell src = (mxCell) evt.getProperty("source");
         mxCell tgt = (mxCell) evt.getProperty("target");
         if (edge == null || src == null || tgt == null) return;
         int si = parseIntId(src.getId());
         int ti = parseIntId(tgt.getId());
-        if (si > 0 && ti > 0)
+        if (si > 0 && ti > 0 && mindMapManager != null) {
             mindMapManager.createConnection(si, ti, MindMapConnection.ConnectionType.RELATED);
+        }
     }
 
     private void onLabelChanged(Object sender, mxEventObject evt) {
-        if (isInternalUpdate || mindMapManager == null) return;
+        if (!initialized || isInternalUpdate || mindMapManager == null) return;
         mxCell cell = (mxCell) evt.getProperty("cell");
         String val = (String) evt.getProperty("value");
         if (cell == null || val == null) return;
@@ -337,16 +404,45 @@ public class JGraphXMindMapView extends VBox {
     //  View Controls
     // ============================================================
 
-    public void zoomIn() { if (graphComponent != null) graphComponent.zoomIn(); }
-    public void zoomOut() { if (graphComponent != null) graphComponent.zoomOut(); }
-    public void centerView() { if (graphComponent != null) graphComponent.zoomAndCenter(); }
-    public void resetView() { if (graphComponent != null) graphComponent.zoomAndCenter(); }
+    public void zoomIn() {
+        if (graphComponent != null) {
+            graphComponent.zoomIn();
+            forceRepaint();
+        }
+    }
+
+    public void zoomOut() {
+        if (graphComponent != null) {
+            graphComponent.zoomOut();
+            forceRepaint();
+        }
+    }
+
+    public void centerView() {
+        if (graphComponent != null) {
+            var bounds = graphComponent.getGraph().getView().getGraphBounds();
+            if (bounds != null) {
+                var rect = bounds.getRectangle();
+                graphComponent.getGraphControl().scrollRectToVisible(rect);
+            }
+            forceRepaint();
+        }
+    }
+
+    /** Force repaint to prevent SwingNode black screen. */
+    private void forceRepaint() {
+        if (graphComponent != null) {
+            graphComponent.refresh();
+            graphComponent.repaint();
+        }
+    }
 
     // ============================================================
     //  Helpers
     // ============================================================
 
     private String styleFor(MindMapNode node) {
+        if (node.isRoot()) return "root";
         return switch (node.getNodeType()) {
             case IDEA -> "idea";
             case CONCEPT -> "concept";

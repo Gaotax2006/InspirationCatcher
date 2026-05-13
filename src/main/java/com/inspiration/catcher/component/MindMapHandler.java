@@ -98,6 +98,8 @@ public class MindMapHandler {
                 loadIdeasToMindMapPanel(currentProject);
             }
             mindMapPane.getChildren().add(jgraphxView);
+            // Trigger JGraphX init now that view is in the scene
+            jgraphxView.ensureInitialized();
             logger.info("JGraphX mind map initialized");
         } catch (NoClassDefFoundError | Exception e) {
             logger.error("JGraphX mind map init failed: {}", e.getMessage());
