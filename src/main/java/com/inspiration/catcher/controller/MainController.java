@@ -151,9 +151,7 @@ public class MainController implements Initializable {
                     logger.error("Failed to set up shortcuts", e);
                 }
                 // 场景就绪后初始化 JGraphX
-                if (mindMapHandler != null && mindMapHandler.getMindMapView() != null) {
-                    mindMapHandler.getMindMapView().ensureInitialized();
-                }
+                if (mindMapView != null) mindMapView.ensureInitialized();
             });
             mainTabPane.getSelectionModel().selectedItemProperty().addListener((_, _, newTab) -> {
                 if (newTab == null) return;

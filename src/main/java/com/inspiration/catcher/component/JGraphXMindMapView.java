@@ -38,8 +38,6 @@ public class JGraphXMindMapView extends VBox {
     private volatile boolean initialized = false;
     private volatile boolean isInternalUpdate = false;
 
-    /** Callback for external redraw trigger (e.g., tab selection). */
-    private Runnable onReadyCallback;
 
     public JGraphXMindMapView() {
         setFillWidth(true);
@@ -148,16 +146,10 @@ public class JGraphXMindMapView extends VBox {
                 graphComponent.repaint();
                 swingNode.setContent(graphComponent);
                 // Sync data after content is set
-                Platform.runLater(() -> {
-                    if (mindMapManager != null) syncAll();
-                    if (onReadyCallback != null) onReadyCallback.run();
-                });
+                Platform.runLater(() -> { if (mindMapManager != null) syncAll(); });
             });
         });
     }
-
-    /** Register a callback invoked once the engine is fully initialized. */
-    public void setOnReadyCallback(Runnable cb) { this.onReadyCallback = cb; }
 
     /** Force a full repaint (call when the view becomes visible, e.g. tab switch). */
     public void forceRefresh() {
@@ -342,7 +334,13 @@ public class JGraphXMindMapView extends VBox {
 
     public void zoomIn() { if (graphComponent != null) { graphComponent.zoomIn(); forceRefresh(); } }
     public void zoomOut() { if (graphComponent != null) { graphComponent.zoomOut(); forceRefresh(); } }
-    public void centerView() { if (graphComponent != null) { forceRefresh(); } }
+    public void centerView() {
+        if (graphComponent != null) {
+            var bounds = graph.getView().getGraphBounds();
+            if (bounds != null) graphComponent.getGraphControl().scrollRectToVisible(bounds.getRectangle());
+            forceRefresh();
+        }
+    }
 
     private String styleFor(MindMapNode node) {
         if (node.isRoot()) return "root";
