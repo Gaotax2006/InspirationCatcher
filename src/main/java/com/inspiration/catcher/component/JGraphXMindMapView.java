@@ -4,8 +4,10 @@ import com.inspiration.catcher.manager.MindMapManager;
 import com.inspiration.catcher.model.*;
 import com.mxgraph.layout.mxCompactTreeLayout;
 import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxGeometry;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
+import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.view.mxGraph;
 import javafx.application.Platform;
@@ -81,7 +83,44 @@ public class JGraphXMindMapView extends VBox {
         initialized = true;
         logger.info("Initializing JGraphX engine");
 
-        graph = new mxGraph();
+        graph = new mxGraph() {
+            @Override
+            public boolean isCellFoldable(Object cell, boolean collapse) {
+                // Freeplane-style: a node is foldable if it has outgoing connections (children)
+                if (!(cell instanceof mxCell mxCell) || mxCell.isEdge()) return false;
+                int nodeId = parseIntId(mxCell.getId());
+                if (nodeId <= 0 || mindMapManager == null) return false;
+                return !mindMapManager.getChildNodes(nodeId).isEmpty();
+            }
+
+            @Override
+            public Object[] foldCells(boolean collapse, boolean recurse,
+                                      Object[] cells, boolean checkFoldable) {
+                if (cells == null || cells.length == 0 || mindMapManager == null)
+                    return super.foldCells(collapse, recurse, cells, checkFoldable);
+
+                getModel().beginUpdate();
+                try {
+                    for (Object cell : cells) {
+                        if (cell instanceof mxCell mxc) {
+                            int nodeId = parseIntId(mxc.getId());
+                            if (nodeId <= 0) continue;
+                            MindMapNode node = mindMapManager.findNodeById(nodeId);
+                            if (node == null) continue;
+
+                            // Toggle descendants visibility
+                            toggleDescendantsVisible(nodeId, !collapse);
+                            mxc.setCollapsed(collapse);
+                        }
+                    }
+                } finally {
+                    getModel().endUpdate();
+                }
+                // Fire fold event so our listener can re-layout
+                fireEvent(new mxEventObject(mxEvent.FOLD_CELLS, "cells", cells, "collapse", collapse));
+                return cells;
+            }
+        };
         graph.setCellsResizable(false);
         graph.setCellsMovable(true);
         graph.setAllowDanglingEdges(false);
@@ -130,10 +169,20 @@ public class JGraphXMindMapView extends VBox {
         graphComponent.getViewport().setBackground(new Color(0xf8, 0xf9, 0xfa));
         graphComponent.setBackground(new Color(0xf8, 0xf9, 0xfa));
         graphComponent.setWheelScrollingEnabled(false);
+        graphComponent.setFoldingEnabled(true);
 
         graph.addListener("cellsMoved", this::onCellsMoved);
         graph.addListener("cellsConnected", this::onCellsConnected);
         graph.addListener("labelChanged", this::onLabelChanged);
+
+        // Auto re-layout after fold/unfold
+        graph.addListener(mxEvent.FOLD_CELLS, (_, _) -> {
+            if (!isInternalUpdate) {
+                isInternalUpdate = true;
+                try { applyAutoLayout(); }
+                finally { isInternalUpdate = false; }
+            }
+        });
 
         // Right-click context menu (Freeplane-style)
         graphComponent.getGraphControl().addMouseListener(new java.awt.event.MouseAdapter() {
@@ -228,6 +277,7 @@ public class JGraphXMindMapView extends VBox {
                     if (edgeObj instanceof mxCell me) edgeCellMap.put(conn.getId(), me);
                 }
             } finally { graph.getModel().endUpdate(); }
+            restoreFoldStates();
         } finally { isInternalUpdate = false; }
     }
 
@@ -682,6 +732,41 @@ public class JGraphXMindMapView extends VBox {
             sb.append(e.getKey()).append('=').append(e.getValue());
         }
         return sb.toString();
+    }
+
+    /** Recursively toggle visibility of all descendants of a node (via connections). */
+    private void toggleDescendantsVisible(int parentNodeId, boolean visible) {
+        if (mindMapManager == null) return;
+        for (MindMapConnection conn : mindMapManager.getConnections()) {
+            if (conn.getSourceNodeId() == parentNodeId) {
+                int childId = conn.getTargetNodeId();
+                mxCell childCell = nodeCellMap.get(childId);
+                if (childCell != null) childCell.setVisible(visible);
+                // Hide child's outgoing edges
+                for (Map.Entry<Integer, mxCell> e : edgeCellMap.entrySet()) {
+                    mxCell edgeCell = e.getValue();
+                    Object src = edgeCell.getSource();
+                    if (src instanceof mxCell sc && parseIntId(sc.getId()) == childId) {
+                        edgeCell.setVisible(visible);
+                    }
+                }
+                toggleDescendantsVisible(childId, visible);
+            }
+        }
+    }
+
+    /** Preserve fold states after syncAll rebuilds the graph. */
+    private void restoreFoldStates() {
+        if (mindMapManager == null) return;
+        for (MindMapNode node : mindMapManager.getNodes()) {
+            if (!node.isExpanded()) {
+                mxCell cell = nodeCellMap.get(node.getId());
+                if (cell != null) {
+                    cell.setCollapsed(true);
+                    toggleDescendantsVisible(node.getId(), false);
+                }
+            }
+        }
     }
 
     private int parseIntId(String id) {
