@@ -216,13 +216,12 @@ public class MindMapManager {
             if (onDataChangedListener != null) onDataChangedListener.run();
         }
     }
-    // 更新节点位置
+    // 更新节点位置（仅持久化，不触发UI重建——JGraphX已实时更新视觉位置）
     public void updateNodePosition(int nodeId, double x, double y) {
         MindMapNode node = nodeMap.get(nodeId);
         if (node == null) {logger.error("无法更新节点位置：节点不存在, nodeId={}", nodeId);return;}
         if (nodeDao.updateNodePosition(nodeId, x, y)) {
             node.setX(x);node.setY(y);
-            if (onDataChangedListener != null) onDataChangedListener.run();
         }
     }
     // 更新节点文本

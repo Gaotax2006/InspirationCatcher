@@ -37,6 +37,7 @@ public class JGraphXMindMapView extends VBox {
     private final Map<Integer, mxCell> edgeCellMap = new ConcurrentHashMap<>();
     private volatile boolean initialized = false;
     private volatile boolean isInternalUpdate = false;
+    private volatile boolean syncQueued = false;
 
 
     public JGraphXMindMapView() {
@@ -180,7 +181,16 @@ public class JGraphXMindMapView extends VBox {
         if (manager == null) return;
         manager.getNodes().addListener((ListChangeListener<MindMapNode>) _ -> Platform.runLater(this::syncNodes));
         manager.getConnections().addListener((ListChangeListener<MindMapConnection>) _ -> Platform.runLater(this::syncEdges));
-        manager.setOnDataChangedListener(() -> Platform.runLater(this::syncAll));
+        // 防抖：连续的数据变更只触发一次 syncAll
+        manager.setOnDataChangedListener(() -> {
+            if (!syncQueued) {
+                syncQueued = true;
+                Platform.runLater(() -> {
+                    syncQueued = false;
+                    syncAll();
+                });
+            }
+        });
     }
 
     public void setCurrentProject(Integer projectId) {
@@ -315,7 +325,9 @@ public class JGraphXMindMapView extends VBox {
         for (Object c : cells) {
             if (c instanceof mxCell mxc && mxc.getGeometry() != null) {
                 int id = parseIntId(mxc.getId());
-                if (id > 0) mindMapManager.updateNodePosition(id, mxc.getGeometry().getX(), mxc.getGeometry().getY());
+                // nodeCellMap 是 ConcurrentHashMap，此处并发安全
+                if (id > 0 && nodeCellMap.containsKey(id))
+                    mindMapManager.updateNodePosition(id, mxc.getGeometry().getX(), mxc.getGeometry().getY());
             }
         }
     }
