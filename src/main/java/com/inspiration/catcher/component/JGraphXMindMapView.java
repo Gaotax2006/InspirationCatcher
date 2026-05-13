@@ -29,11 +29,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * JGraphX mind map view with SwingNode embedding.
  * Optimized for: smooth rendering, no black screen, beautiful horizontal tree layout.
  */
-public class JGraphXMindMapView extends StackPane {
+public class JGraphXMindMapView extends VBox {
     private static final Logger logger = LoggerFactory.getLogger(JGraphXMindMapView.class);
 
     private final SwingNode swingNode = new SwingNode();
-    private final VBox wrapper = new VBox();
     private mxGraph graph;
     private mxGraphComponent graphComponent;
     private MindMapManager mindMapManager;
@@ -45,13 +44,16 @@ public class JGraphXMindMapView extends StackPane {
     private volatile boolean needsLayout = true;
 
     public JGraphXMindMapView() {
-        wrapper.setStyle("-fx-background-color: #f8f9fa;");
+        setStyle("-fx-background-color: #f8f9fa;");
+        setSpacing(0);
         buildToolbar();
         VBox.setVgrow(swingNode, Priority.ALWAYS);
-        wrapper.getChildren().add(swingNode);
-        getChildren().add(wrapper);
+        getChildren().add(swingNode);
         // Defer heavy init until visible
         visibleProperty().addListener((_, _, v) -> { if (v && !initialized) initGraph(); });
+        sceneProperty().addListener((_, _, scene) -> {
+            if (scene != null && !initialized) Platform.runLater(this::ensureInitialized);
+        });
         // Force repaint on resize to prevent black screen
         widthProperty().addListener(_ -> Platform.runLater(this::forceRepaint));
         heightProperty().addListener(_ -> Platform.runLater(this::forceRepaint));
@@ -70,12 +72,14 @@ public class JGraphXMindMapView extends StackPane {
         Label hint = new Label("拖拽移动 · 双击编辑 · 滚轮缩放");
         hint.setStyle("-fx-text-fill: #666; -fx-font-size: 11px;");
 
-        ToolBar tb = new ToolBar(zoomInBtn, zoomOutBtn, centerBtn,
-            new Separator(), autoLayoutBtn,
-            new Region() {{ HBox.setHgrow(this, Priority.ALWAYS); }},
-            hint);
-        tb.setStyle("-fx-background-color: #f5f5f5; -fx-padding: 5;");
-        wrapper.getChildren().add(0, tb);
+        HBox toolbarBox = new HBox(6);
+        toolbarBox.setStyle("-fx-background-color: #f5f5f5; -fx-padding: 5 10; -fx-alignment: center-left;");
+        toolbarBox.getChildren().addAll(zoomInBtn, zoomOutBtn, centerBtn,
+            new Separator(), autoLayoutBtn);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        toolbarBox.getChildren().addAll(spacer, hint);
+        getChildren().add(0, toolbarBox);
     }
 
     // ============================================================

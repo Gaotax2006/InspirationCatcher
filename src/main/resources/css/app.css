@@ -443,80 +443,58 @@
 .tab-pane-floating .tab-header-area { -fx-padding: 0 8; }
 
 /* ==============================================================
-   12. CARD TABLE VIEW — single-column card layout
+   12. TABLE VIEW — multi-column with clean modern styling
    ============================================================== */
 .table-view {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-padding: 0;
-    -fx-fixed-cell-size: -1; /* disable uniform cell height — cards are dynamic */
+    -fx-fixed-cell-size: 40px;
 }
 .table-view .column-header-background {
     -fx-background-color: transparent;
-    -fx-pref-height: 0;
-    -fx-max-height: 0;
-    -fx-min-height: 0;
-    -fx-padding: 0;
+    -fx-padding: 0 0 4 0;
 }
 .table-view .column-header {
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-    -fx-padding: 0;
-    -fx-pref-height: 0;
-    -fx-max-height: 0;
-    -fx-min-height: 0;
-    -fx-opacity: 0;
-    -fx-visible: false;
+    -fx-border-color: transparent transparent -fx-border-subtle transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 4 6;
+    -fx-font-weight: 600;
 }
 .table-view .column-header .label {
-    -fx-pref-height: 0;
-    -fx-max-height: 0;
+    -fx-font-size: 11px;
+    -fx-text-fill: -fx-text-tertiary;
+    -fx-font-weight: 600;
+    -fx-padding: 0;
 }
-.table-view .filler { -fx-background-color: transparent; -fx-pref-height: 0; -fx-max-height: 0; }
-.table-view .column-header-background .nested-column-header { -fx-pref-height: 0; -fx-max-height: 0; -fx-min-height: 0; }
-
-/* Card-style rows */
+.table-view .filler { -fx-background-color: transparent; }
 .table-row-cell {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-    -fx-padding: 4 8;
-    -fx-cell-size: -1;
+    -fx-background-color: -fx-bg-raised;
+    -fx-border-color: transparent transparent -fx-border-subtle transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0;
+    -fx-cell-size: 40px;
     -fx-background-insets: 0;
+}
+.table-row-cell:odd {
+    -fx-background-color: -fx-bg-subtle;
 }
 .table-row-cell:hover {
-    -fx-background-color: transparent;
+    -fx-background-color: -fx-bg-hover;
 }
 .table-row-cell:selected {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0;
-    -fx-border-color: transparent;
+    -fx-background-color: -fx-primary-bg;
+    -fx-border-color: transparent transparent -fx-border-subtle transparent;
 }
-.table-row-cell:selected .table-cell {
-    -fx-background-color: transparent;
-}
-.table-row-cell:empty {
-    -fx-background-color: transparent;
-    -fx-effect: none;
-}
+.table-row-cell:selected .table-cell { -fx-text-fill: -fx-text-primary; }
+.table-row-cell:empty { -fx-background-color: transparent; -fx-border-width: 0; }
 .table-view .table-cell {
-    -fx-padding: 6 10;
+    -fx-padding: 4 8;
     -fx-border-color: transparent;
-    -fx-background-color: transparent;
-}
-
-/* Card cell highlight when row selected */
-.table-row-cell:selected .idea-card-row {
-    -fx-border-color: -fx-primary !important;
-    -fx-border-width: 2 !important;
-    -fx-effect: dropshadow(gaussian, rgba(196,132,60,0.2), 8, 0, 0, 2) !important;
-}
-
-/* Card hover effect */
-.idea-card-row:hover {
-    -fx-effect: dropshadow(gaussian, rgba(44,41,36,0.08), 8, 0, 0, 2) !important;
-    -fx-translate-y: -1;
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-text-primary;
+    -fx-alignment: center-left;
 }
 
 /* ==============================================================

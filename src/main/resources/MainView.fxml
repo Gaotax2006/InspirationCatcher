@@ -223,11 +223,17 @@
                                 </Button>
                             </HBox>
 
-                            <!-- Card-style Table (single column) -->
+                            <!-- TableView -->
                             <TableView fx:id="ideaTableView" VBox.vgrow="ALWAYS"
                                        style="-fx-padding: 0 12 0 12;">
                                 <columns>
-                                    <TableColumn text="" fx:id="cardColumn" prefWidth="200"/>
+                                    <TableColumn text="标题" fx:id="titleColumn" prefWidth="200"/>
+                                    <TableColumn text="类型" fx:id="typeColumn" prefWidth="70"/>
+                                    <TableColumn text="重要性" fx:id="importanceColumn" minWidth="70" prefWidth="90"/>
+                                    <TableColumn text="心情" fx:id="moodColumn" prefWidth="60"/>
+                                    <TableColumn text="标签" fx:id="tagsColumn" prefWidth="200"/>
+                                    <TableColumn text="创建时间" fx:id="createdAtColumn" prefWidth="130"/>
+                                    <TableColumn text="更新时间" fx:id="updatedAtColumn" prefWidth="130"/>
                                 </columns>
                             </TableView>
 

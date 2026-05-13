@@ -92,7 +92,13 @@ public class MainController implements Initializable {
     @FXML private VBox chartContainer;
     @FXML private Button favoriteBtn;
     // 卡片式单列（替代多列表格）
-    @FXML private TableColumn<Idea, Idea> cardColumn;
+    @FXML private TableColumn<Idea, String> titleColumn;
+    @FXML private TableColumn<Idea, String> typeColumn;
+    @FXML private TableColumn<Idea, Integer> importanceColumn;
+    @FXML private TableColumn<Idea, String> moodColumn;
+    @FXML private TableColumn<Idea, String> tagsColumn;
+    @FXML private TableColumn<Idea, String> createdAtColumn;
+    @FXML private TableColumn<Idea, String> updatedAtColumn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -210,7 +216,8 @@ public class MainController implements Initializable {
             filterController.setupFilters();
             tableManager = new TableManager(ideaTableView, ideaManager, this);
             tableManager.setFilteredIdeas(filterController.getFilteredIdeas());
-            tableManager.setCardColumn(cardColumn);
+            tableManager.setTableColumns(titleColumn, typeColumn, importanceColumn, moodColumn,
+                    tagsColumn, createdAtColumn, updatedAtColumn);
             tableManager.setDetailPanels(ideaDetail);
             tableManager.setStatusLabels(statusLabel);
             editorController = new EditorController(
@@ -267,7 +274,7 @@ public class MainController implements Initializable {
         editorController.setupEventHandlers();
         // 搜索高亮
         searchField.textProperty().addListener((_, _, newVal) -> {
-            com.inspiration.catcher.component.IdeaCardCell.highlightKeyword = newVal;
+            com.inspiration.catcher.manager.TableManager.highlightKeyword = newVal;
             ideaTableView.refresh();
         });
     }
