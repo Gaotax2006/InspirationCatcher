@@ -143,6 +143,8 @@ public class JGraphXMindMapView extends VBox {
         graphComponent = new mxGraphComponent(graph);
         graphComponent.getViewport().setOpaque(false);
         graphComponent.setBackground(new Color(0xf8, 0xf9, 0xfa));
+        // Note: JGraphX's AWT DragSource conflicts with SwingNode DnD bridge;
+        // the InvalidDnDOperationException is caught by the global exception handler
 
         // Events (using string literals for cross-version compatibility)
         graph.addListener("cellsMoved", this::onCellsMoved);

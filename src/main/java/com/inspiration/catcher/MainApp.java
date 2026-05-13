@@ -46,15 +46,20 @@ public class MainApp extends Application {
             ensureDefaultProject();
             // 设置全局异常处理
             Thread.setDefaultUncaughtExceptionHandler((_, throwable) -> {
+                // JGraphX SwingNode DnD 冲突是无害的已知问题，屏蔽
+                if (throwable instanceof java.awt.dnd.InvalidDnDOperationException
+                        && throwable.getMessage() != null
+                        && throwable.getMessage().contains("Drag and drop in progress")) {
+                    logger.debug("JGraphX DnD harmless exception suppressed");
+                    return;
+                }
                 logger.error("未捕获的异常", throwable);
-                // 打印详细堆栈
                 throwable.printStackTrace();
                 Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("错误");
                     alert.setHeaderText("应用程序遇到错误");
                     alert.setContentText(throwable.getMessage());
-                    // 添加详细内容
                     TextArea textArea = new TextArea(getStackTrace(throwable));
                     textArea.setEditable(false);
                     alert.getDialogPane().setExpandableContent(textArea);
