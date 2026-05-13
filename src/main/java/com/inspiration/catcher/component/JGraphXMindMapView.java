@@ -175,6 +175,9 @@ public class JGraphXMindMapView extends VBox {
         graph.addListener("cellsConnected", this::onCellsConnected);
         graph.addListener("labelChanged", this::onLabelChanged);
 
+        // Focus mode: when a node is selected, dim non-related branches
+        graph.getSelectionModel().addListener("change", (_, _) -> applyFocusMode(graph.getSelectionCell()));
+
         // Auto re-layout after fold/unfold
         graph.addListener(mxEvent.FOLD_CELLS, (_, _) -> {
             if (!isInternalUpdate) {
@@ -660,6 +663,88 @@ public class JGraphXMindMapView extends VBox {
         double canvasX = (x - tx) / scale;
         double canvasY = (y - ty) / scale;
         mindMapManager.createConceptNode("新节点", canvasX, canvasY);
+    }
+
+    // ============================================================
+    //  Focus Mode — dim non-selected branches (Freeplane-style)
+    // ============================================================
+
+    private void applyFocusMode(Object selectedCell) {
+        if (mindMapManager == null) return;
+        // No selection → reset all cells to full brightness
+        if (!(selectedCell instanceof mxCell mxc) || mxc.isEdge()) {
+            for (mxCell cell : nodeCellMap.values()) {
+                cell.setStyle(cell.getStyle().replace("opacity=40", "opacity=100"));
+            }
+            graph.refresh();
+            return;
+        }
+
+        int selId = parseIntId(mxc.getId());
+        if (selId <= 0) return;
+
+        // Collect focus set: selected + descendants + ancestors
+        java.util.Set<Integer> focusIds = new java.util.HashSet<>();
+        focusIds.add(selId);
+        collectDescendantIds(selId, focusIds);
+        collectAncestorIds(selId, focusIds);
+
+        // Dim non-focused cells by replacing their fill color
+        for (Map.Entry<Integer, mxCell> entry : nodeCellMap.entrySet()) {
+            if (!focusIds.contains(entry.getKey())) {
+                MindMapNode node = mindMapManager.findNodeById(entry.getKey());
+                if (node != null) {
+                    String dimColor = dimColor(node.getColor() != null ? node.getColor() : "#C4843C");
+                    // JGraphX doesn't support per-cell opacity well; dim via color
+                    entry.getValue().setStyle(styleMapToString(buildStyleFor(node))
+                        .replace(node.getColor() != null ? node.getColor() : "#C4843C", dimColor));
+                }
+            } else {
+                // Reset focused cell to full style
+                MindMapNode node = mindMapManager.findNodeById(entry.getKey());
+                if (node != null) {
+                    entry.getValue().setStyle(styleMapToString(buildStyleFor(node)));
+                }
+            }
+        }
+        graph.refresh();
+    }
+
+    private void collectDescendantIds(int parentId, java.util.Set<Integer> ids) {
+        for (MindMapConnection conn : mindMapManager.getConnections()) {
+            if (conn.getSourceNodeId() == parentId) {
+                ids.add(conn.getTargetNodeId());
+                collectDescendantIds(conn.getTargetNodeId(), ids);
+            }
+        }
+    }
+
+    private void collectAncestorIds(int nodeId, java.util.Set<Integer> ids) {
+        for (MindMapConnection conn : mindMapManager.getConnections()) {
+            if (conn.getTargetNodeId() == nodeId) {
+                ids.add(conn.getSourceNodeId());
+                collectAncestorIds(conn.getSourceNodeId(), ids);
+            }
+        }
+    }
+
+    /** Desaturate/lighten a hex color to ~35% strength for dimmed appearance. */
+    private String dimColor(String hex) {
+        if (hex == null || !hex.startsWith("#") || hex.length() < 7) return "#E8E4DE";
+        try {
+            int r = Integer.parseInt(hex.substring(1, 3), 16);
+            int g = Integer.parseInt(hex.substring(3, 5), 16);
+            int b = Integer.parseInt(hex.substring(5, 7), 16);
+            // Desaturate: blend with warm grey
+            int avg = (r + g + b) / 3;
+            int gray = 0xC0;
+            r = (r + gray * 2) / 3;
+            g = (g + gray * 2) / 3;
+            b = (b + gray * 2) / 3;
+            return String.format("#%02X%02X%02X", r, g, b);
+        } catch (Exception e) {
+            return "#E8E4DE";
+        }
     }
 
     /**
