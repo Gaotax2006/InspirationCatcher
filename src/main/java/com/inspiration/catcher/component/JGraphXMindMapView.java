@@ -95,7 +95,7 @@ public class JGraphXMindMapView extends VBox {
 
         // Vertex styles — warm palette matching "Warm Paper" theme
         Map<String, Object> vs = graph.getStylesheet().getDefaultVertexStyle();
-        vs.put(mxConstants.STYLE_SHAPE, "roundrect");
+        vs.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
         vs.put(mxConstants.STYLE_ARCSIZE, 16);
         vs.put(mxConstants.STYLE_FILLCOLOR, "#C4843C");
         vs.put(mxConstants.STYLE_GRADIENTCOLOR, "#D4A76A");
@@ -112,7 +112,7 @@ public class JGraphXMindMapView extends VBox {
         es.put(mxConstants.STYLE_STROKECOLOR, "#C4B8A8");
         es.put(mxConstants.STYLE_STROKEWIDTH, 2);
         es.put(mxConstants.STYLE_ROUNDED, true);
-        es.put(mxConstants.STYLE_EDGE, mxConstants.EDGESTYLE_TOPTOBOTTOM);
+        es.put(mxConstants.STYLE_EDGE, mxConstants.EDGESTYLE_ENTITY_RELATION);
         es.put("curved", true);
         es.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_CLASSIC);
         es.put(mxConstants.STYLE_ENDSIZE, 8);
