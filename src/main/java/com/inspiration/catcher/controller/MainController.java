@@ -150,11 +150,24 @@ public class MainController implements Initializable {
                 } catch (Exception e) {
                     logger.error("Failed to set up shortcuts", e);
                 }
+                // 场景就绪后初始化 JGraphX
+                if (mindMapHandler != null && mindMapHandler.getMindMapView() != null) {
+                    mindMapHandler.getMindMapView().ensureInitialized();
+                }
             });
             mainTabPane.getSelectionModel().selectedItemProperty().addListener((_, _, newTab) -> {
-                if (newTab != null) switch (newTab.getText()) {
+                if (newTab == null) return;
+                switch (newTab.getText()) {
                     case "灵感列表" -> shortcutManager.setActiveArea("table");
-                    case "思维导图" -> shortcutManager.setActiveArea("mindmap");
+                    case "思维导图" -> {
+                        shortcutManager.setActiveArea("mindmap");
+                        if (mindMapView != null) {
+                            Platform.runLater(() -> {
+                                mindMapView.forceRefresh();
+                                mindMapView.centerView();
+                            });
+                        }
+                    }
                     case "编辑器" -> shortcutManager.setActiveArea("editor");
                 }
             });

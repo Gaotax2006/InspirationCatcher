@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -98,9 +99,9 @@ public class MindMapHandler {
                 loadIdeasToMindMapPanel(currentProject);
             }
             mindMapPane.getChildren().add(jgraphxView);
-            // Trigger JGraphX init now that view is in the scene
-            jgraphxView.ensureInitialized();
-            logger.info("JGraphX mind map initialized");
+            // 注：JGraphX 初始化已移入 ensureInitialized()，由 MainController
+            // 在场景就绪后通过 tab 切换监听器统一触发
+            logger.info("JGraphX mind map handler ready");
         } catch (NoClassDefFoundError | Exception e) {
             logger.error("JGraphX mind map init failed: {}", e.getMessage());
             Label fallback = new Label("思维导图初始化失败: " + e.getMessage());
@@ -254,7 +255,7 @@ public class MindMapHandler {
         dialog.showAndWait().ifPresent(text -> {
             if (text.trim().isEmpty()) return;
             mindMapManager.createConceptNode(text.trim(), 200, 200);
-            jgraphxView.redraw();
+            jgraphxView.forceRefresh();
         });
     }
 
@@ -271,7 +272,7 @@ public class MindMapHandler {
             urlDialog.showAndWait().ifPresent(url -> {
                 if (!url.trim().isEmpty()) {
                     mindMapManager.createExternalNode(text.trim(), url.trim(), 200, 200);
-                    jgraphxView.redraw();
+                    jgraphxView.forceRefresh();
                 }
             });
         });
