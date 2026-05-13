@@ -211,7 +211,8 @@ public class JGraphXMindMapView extends VBox {
                     mxCell tgt = nodeCellMap.get(conn.getTargetNodeId());
                     if (src == null || tgt == null) continue;
                     Object edgeObj = graph.insertEdge(graph.getDefaultParent(), String.valueOf(conn.getId()),
-                        conn.getLabel() != null ? conn.getLabel() : "", src, tgt, "");
+                        conn.getLabel() != null ? conn.getLabel() : "", src, tgt,
+                        styleMapToString(buildEdgeStyleFor(conn)));
                     if (edgeObj instanceof mxCell me) edgeCellMap.put(conn.getId(), me);
                 }
             } finally { graph.getModel().endUpdate(); }
@@ -274,12 +275,17 @@ public class JGraphXMindMapView extends VBox {
             graph.getModel().beginUpdate();
             try {
                 for (MindMapConnection conn : mindMapManager.getConnections()) {
-                    if (edgeCellMap.containsKey(conn.getId())) continue;
+                    mxCell existing = edgeCellMap.get(conn.getId());
+                    if (existing != null) {
+                        existing.setStyle(styleMapToString(buildEdgeStyleFor(conn)));
+                        continue;
+                    }
                     mxCell src = nodeCellMap.get(conn.getSourceNodeId());
                     mxCell tgt = nodeCellMap.get(conn.getTargetNodeId());
                     if (src == null || tgt == null) continue;
                     Object edgeObj = graph.insertEdge(graph.getDefaultParent(), String.valueOf(conn.getId()),
-                        conn.getLabel() != null ? conn.getLabel() : "", src, tgt, "");
+                        conn.getLabel() != null ? conn.getLabel() : "", src, tgt,
+                        styleMapToString(buildEdgeStyleFor(conn)));
                     if (edgeObj instanceof mxCell me) edgeCellMap.put(conn.getId(), me);
                 }
             } finally { graph.getModel().endUpdate(); }
@@ -421,6 +427,77 @@ public class JGraphXMindMapView extends VBox {
             fontStyle |= mxConstants.FONT_ITALIC;
         }
         style.put(mxConstants.STYLE_FONTSTYLE, fontStyle);
+
+        return style;
+    }
+
+    /**
+     * 根据 MindMapConnection 模型属性动态构建 JGraphX 边样式 Map。
+     * Freeplane 风格：边颜色/线型/箭头按 ConnectionType 区分。
+     */
+    private Map<String, Object> buildEdgeStyleFor(MindMapConnection conn) {
+        Map<String, Object> style = new HashMap<>(graph.getStylesheet().getDefaultEdgeStyle());
+
+        // Stroke color from model
+        String color = conn.getColor() != null ? conn.getColor() : "#C4B8A8";
+        style.put(mxConstants.STYLE_STROKECOLOR, color);
+
+        // Stroke width: base from model, scaled by strength
+        int baseWidth = conn.getWidth() != null ? conn.getWidth() : 2;
+        double sf = Math.max(0.0, Math.min(1.0, conn.getStrength()));
+        style.put(mxConstants.STYLE_STROKEWIDTH, Math.max(1, (int) Math.round(baseWidth + sf * 2)));
+
+        // Dash pattern from ConnectionStyle
+        if (conn.getStyle() != null) {
+            switch (conn.getStyle()) {
+                case DASHED -> style.put(mxConstants.STYLE_DASHED, true);
+                case DOTTED -> {
+                    style.put(mxConstants.STYLE_DASHED, true);
+                    style.put(mxConstants.STYLE_DASH_PATTERN, "1 4");
+                }
+                default -> style.put(mxConstants.STYLE_DASHED, false);
+            }
+        }
+
+        // Arrow/color variations by ConnectionType
+        if (conn.getConnectionType() != null) {
+            switch (conn.getConnectionType()) {
+                case DEPENDS_ON -> {
+                    style.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_OPEN);
+                    style.put(mxConstants.STYLE_STARTARROW, mxConstants.ARROW_DIAMOND);
+                }
+                case CONTRADICTS -> {
+                    style.put(mxConstants.STYLE_STROKECOLOR, "#D45555");
+                    style.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_OPEN);
+                    style.put(mxConstants.STYLE_DASHED, false);
+                }
+                case USES -> {
+                    style.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_BLOCK);
+                    style.put(mxConstants.STYLE_DASHED, false);
+                }
+                case EXTENDS -> {
+                    style.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_OPEN);
+                    style.put(mxConstants.STYLE_DASHED, true);
+                }
+                case CAUSAL -> {
+                    style.put(mxConstants.STYLE_STROKECOLOR, "#7B68B8");
+                    style.put(mxConstants.STYLE_STROKEWIDTH, 2);
+                    style.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_BLOCK);
+                }
+                case ANALOGY -> {
+                    style.put(mxConstants.STYLE_DASHED, false);
+                    style.put(mxConstants.STYLE_STROKECOLOR, "#C4A84C");
+                    style.put(mxConstants.STYLE_STROKEWIDTH, 1);
+                }
+                default -> {} // RELATED keeps default
+            }
+        }
+
+        // Edge label colors
+        if (conn.getLabel() != null && !conn.getLabel().isEmpty()) {
+            style.put(mxConstants.STYLE_FONTCOLOR, color);
+            style.put(mxConstants.STYLE_LABEL_BACKGROUNDCOLOR, "#F7F4F0");
+        }
 
         return style;
     }
