@@ -359,26 +359,106 @@ public class JGraphXMindMapView extends VBox {
     // ============================================================
 
     public void applyAutoLayout() {
-        if (!initialized || nodeCellMap.isEmpty()) return;
-        mxCompactTreeLayout layout = new mxCompactTreeLayout(graph, true);
-        layout.setUseBoundingBox(false);
-        layout.setEdgeRouting(true);
-        layout.setLevelDistance(160);
-        layout.setNodeDistance(60);
-        layout.setResizeParent(false);
-        graph.getModel().beginUpdate();
-        try { layout.execute(graph.getDefaultParent()); }
-        finally { graph.getModel().endUpdate(); }
-        // Sync positions back to model
+        if (!initialized || nodeCellMap.isEmpty() || mindMapManager == null) return;
+
+        // Find root node
+        MindMapNode root = null;
+        for (MindMapNode node : mindMapManager.getNodes()) {
+            if (node.isRoot()) { root = node; break; }
+        }
+        if (root == null) {
+            // Fallback: use JGraphX built-in tree layout
+            mxCompactTreeLayout layout = new mxCompactTreeLayout(graph, true);
+            layout.setUseBoundingBox(false);
+            layout.setEdgeRouting(true);
+            layout.setLevelDistance(160);
+            layout.setNodeDistance(60);
+            layout.setResizeParent(false);
+            graph.getModel().beginUpdate();
+            try { layout.execute(graph.getDefaultParent()); }
+            finally { graph.getModel().endUpdate(); }
+            syncAllPositions();
+            centerView();
+            return;
+        }
+
+        mxCell rootCell = nodeCellMap.get(root.getId());
+        if (rootCell == null || rootCell.getGeometry() == null) return;
+
+        // Freeplane-inspired two-sided layout: children on both left and right of root
+        double rootX = 400;
+        double rootY = 300;
+
         graph.getModel().beginUpdate();
         try {
-            for (Map.Entry<Integer, mxCell> e : nodeCellMap.entrySet()) {
-                if (e.getValue().getGeometry() != null)
-                    mindMapManager.updateNodePosition(e.getKey(),
-                        e.getValue().getGeometry().getX(), e.getValue().getGeometry().getY());
-            }
-        } finally { graph.getModel().endUpdate(); }
+            rootCell.getGeometry().setX(rootX);
+            rootCell.getGeometry().setY(rootY);
+
+            java.util.List<MindMapNode> allChildren = mindMapManager.getChildNodes(root.getId());
+            if (allChildren.isEmpty()) return;
+
+            // Only layout visible (non-collapsed) nodes
+            allChildren = allChildren.stream().filter(c -> {
+                mxCell cc = nodeCellMap.get(c.getId());
+                return cc == null || cc.isVisible();
+            }).toList();
+
+            if (allChildren.isEmpty()) return;
+
+            // Split into left and right groups
+            int mid = (allChildren.size() + 1) / 2;
+            java.util.List<MindMapNode> rightKids = allChildren.subList(0, mid);
+            java.util.List<MindMapNode> leftKids = allChildren.subList(mid, allChildren.size());
+
+            // Layout right side (left-to-right) and left side (right-to-left)
+            layoutSubtree(rightKids, rootX, rootY, true, 180, 80);
+            layoutSubtree(leftKids, rootX, rootY, false, 180, 80);
+
+            syncAllPositions();
+        } finally {
+            graph.getModel().endUpdate();
+        }
         centerView();
+    }
+
+    /** Recursively position a list of sibling nodes. */
+    private void layoutSubtree(java.util.List<MindMapNode> children, double parentX, double parentY,
+                                boolean toRight, double hSpacing, double vSpacing) {
+        if (children.isEmpty()) return;
+        double totalHeight = (children.size() - 1) * vSpacing;
+        double startY = parentY - totalHeight / 2;
+
+        for (int i = 0; i < children.size(); i++) {
+            MindMapNode child = children.get(i);
+            mxCell childCell = nodeCellMap.get(child.getId());
+            if (childCell == null || !childCell.isVisible()) continue;
+
+            double cx = toRight ? parentX + hSpacing : parentX - hSpacing;
+            double cy = startY + i * vSpacing;
+            childCell.getGeometry().setX(cx);
+            childCell.getGeometry().setY(cy);
+
+            // Recursively layout grandchildren
+            java.util.List<MindMapNode> grandKids = mindMapManager.getChildNodes(child.getId());
+            if (!grandKids.isEmpty()) {
+                grandKids = grandKids.stream().filter(g -> {
+                    mxCell gc = nodeCellMap.get(g.getId());
+                    return gc == null || gc.isVisible();
+                }).toList();
+                if (!grandKids.isEmpty()) {
+                    layoutSubtree(grandKids, cx, cy, toRight, hSpacing * 0.7, Math.max(50, vSpacing * 0.8));
+                }
+            }
+        }
+    }
+
+    /** Sync all node positions from JGraphX back to the model. */
+    private void syncAllPositions() {
+        for (Map.Entry<Integer, mxCell> e : nodeCellMap.entrySet()) {
+            if (e.getValue().getGeometry() != null)
+                mindMapManager.updateNodePosition(e.getKey(),
+                    e.getValue().getGeometry().getX(), e.getValue().getGeometry().getY());
+        }
     }
 
     // ============================================================
