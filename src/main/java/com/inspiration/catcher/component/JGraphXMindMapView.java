@@ -15,6 +15,7 @@ import javafx.collections.ListChangeListener;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.ZoomEvent;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -164,12 +165,35 @@ public class JGraphXMindMapView extends VBox {
         es.put(mxConstants.STYLE_ENTRY_X, 0.0);
         es.put(mxConstants.STYLE_ENTRY_Y, 0.5);
 
+        // Larger fold icons for touch screens (set before component creation)
+        mxGraphComponent.DEFAULT_EXPANDED_ICON = createTouchFoldIcon("−", 22);
+        mxGraphComponent.DEFAULT_COLLAPSED_ICON = createTouchFoldIcon("+", 22);
+
         graphComponent = new mxGraphComponent(graph);
         graphComponent.getViewport().setOpaque(true);
         graphComponent.getViewport().setBackground(new Color(0xf8, 0xf9, 0xfa));
         graphComponent.setBackground(new Color(0xf8, 0xf9, 0xfa));
         graphComponent.setWheelScrollingEnabled(false);
         graphComponent.setFoldingEnabled(true);
+        // Touch screen: panning + pinch-to-zoom + centered zoom
+        graphComponent.setPanning(true);
+        graphComponent.setCenterZoom(true);
+        graphComponent.setKeepSelectionVisibleOnZoom(true);
+        // Touch screen support
+        graphComponent.setPanning(true);
+        graphComponent.setCenterZoom(true);
+        graphComponent.setKeepSelectionVisibleOnZoom(true);
+        // Larger fold icons for touch (set static defaults before component init) // 已经在 swingNode.setContent 之前完成
+
+        // Pinch-to-zoom via JavaFX ZoomEvent on the SwingNode
+        swingNode.addEventHandler(ZoomEvent.ZOOM, e -> {
+            if (graphComponent != null) {
+                double factor = e.getZoomFactor();
+                if (factor > 0.5 && factor < 2.0) {
+                    graphComponent.zoom(factor);
+                }
+            }
+        });
 
         graph.addListener("cellsMoved", this::onCellsMoved);
         graph.addListener("cellsConnected", this::onCellsConnected);
@@ -887,6 +911,26 @@ public class JGraphXMindMapView extends VBox {
         } catch (Exception e) {
             return "#FFFFFF";
         }
+    }
+
+    /** Create a larger fold indicator icon for touch screens (default JGraphX icons are too small). */
+    private javax.swing.ImageIcon createTouchFoldIcon(String symbol, int size) {
+        java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(size, size, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        java.awt.Graphics2D g = img.createGraphics();
+        try {
+            g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setColor(new java.awt.Color(0xCC, 0xCC, 0xCC, 0xE0));
+            g.fillOval(0, 0, size, size);
+            g.setColor(new java.awt.Color(0x44, 0x44, 0x44));
+            g.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, size - 4));
+            java.awt.FontMetrics fm = g.getFontMetrics();
+            int sx = (size - fm.stringWidth(symbol)) / 2;
+            int sy = (size + fm.getAscent()) / 2 - 2;
+            g.drawString(symbol, sx, sy);
+        } finally {
+            g.dispose();
+        }
+        return new javax.swing.ImageIcon(img);
     }
 
     /** Convert a style Map to JGraphX style string "key=value;key=value". */
